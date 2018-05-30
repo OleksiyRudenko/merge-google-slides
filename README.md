@@ -31,10 +31,13 @@ A configurable tool to merge Google Slides decks
 
  * Import data
    - [ ] call from Drive context
-   - [ ] call with a list of  Slides
+   - [ ] call with a list of Slides
    - [ ] call with a config file
-   - [ ] when called with config file
+   - [ ] when called with config file and Slides decks
+         referred to in config file come first and in order
+         as per config files, other decks follow
    - [ ] add Slides from app context
+   - [ ] remove decks
  * Process
    - [ ] reorder Slides decks
    - [ ] choose Slides deck to be a source of layouts and
@@ -67,6 +70,8 @@ A configurable tool to merge Google Slides decks
      - [ ] == config file location
      - [ ] == Slides deck #1 location
      - [ ] editable
+   - [ ] if destination files already exist then those
+         are replaced (updated) to preserve Drive ids
  * Misc
    - [ ] create/update config file as per current setup
    - [ ] manage output file access
