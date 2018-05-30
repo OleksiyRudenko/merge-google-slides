@@ -88,6 +88,7 @@ A configurable tool to merge Google Slides decks
    - Output location
    - Silent mode
    - layout and styles source deck Drive id
+   - output formats (Slides &| `.pdf` &| `.png` set)
  * Sheet #2, each row contains
    - deck file Drive id | path | sharing URL
    - deck filename
