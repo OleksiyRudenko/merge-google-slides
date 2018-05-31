@@ -86,6 +86,7 @@ A configurable tool to merge Google Slides decks
          are replaced (updated) to preserve Drive ids
  * Misc
    - [ ] create/update config file as per current setup
+   - [ ] choose where to store/move config file
    - [ ] manage output file access
    - [ ] forward output file to GD LinkMan
    - [ ] UI localization based on user's Google settings
@@ -111,5 +112,15 @@ A configurable tool to merge Google Slides decks
    - number of initial slides to trim
    - number of trailing slides to trim
    - CSV of slides ids to keep (remove?) - overrides the trimming settings
+
+[_^ back to TOC ^_](#table-of-contents)
+
+## Resources employed
+
+ * [create-react-app boilerplate](https://github.com/facebook/create-react-app)
+ * [Markdown React](https://github.com/alexkuz/markdown-react-js) that is
+   [rich on features](http://alexkuz.github.io/markdown-react-js/)
+ * [react markdown](https://rexxars.github.io/react-markdown/) also looks nice
+   and supports GFM
 
 [_^ back to TOC ^_](#table-of-contents)
