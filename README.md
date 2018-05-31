@@ -122,5 +122,8 @@ A configurable tool to merge Google Slides decks
    [rich on features](http://alexkuz.github.io/markdown-react-js/)
  * [react markdown](https://rexxars.github.io/react-markdown/) also looks nice
    and supports GFM
+ * [G Suite Devs @ github](https://github.com/gsuitedevs)
+ * [Google Drive REST API](https://developers.google.com/drive/api/v3/about-sdk)
+ * [JS API client library](https://developers.google.com/api-client-library/javascript/start/start-js)
 
 [_^ back to TOC ^_](#table-of-contents)
