@@ -8,6 +8,7 @@ A configurable tool to merge Google Slides decks
 
 - [Features](#features)
   - [Definitions](#definitions)
+  - [Features](#features-1)
   - [Features detailed](#features-detailed)
 - [Config file](#config-file)
   - [Settings](#settings)
@@ -27,18 +28,26 @@ A configurable tool to merge Google Slides decks
 
 [_^ back to TOC ^_](#table-of-contents)
 
+### Key Features
+
+ - [ ] merge Slides deck into a single deck
+ - [ ] reorder decks, skip slides
+ - [ ] save settings for repetetive jobs
+
+[_^ back to TOC ^_](#table-of-contents)
+
 ### Features detailed
 
  * Import data
    - [ ] call from Drive context
-   - [ ] call with a list of Slides
+   - [ ] call with a list of Slides files
    - [ ] call with a config file
-   - [ ] when called with config file and Slides decks
-         referred to in config file come first and in order
-         as per config files, other decks follow
+   - [ ] when called with config file and a set of Slides
+         then decks referred to in config file come first
+         and in order as per config files, other decks follow
    - [ ] add Slides from app context
    - [ ] remove decks
- * Process
+ * Process data
    - [ ] reorder Slides decks
    - [ ] choose Slides deck to be a source of layouts and
          styles
@@ -50,7 +59,7 @@ A configurable tool to merge Google Slides decks
    - [ ] select slides to trim
    - [ ] preview decks (5 initial + 3 trailing slides | all)
    - [ ] preview output
-   - [ ] silent mode switch (no previews)
+   - [ ] silent mode switch (no previews, pending preview formation stops)
  * Result output
    - [ ] output result filename is...
      - [ ] == config file setting
@@ -64,18 +73,23 @@ A configurable tool to merge Google Slides decks
    - [ ] output result is...
      - [ ] Slides
      - [ ] `.pdf`
+     - [ ] `.pptx`
      - [ ] set of `.png`
    - [ ] output location is...
      - [ ] as per config file
      - [ ] == config file location
      - [ ] == Slides deck #1 location
      - [ ] editable
+     - [ ] no Drive upload for `.pdf`, `.png`, `.pptx`
+           (local download)
    - [ ] if destination files already exist then those
          are replaced (updated) to preserve Drive ids
  * Misc
    - [ ] create/update config file as per current setup
    - [ ] manage output file access
    - [ ] forward output file to GD LinkMan
+   - [ ] UI localization based on user's Google settings
+         with a fallback to English
 
 [_^ back to TOC ^_](#table-of-contents)
 
