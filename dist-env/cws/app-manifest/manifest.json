@@ -17,5 +17,16 @@
     "launch": {
       "web_url": "https://oleksiyrudenko.github.io/merge-google-slides/"
     }
+  },
+  "gdrive_mime_types": {
+    "http://drive.google.com/intents/opendrivedoc": [
+      {
+        "type": ["application/pdf", "application/vnd.google.drive.ext-type.pdf",
+          "application/vnd.google-apps.presentation"],
+        "href": "https://oleksiyrudenko.github.io/merge-google-slides/",
+        "title": "Open",
+        "disposition": "window"
+      }
+    ]
   }
 }

@@ -17,6 +17,7 @@ APP_NAME_SHORT =
 APP_DOMAIN  = https://oleksiyrudenko.github.io
 APP_ROOT    = https://oleksiyrudenko.github.io/merge-google-slides/
 APP_OPEN    = APP_ROOT/#!/link/{ids}{exportIds}
+              APP_ROOT/?action={action}&user={userId}&files={ids}
 
 APP_DOC_PP  = APP_ROOT/#!/privacypolicy/
 APP_DOC_TOS = APP_ROOT/#!/tos/
