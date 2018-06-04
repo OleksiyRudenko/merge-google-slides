@@ -34,7 +34,7 @@ export default class _GapiService {
       window.gapi.auth2.getAuthInstance().isSignedIn.listen(this._updateSigninStatus);
 
       // Handle the initial sign-in state.
-      updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
+      this._updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
       authorizeButton.onclick = this._handleAuthClick;
       signoutButton.onclick = this._handleSignoutClick;
     });

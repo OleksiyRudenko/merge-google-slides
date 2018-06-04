@@ -5,7 +5,7 @@ import './App.css';
 class App extends Component {
   constructor(props) {
     super(props);
-    console.log('App: ', GapiService)
+    console.log('App: ', GapiService);
   }
   render() {
     return (
