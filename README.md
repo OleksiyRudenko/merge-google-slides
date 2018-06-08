@@ -59,6 +59,7 @@ A configurable tool to merge Google Slides decks
    - [ ] select slides to trim
    - [ ] preview decks (5 initial + 3 trailing slides | all)
    - [ ] preview output
+   - [ ] preview slides thumbnails caching
    - [ ] silent mode switch (no previews, pending preview formation stops)
  * Result output
    - [ ] output result filename is...
