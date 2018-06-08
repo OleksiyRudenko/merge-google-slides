@@ -1,0 +1,11 @@
+/* :local prefix when boilerplate generated with create-react-app */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand > img {
+    height: 3rem;
+    width: 4rem;
+    padding-right: 1rem;
+}
