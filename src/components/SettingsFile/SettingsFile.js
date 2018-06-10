@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
 import {
-  Button, ButtonToolbar, Checkbox, Form, FormControl, FormGroup, Glyphicon, InputGroup, Panel,
-  ToggleButton, ToggleButtonGroup,
+  Button, Checkbox, Form, FormControl, FormGroup, Glyphicon, InputGroup, Panel
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import {SourceDecksService} from "../../services/SourceDecksService";
-// import styles from './Destination.css';
+// import styles from './SettingsFile.css';
 
-export default class Destination extends Component {
+export default class SettingsFile extends Component {
   constructor(props) {
     super(props);
     bindHandlers(this,
@@ -51,7 +50,7 @@ export default class Destination extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Glyphicon glyph="floppy-save" /> Output destination (Slides)
+          <Glyphicon glyph="cog" /> Settings storage file name (Sheets)
           { this.state.uiIsPanelCollapsed && this.state.fileName.length ? ": " + this.state.fileName : "" }
           <Button bsSize="small" bsClass="btn-link pull-right" title="Collapse panel" onClick={this.uiSwitchPanelState}>
             <Glyphicon glyph={this.state.uiIsPanelCollapsed ? "collapse-down" : "collapse-up" } />
@@ -105,37 +104,30 @@ export default class Destination extends Component {
               onChange={this.setFileName}
             />
             <InputGroup.Button>
-              <Button bsStyle="primary" disabled={this.state.fileName.length<1}>{this.state.fileExists?'Update deck':'Create deck'}</Button>
+              <Button bsStyle="primary" disabled={this.state.fileName.length<1}>{this.state.fileExists?'Update settings':'Create settings'}</Button>
             </InputGroup.Button>
           </InputGroup>
         </FormGroup>
 
-
         <Form componentClass="fieldset" inline>
+          {this.state.originalFileName ?
+            <Button title="Restore original filename"
+                    disabled={this.state.fileName === this.state.originalFileName}
+                    bsStyle={this.state.fileName === this.state.originalFileName ? 'primary' : 'default' }
+                    onClick={this.restoreOriginalFilename}>
+              <Glyphicon glyph="refresh" />
+            </Button> : ''}{' '}
 
-          <ButtonToolbar>
-            <ToggleButtonGroup type="radio" name="options" defaultValue={1}>
-              <ToggleButton value={1}>Radio 1 (pre-checked)</ToggleButton>
-              <ToggleButton value={2}>Radio 2</ToggleButton>
-              <ToggleButton value={3}>Radio 3</ToggleButton>
-            </ToggleButtonGroup>
-            
-            {this.state.originalFileName ?
-              <Button title="Restore original filename" disabled={this.state.fileName === this.state.originalFileName} onClick={this.restoreOriginalFilename}>
-                <Glyphicon glyph="refresh" />
-              </Button> : ''}{' '}
-
-            {this.state.decksList ?
-              <FormControl
-                componentClass="select"
-                title="Take name from a deck"
-                onChange={this.setFileNameFromDecks}
-                value={selected}>
-                <option key="0" value="0">Take name from a deck...</option>
-                {this.state.decksList.map(el => <option key={el.key} value={el.key}>{el.value}</option>)}
-              </FormControl>
-              : ''}
-          </ButtonToolbar>
+          {this.state.decksList ?
+            <FormControl
+              componentClass="select"
+              title="Take name from a deck"
+              onChange={this.setFileNameFromDecks}
+              value={selected}>
+              <option key="0" value="0">Take name from a deck...</option>
+              {this.state.decksList.map(el => <option key={el.key} value={el.key}>{el.value}</option>)}
+            </FormControl>
+            : ''}
         </Form>
       </form>
     );

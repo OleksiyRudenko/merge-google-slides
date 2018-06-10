@@ -5,9 +5,8 @@ import {
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import {SourceDecksService} from "../../services/SourceDecksService";
-// import styles from './Destination.css';
 
-export default class Destination extends Component {
+export default class RenderingOptions extends Component {
   constructor(props) {
     super(props);
     bindHandlers(this,
@@ -51,7 +50,7 @@ export default class Destination extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Glyphicon glyph="floppy-save" /> Output destination (Slides)
+          <Glyphicon glyph="wrench" /> Rendering options
           { this.state.uiIsPanelCollapsed && this.state.fileName.length ? ": " + this.state.fileName : "" }
           <Button bsSize="small" bsClass="btn-link pull-right" title="Collapse panel" onClick={this.uiSwitchPanelState}>
             <Glyphicon glyph={this.state.uiIsPanelCollapsed ? "collapse-down" : "collapse-up" } />
@@ -119,7 +118,7 @@ export default class Destination extends Component {
               <ToggleButton value={2}>Radio 2</ToggleButton>
               <ToggleButton value={3}>Radio 3</ToggleButton>
             </ToggleButtonGroup>
-            
+
             {this.state.originalFileName ?
               <Button title="Restore original filename" disabled={this.state.fileName === this.state.originalFileName} onClick={this.restoreOriginalFilename}>
                 <Glyphicon glyph="refresh" />
@@ -213,5 +212,4 @@ export default class Destination extends Component {
       uiIsPanelCollapsed: !this.state.uiIsPanelCollapsed,
     });
   }
-
 }
