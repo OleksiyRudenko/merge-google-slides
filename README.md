@@ -58,6 +58,7 @@ A configurable tool to merge Google Slides decks
    - [ ] preserve trailing slides for last deck
    - [ ] select slides to trim
    - [ ] preview decks (5 initial + 3 trailing slides | all)
+   - [ ] add contents slide (decks listing with references)
    - [ ] preview output
    - [ ] preview slides thumbnails caching
    - [ ] silent mode switch (no previews, pending preview formation stops)
@@ -71,6 +72,11 @@ A configurable tool to merge Google Slides decks
            overwrite action confirmation requested
      - [ ] editable
      - [ ] for `.png` set `000` modifier is added
+     - [ ] slides numbering:
+       - [ ] `#` sequental or `#.#` deck#.slide#
+       - [ ] 0- or 1- based
+       - [ ] force numbering for slides where template
+             offers no placeholder
    - [ ] output result is...
      - [ ] Slides
      - [ ] `.pdf`
@@ -80,6 +86,7 @@ A configurable tool to merge Google Slides decks
      - [ ] as per config file
      - [ ] == config file location
      - [ ] == Slides deck #1 location
+     - [ ] == per **Organize** widget
      - [ ] editable
      - [ ] no Drive upload for `.pdf`, `.png`, `.pptx`
            (local download)
@@ -103,7 +110,8 @@ A configurable tool to merge Google Slides decks
    - Output filename
    - Output location
    - Silent mode
-   - layout and styles source deck Drive id
+   - layout and styles source deck (Drive id)
+   - decks list slide template source (Drive id)
    - output formats (Slides &| `.pdf` &| `.png` set)
  * Sheet #2, each row contains
    - deck file Drive id | path | sharing URL
@@ -119,6 +127,8 @@ A configurable tool to merge Google Slides decks
 ## Resources employed
 
  * [create-react-app boilerplate](https://github.com/facebook/create-react-app)
+ * [react-bootstrap](https://react-bootstrap.github.io/getting-started/introduction/)
+ * [Glyphicons](http://glyphicons.com/)
  * [Markdown React](https://github.com/alexkuz/markdown-react-js) that is
    [rich on features](http://alexkuz.github.io/markdown-react-js/)
  * [react markdown](https://rexxars.github.io/react-markdown/) also looks nice
