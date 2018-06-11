@@ -1,6 +1,8 @@
 # Merge Google Slides
 
-A configurable tool to merge Google Slides decks
+A configurable tool to merge Google Slides decks.
+
+[Install App for your Drive](https://chrome.google.com/webstore/detail/merge-google-slides/apjijeojdpjochnfenmmkegnifcgfaam)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
@@ -8,10 +10,12 @@ A configurable tool to merge Google Slides decks
 
 - [Features](#features)
   - [Definitions](#definitions)
-  - [Features](#features-1)
+  - [Key Features](#key-features)
   - [Features detailed](#features-detailed)
 - [Config file](#config-file)
   - [Settings](#settings)
+- [Resources employed](#resources-employed)
+- [Misc](#misc)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -136,5 +140,12 @@ A configurable tool to merge Google Slides decks
  * [G Suite Devs @ github](https://github.com/gsuitedevs)
  * [Google Drive REST API](https://developers.google.com/drive/api/v3/about-sdk)
  * [JS API client library](https://developers.google.com/api-client-library/javascript/start/start-js)
+
+[_^ back to TOC ^_](#table-of-contents)
+
+
+## Misc
+
+ * `manifest.json` may require `"update_url": "https://clients2.google.com/service/update2/crx",`
 
 [_^ back to TOC ^_](#table-of-contents)
