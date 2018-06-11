@@ -1,3 +1,4 @@
 // re-export {default} from '' when re-exporting default class
 // re-export {instanceName} from ''  when re-exporting service instance
-export {default} from './Dashboard.js';
+import Dashboard from './Dashboard.js';
+export default Dashboard;
