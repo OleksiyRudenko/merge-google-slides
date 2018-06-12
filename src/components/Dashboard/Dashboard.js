@@ -1,19 +1,31 @@
 import React, { Component } from 'react';
-import { Button, Image, Col, Row, Glyphicon, Grid, MenuItem,
-  Navbar, Nav, NavDropdown, NavItem, Panel, Tabs, Tab } from 'react-bootstrap';
+import { Image, Col, Row, Glyphicon, Grid, MenuItem,
+  Navbar, Nav, NavDropdown, NavItem, Tab } from 'react-bootstrap';
 import styles from './Dashboard.css';
 import SettingsFile from '../SettingsFile';
 import Destination from '../Destination';
 import RenderingOptions from '../RenderingOptions';
 import OutputPreview from '../OutputPreview';
 import SourceSlides from '../SourceSlides';
+import Welcome from '../Welcome';
 import logo from '../../merge-google-slides.png';
+import {bindHandlers} from "../../utils/bind";
 
 export default class Dashboard extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      showWelcome: true,
+    };
+    bindHandlers(this,
+      'handleWelcomeClose',
+    );
+  }
   /**
    * Renders component view
    */
   render() {
+    console.log('Dashboard.render()', this.state);
     return (
       <div>
         <Navbar inverse fixedTop>
@@ -81,7 +93,16 @@ export default class Dashboard extends Component {
             </Col>
           </Row>
         </Grid>
+
+        <Welcome show={this.state.showWelcome} handleClose={this.handleWelcomeClose} />
       </div>
     );
+  }
+
+  handleWelcomeClose() {
+    console.log('CLosing Welcome');
+    this.setState({
+      showWelcome: false,
+    });
   }
 }
