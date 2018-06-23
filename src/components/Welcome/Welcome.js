@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import {
-  Modal, Button, Glyphicon, Panel,
+  Modal, Button, Glyphicon,
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
-// import styles from './SourceSlides.css';
 
 export default class Welcome extends Component {
   constructor(props) {
