@@ -3,9 +3,9 @@ import {
   Button, Glyphicon, Panel,
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
-// import styles from './SourceSlides.css';
+// import styles from './SourceDecks.css';
 
-export default class SourceSlides extends Component {
+export default class SourceDecks extends Component {
   constructor(props) {
     super(props);
     bindHandlers(this,

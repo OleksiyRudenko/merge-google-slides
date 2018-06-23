@@ -7,7 +7,7 @@ import SettingsFile from '../SettingsFile';
 import Destination from '../Destination';
 import RenderingOptions from '../RenderingOptions';
 import OutputPreview from '../OutputPreview';
-import SourceSlides from '../SourceSlides';
+import SourceDecks from '../SourceDecks';
 import Welcome from '../Welcome';
 import logo from '../../merge-google-slides.png';
 import {bindHandlers} from "../../utils/bind";
@@ -94,7 +94,7 @@ export default class Dashboard extends Component {
               <OutputPreview />
             </Col>
             <Col xs={8} sm={8} md={9} lg={10}>
-              <SourceSlides sourceList={this.state.driveState.exportIds} />
+              <SourceDecks sourceList={this.state.driveState.exportIds} />
             </Col>
           </Row>
         </Grid>
