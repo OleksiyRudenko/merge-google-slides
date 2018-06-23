@@ -9,7 +9,7 @@
     "react-dom": "^16.4.0",
     "react-scripts": "1.1.4"
   },
-  "homepage": "https://oleksiyrudenko.github.io/merge-google-slides",
+  "homepage": ".",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
