@@ -1,0 +1,7 @@
+/* :local prefix when boilerplate generated with create-react-app */
+:local(.ellipsised) {
+    white-space: nowrap;
+    overflow: hidden;
+    display: block;
+    text-overflow: ellipsis;
+}

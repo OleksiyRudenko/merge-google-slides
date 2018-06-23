@@ -1,15 +1,15 @@
 import React, { Component } from 'react';
 import {
-  Button, Col, Glyphicon, Grid, Panel, Row,
+  Button, Glyphicon, Panel,
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
-import SourceDeck from "../SourceDeck";
+import styles from "./SourceDeck.css";
 
-export default class SourceDecks extends Component {
+export default class SourceDeck extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      decks: this.props.sourceList,
+      deckId: this.props.deckId,
     };
     bindHandlers(this,
       'renderPanelBody',
@@ -23,7 +23,9 @@ export default class SourceDecks extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Glyphicon glyph="th" /> <span className="hidden-xs">Source decks</span>{' '}
+          <Glyphicon glyph="film" /> <span className={styles.ellipsised} title={this.state.deckId}>
+            {this.state.deckId}
+          </span>{' '}
           <Button bsStyle="link" bsSize="small" title="Render preview">
             <Glyphicon glyph="play" />
           </Button>
@@ -40,13 +42,6 @@ export default class SourceDecks extends Component {
   renderPanelBody() {
     return (
       <Panel.Body>
-        <Grid>
-          <Row>
-            {this.state.decks.map(id => {
-              return (<Col xs={3} key={id}><SourceDeck deckId={id} /></Col>);
-            })}
-          </Row>
-        </Grid>
       </Panel.Body>
     );
   }
