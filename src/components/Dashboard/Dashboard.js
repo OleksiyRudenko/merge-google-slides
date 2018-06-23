@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import queryString from 'query-string';
 import { Image, Col, Row, Glyphicon, Grid, MenuItem,
   Navbar, Nav, NavDropdown, NavItem, Tab } from 'react-bootstrap';
 import styles from './Dashboard.css';
@@ -14,9 +15,13 @@ import {bindHandlers} from "../../utils/bind";
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
+    const urlParams = queryString.parse(this.props.location.search);
     this.state = {
       showWelcome: true,
+      urlParams: urlParams,
+      driveState: JSON.parse(urlParams.state),
     };
+    console.log('Dashboard::state', this.state);
     bindHandlers(this,
       'handleWelcomeClose',
     );
@@ -89,7 +94,7 @@ export default class Dashboard extends Component {
               <OutputPreview />
             </Col>
             <Col xs={8} sm={8} md={9} lg={10}>
-              <SourceSlides />
+              <SourceSlides sourceList={this.state.driveState.exportIds} />
             </Col>
           </Row>
         </Grid>
