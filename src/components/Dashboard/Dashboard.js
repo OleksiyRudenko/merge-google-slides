@@ -71,7 +71,7 @@ export default class Dashboard extends Component {
         </Grid> */}
         <Grid>
           <Row className="clearfix">
-            <Col xs={4} sm={4} md={3} lg={2} className="col-padding">
+            <Col xs={3} sm={3} md={3} lg={2} className="col-padding">
               <OutputPreview />
             </Col>
             <Col xs={8} sm={8} md={9} lg={10} className="col-padding">
