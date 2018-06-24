@@ -1,4 +1,10 @@
 /* :local prefix when boilerplate generated with create-react-app */
+
+.panel-body {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+}
+
 :local(.class-name) {
     
 }

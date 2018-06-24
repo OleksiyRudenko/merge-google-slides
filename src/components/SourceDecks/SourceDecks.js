@@ -4,6 +4,7 @@ import {
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import SourceDeck from "../SourceDeck";
+import "./SourceDecks.css";
 
 export default class SourceDecks extends Component {
   constructor(props) {
@@ -43,7 +44,7 @@ export default class SourceDecks extends Component {
         <Grid>
           <Row>
             {this.state.decks.map(id => {
-              return (<Col xs={3} key={id}><SourceDeck deckId={id} /></Col>);
+              return (<Col xs={3} className="col-padding" key={id}><SourceDeck deckId={id} /></Col>);
             })}
           </Row>
         </Grid>

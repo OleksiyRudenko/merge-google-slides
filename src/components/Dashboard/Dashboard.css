@@ -1,11 +1,14 @@
 /* :local prefix when boilerplate generated with create-react-app */
-.navbar-brand {
-    display: flex;
-    align-items: center;
+
+.container {
+    width: calc(100% - 2rem);
 }
 
-.navbar-brand > img {
-    height: 3rem;
-    width: 4rem;
-    padding-right: 1rem;
+.col-padding {
+    padding-left: 0.3rem;
+    padding-right: 0.3rem;
+}
+
+#dashboard-settings .panel {
+    border-top: none;
 }
