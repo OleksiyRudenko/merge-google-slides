@@ -79,7 +79,7 @@ export default class Dashboard extends Component {
   }
 
   handleWelcomeClose() {
-    console.log('CLosing Welcome');
+    console.log('Dashboard.handleWelcomeClose(): Closing Welcome');
     this.setState({
       showWelcome: false,
     });

@@ -7,7 +7,7 @@ import {bindHandlers} from "../../utils/bind";
 export default class Welcome extends Component {
   constructor(props) {
     super(props);
-    console.log(this.props);
+    console.log('Welcome.constructor()', this.props);
     this.state = {
       show: this.props.show,
     };
