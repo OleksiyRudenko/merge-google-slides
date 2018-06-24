@@ -1,13 +1,19 @@
 import React, { Component } from 'react';
 import queryString from 'qs';
-import { Col, Glyphicon, Grid, Nav, NavItem, Panel, Row, Tab } from 'react-bootstrap';
+import { Col,
+//  Glyphicon,
+  Grid,
+//  Nav, NavItem, Panel,
+  Row,
+//  Tab
+} from 'react-bootstrap';
 import "./Dashboard.css";
-import SettingsFile from '../SettingsFile';
-import Destination from '../Destination';
-import RenderingOptions from '../RenderingOptions';
+// import SettingsFile from '../SettingsFile';
+// import Destination from '../Destination';
+// import RenderingOptions from '../RenderingOptions';
 import OutputPreview from '../OutputPreview';
 import SourceDecks from '../SourceDecks';
-import Welcome from '../Welcome';
+// import Welcome from '../Welcome';
 import {bindHandlers} from "../../utils/bind";
 
 export default class Dashboard extends Component {
@@ -31,7 +37,7 @@ export default class Dashboard extends Component {
     console.log('Dashboard.render()', this.state);
     return (
       <React.Fragment>
-        <Grid>
+        {/*<Grid>
           <Row>
             <Tab.Container id="dashboard-settings" defaultActiveKey="settings-file">
               <Row className="clearfix">
@@ -62,7 +68,7 @@ export default class Dashboard extends Component {
               </Row>
             </Tab.Container>
           </Row>
-        </Grid>
+        </Grid> */}
         <Grid>
           <Row className="clearfix">
             <Col xs={4} sm={4} md={3} lg={2} className="col-padding">
@@ -73,7 +79,7 @@ export default class Dashboard extends Component {
             </Col>
           </Row>
         </Grid>
-        <Welcome show={this.state.showWelcome} handleClose={this.handleWelcomeClose} />
+        {/*<Welcome show={this.state.showWelcome} handleClose={this.handleWelcomeClose} />*/}
       </React.Fragment>
     );
   }
