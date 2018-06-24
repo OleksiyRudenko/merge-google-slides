@@ -5,10 +5,12 @@ import {
 import {bindHandlers} from "../../utils/bind";
 import SourceDeck from "../SourceDeck";
 import "./SourceDecks.css";
+import {SourceDecksService} from "../../services/SourceDecksService";
 
 export default class SourceDecks extends Component {
   constructor(props) {
     super(props);
+    SourceDecksService.setDecks(this.props.sourceList);
     this.state = {
       decks: this.props.sourceList,
     };
