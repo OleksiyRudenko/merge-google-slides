@@ -23,12 +23,15 @@ export default class SourceDeck extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Glyphicon glyph="film" /> <span className={styles.ellipsised} title={this.state.deckId}>
-            {this.state.deckId}
-          </span>{' '}
-          <Button bsStyle="link" bsSize="small" title="Render preview">
-            <Glyphicon glyph="play" />
-          </Button>
+          <div className={styles.flexRow}>
+            <Glyphicon glyph="film" /> <div className={styles.slidingTextContainer}>
+              <div><span className={styles.ellipsised} title={this.state.deckId}>
+                {this.state.deckId}
+              </span></div>
+            </div> <Button bsStyle="link" bsSize="small" title="Render preview" className={styles.btnSmall}>
+              <Glyphicon glyph="play" />
+            </Button>
+          </div>
         </Panel.Heading>
         { this.renderPanelBody() }
       </Panel>
