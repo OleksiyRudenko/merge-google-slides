@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import queryString from 'query-string';
+import queryString from 'qs';
 import { Col, Glyphicon, Grid, Nav, NavItem, Panel, Row, Tab } from 'react-bootstrap';
 import "./Dashboard.css";
 import SettingsFile from '../SettingsFile';
@@ -13,7 +13,7 @@ import {bindHandlers} from "../../utils/bind";
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
-    const urlParams = queryString.parse(this.props.location.search);
+    const urlParams = queryString.parse(this.props.location.search.slice(1));
     this.state = {
       showWelcome: true,
       urlParams: urlParams,
