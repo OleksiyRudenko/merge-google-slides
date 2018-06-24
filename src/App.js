@@ -1,21 +1,32 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Image, MenuItem,  Navbar, Nav, NavDropdown, NavItem, } from 'react-bootstrap';
+import { Button, Image, MenuItem,  Navbar, Nav, NavDropdown, NavItem, ProgressBar } from 'react-bootstrap';
+import {bindHandlers} from './utils/bind.js';
 import logo from './merge-google-slides.png';
-import './App.css';
+import styles from './App.css';
 import Dashboard from './components/Dashboard';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    // console.log('App: ', GapiService);
+    bindHandlers(this, 'handleGapiStateChange');
+    this.props.gapi.setStateHandler(this.handleGapiStateChange);
+    this.state = {
+      gapiState: this.props.gapi.state,
+    };
+    console.log('App: ', this.props.gapi);
   }
+
+  componentDidMount() {
+    this.handleGapiStateChange(this.props.gapi.state);
+  }
+
   render() {
     return (
       <Router>
         <React.Fragment>
           {this.renderNavbar()}
-          <Route path="/" component={Dashboard} />
+          {this.state.gapiState.isSignedIn ? <Route path="/" component={Dashboard} /> : this.renderGoogleLoaders()}
         </React.Fragment>
       </Router>
     );
@@ -44,10 +55,55 @@ class App extends Component {
             <NavItem href="https://github.com/OleksiyRudenko/merge-google-slides" target="_blank">
               GitHub
             </NavItem>
+            <NavItem>
+              { this.state.gapiState.isSignedIn ? this.renderGoogleSignOut() : this.renderGoogleSignIn() }
+            </NavItem>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
     );
+  }
+
+  renderGoogleLoaders() {
+    return (
+      <div className={styles.googleLoader}>
+        { this.state.gapiState.isClientLoaded
+          ? <ProgressBar striped bsStyle="success" now={100} active label="Authenticating with Google..." />
+          : <ProgressBar striped bsStyle="warning" now={100} active label="Loading Google libraries..." />
+        }
+      </div>
+    );
+  }
+
+  /**
+   * Render Google Sign-In button
+   * @returns {*}
+   */
+  renderGoogleSignIn() {
+    return (
+      <Button bsStyle="primary" bsSize="xsmall" onClick={this.props.gapi.handleAuthClick}>Sign In</Button>
+    );
+  }
+
+  /**
+   * Render Google Sign-Out button
+   * @returns {*}
+   */
+  renderGoogleSignOut() {
+    return (
+      <Button bsStyle="default" bsSize="xsmall" onClick={this.props.gapi.handleSignoutClick}>Sign Out</Button>
+    );
+  }
+
+  /**
+   * Imports gapi state. Called from this.props.gapi
+   * @param gapiState
+   */
+  handleGapiStateChange(gapiState) {
+    console.log('App.handleGapiStateChange()', gapiState);
+    this.setState({
+      gapiState: gapiState,
+    });
   }
 }
 

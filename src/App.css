@@ -14,3 +14,10 @@
 .panel-heading {
   padding: 0.5rem;
 }
+
+:local(.googleLoader) {
+  width: 80%;
+  height: 5rem;
+  margin: auto;
+  margin-top: 10rem;
+}

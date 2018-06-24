@@ -6,12 +6,47 @@
 // https://developers.google.com/identity/protocols/OAuth2UserAgent
 // https://github.com/google/google-api-javascript-client/issues/319 -- se React
 
-import * as binder from '../../utils/bind.js';
+import {bindHandlers} from '../../utils/bind.js';
 
-export default class _GapiService {
-  constructor(gapiParams) {
+class _GapiService {
+  constructor(gapiParams=null) {
+    if (!!gapiParams) {
+      this.gapiParams = this._normalizeClientInitParams(gapiParams);
+    }
+    this.state = {
+      isClientLoaded: false,
+      isSignedIn: false,
+    };
+    this.stateHandler = null;
+    bindHandlers(this, '_handleClientLoad', '_initClient', '_updateSigninStatus', 'setStateHandler', 'handleAuthClick', 'handleSignoutClick');
+  }
+
+  /**
+   * Initializes gapi service with parameters
+   * @param gapiParams
+   */
+  init(gapiParams) {
     this.gapiParams = this._normalizeClientInitParams(gapiParams);
-    binder.bind(this, '_handleClientLoad', '_initClient', '_updateSigninStatus', '_handleAuthClick', '_handleSignoutClick');
+    // load script
+    const gapiScriptTag = document.createElement('script');
+    const self = this;
+    gapiScriptTag.onload = function() {
+      this.onload=function(){};
+      self._handleClientLoad();
+    };
+    gapiScriptTag.onreadystatechange = function() {
+      if (this.readyState === 'complete') this.onload();
+    };
+    gapiScriptTag.src = "https://apis.google.com/js/api.js";
+    document.body.appendChild(gapiScriptTag);
+  }
+
+  /**
+   * Sets gapi state handling callback. Called every time when gapi state gets changed
+   * @param stateHandler
+   */
+  setStateHandler(stateHandler) {
+    this.stateHandler = stateHandler;
   }
 
   /**
@@ -28,26 +63,28 @@ export default class _GapiService {
    * @private
    */
   _initClient() {
-    window.gapi.client.init(this.gapiParams)
+    return window.gapi.client.init(this.gapiParams)
       .then(() => {
-      // Listen for sign-in state changes.
-      window.gapi.auth2.getAuthInstance().isSignedIn.listen(this._updateSigninStatus);
+        this.state.isClientLoaded = true;
+        this.stateHandler && this.stateHandler(this.state);
 
-      // Handle the initial sign-in state.
-      this._updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
-      authorizeButton.onclick = this._handleAuthClick;
-      signoutButton.onclick = this._handleSignoutClick;
-    });
+        // Listen for sign-in state changes.
+        window.gapi.auth2.getAuthInstance().isSignedIn.listen(this._updateSigninStatus);
+
+        // Handle the initial sign-in state.
+        this._updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
+        return window.gapi.client;
+      });
   }
 
   /**
    * Normalizes api initialization params
-   * @param options
+   * @param params
    * @returns {object}
    * @private
    */
   _normalizeClientInitParams(params) {
-    return Object.assign(params, {scope: params.scope.join(' ')});
+    return (typeof params.scope === 'string') ? params : Object.assign(params, {scope: params.scope.join(' ')});
   }
 
   /**
@@ -55,62 +92,50 @@ export default class _GapiService {
    *  appropriately. After a sign-in, the API is called.
    */
   _updateSigninStatus(isSignedIn) {
-    if (isSignedIn) {
-      authorizeButton.style.display = 'none';
-      signoutButton.style.display = 'block';
+    this.state.isSignedIn = isSignedIn;
+    /* if (isSignedIn) {
       this.listFiles();
-    } else {
-      authorizeButton.style.display = 'block';
-      signoutButton.style.display = 'none';
-    }
+    } */
+    console.log('GapiService._updateSigninStatus() state = ', this.state);
+    this.stateHandler && this.stateHandler(this.state);
   }
 
   /**
    *  Sign in the user upon button click.
+   *  Use: button.onclick = handleAuthClick;
    */
-  _handleAuthClick(event) {
+  handleAuthClick(event) {
     window.gapi.auth2.getAuthInstance().signIn();
   }
 
   /**
    *  Sign out the user upon button click.
+   *  Use: button.onclick = handleSignoutClick;
    */
-  _handleSignoutClick(event) {
+  handleSignoutClick(event) {
     window.gapi.auth2.getAuthInstance().signOut();
-  }
-
-  /**
-   * Append a pre element to the body containing the given message
-   * as its text node. Used to display the results of the API call.
-   *
-   * @param {string} message Text to be placed in pre element.
-   */
-  appendPre(message) {
-    let pre = document.getElementById('content');
-    let textContent = document.createTextNode(message + '\n');
-    pre.appendChild(textContent);
   }
 
   /**
    * Print files.
    */
-  listFiles() {
+  /* listFiles() {
     window.gapi.client.drive.files.list({
       'pageSize': 10,
       'fields': "nextPageToken, files(id, name)"
     }).then(response => {
-      this.appendPre('Files:');
+      console.log('GapiService.listFiles():');
       let files = response.result.files;
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           let file = files[i];
-          this.appendPre(file.name + ' (' + file.id + ')');
+          console.log('GapiService.listFiles() file:', file.name + ' (' + file.id + ')');
         }
       } else {
-        this.appendPre('No files found.');
+        console.log('GapiService.listFiles(): No files found.');
       }
     });
-  }
+  } */
 }
 
-// export const Gapi = new _Gapi();
+export const GapiService = new _GapiService();
