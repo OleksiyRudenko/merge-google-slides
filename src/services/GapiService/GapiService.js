@@ -16,6 +16,7 @@ class _GapiService {
     this.state = {
       isClientLoaded: false,
       isSignedIn: false,
+      isSignInRequired: false,
     };
     this.stateHandler = null;
     bindHandlers(this, '_handleClientLoad', '_initClient', '_updateSigninStatus', 'setStateHandler', 'handleAuthClick', 'handleSignoutClick');
@@ -72,7 +73,7 @@ class _GapiService {
         window.gapi.auth2.getAuthInstance().isSignedIn.listen(this._updateSigninStatus);
 
         // Handle the initial sign-in state.
-        this._updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get());
+        this._updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get(), true);
         return window.gapi.client;
       });
   }
@@ -91,8 +92,9 @@ class _GapiService {
    *  Called when the signed in status changes, to update the UI
    *  appropriately. After a sign-in, the API is called.
    */
-  _updateSigninStatus(isSignedIn) {
+  _updateSigninStatus(isSignedIn, isInitialSignedInState = false) {
     this.state.isSignedIn = isSignedIn;
+    this.state.isSignInRequired = !isSignedIn && isInitialSignedInState;
     /* if (isSignedIn) {
       this.listFiles();
     } */
@@ -113,7 +115,19 @@ class _GapiService {
    *  Use: button.onclick = handleSignoutClick;
    */
   handleSignoutClick(event) {
-    window.gapi.auth2.getAuthInstance().signOut();
+    window.gapi.auth2.getAuthInstance().signOut().then(() => {
+      this.state.isSignedIn = false;
+      this.state.isSignInRequired = true;
+      console.log('GapiService.handleSignOutClick()', this.state);
+      this.stateHandler && this.stateHandler(this.state);
+    });
+  }
+
+  /**
+   *
+   */
+  renderSignInButton() {
+
   }
 
   /**
