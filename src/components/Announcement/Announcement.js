@@ -5,7 +5,6 @@ import {bindHandlers} from "../../utils/bind";
 export default class Announcement extends Component {
   constructor(props) {
     super(props);
-    console.log('Announcement.constructor()', this.props);
     bindHandlers(this,
       'handleClose',
     );
