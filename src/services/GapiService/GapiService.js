@@ -19,7 +19,7 @@ class _GapiService {
       isSignInRequired: false,
     };
     this.stateHandler = null;
-    bindHandlers(this, '_handleClientLoad', '_initClient', '_updateSigninStatus', 'setStateHandler', 'handleAuthClick', 'handleSignoutClick');
+    bindHandlers(this, '_handleClientLoad', '_initClient', '_updateSigninStatus', 'setStateHandler', 'handleAuthClick', 'handleSignoutClick', 'setState');
   }
 
   /**
@@ -66,15 +66,20 @@ class _GapiService {
   _initClient() {
     return window.gapi.client.init(this.gapiParams)
       .then(() => {
-        this.state.isClientLoaded = true;
-        this.stateHandler && this.stateHandler(this.state);
+        this.setState({isClientLoaded: true}, 'GapiService._initClient().then(success)');
 
         // Listen for sign-in state changes.
-        window.gapi.auth2.getAuthInstance().isSignedIn.listen(this._updateSigninStatus);
+        // window.gapi.auth2.getAuthInstance().isSignedIn.listen(this._updateSigninStatus);
 
         // Handle the initial sign-in state.
-        this._updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get(), true);
+        this._updateSigninStatus(window.gapi.auth2.getAuthInstance().isSignedIn.get(), true, '_initClient().then(success)');
         return window.gapi.client;
+      }, (error) => {
+        console.log('GapiService._initClient() error', error);
+        this.setState({
+          isClientLoaded: true,
+        }, 'GapiService._initClient().then((),error)');
+        throw new Error(error);
       });
   }
 
@@ -92,14 +97,15 @@ class _GapiService {
    *  Called when the signed in status changes, to update the UI
    *  appropriately. After a sign-in, the API is called.
    */
-  _updateSigninStatus(isSignedIn, isInitialSignedInState = false) {
-    this.state.isSignedIn = isSignedIn;
-    this.state.isSignInRequired = !isSignedIn && isInitialSignedInState;
+  _updateSigninStatus(isSignedIn, isInitialSignedInState = false, caller = 'unknown or window.gapi.auth2.getAuthInstance().isSignedIn.listen()') {
+    console.log('GapiService._updateSigninStatus() called by ' + caller + ' with', isSignedIn, 'state = ', this.state);
+    this.setState({
+      isSignedIn : isSignedIn,
+      isSignInRequired : !isSignedIn && isInitialSignedInState,
+    }, 'GapiService._updateSignInStatus(caller = ' + caller + ')');
     /* if (isSignedIn) {
       this.listFiles();
     } */
-    console.log('GapiService._updateSigninStatus() state = ', this.state);
-    this.stateHandler && this.stateHandler(this.state);
   }
 
   /**
@@ -107,7 +113,19 @@ class _GapiService {
    *  Use: button.onclick = handleAuthClick;
    */
   handleAuthClick(event) {
-    window.gapi.auth2.getAuthInstance().signIn();
+    window.gapi.auth2.getAuthInstance().signIn().then(() => {
+      this.setState({
+        isSignedIn: true,
+        isSignInRequired: false,
+      }, 'handleAuthClick')
+    }, (error) => {
+      console.log('GapiService.handleAuthClick() error', error);
+      this.setState({
+        isSignedIn: false,
+        isSignInRequired: true,
+      }, 'GapiService.handleAuthClick().then((),error)');
+      throw new Error(error);
+    });
   }
 
   /**
@@ -116,10 +134,13 @@ class _GapiService {
    */
   handleSignoutClick(event) {
     window.gapi.auth2.getAuthInstance().signOut().then(() => {
-      this.state.isSignedIn = false;
-      this.state.isSignInRequired = true;
-      console.log('GapiService.handleSignOutClick()', this.state);
-      this.stateHandler && this.stateHandler(this.state);
+      this.setState({
+        isSignedIn: false,
+        isSignInRequired: true,
+      }, 'handleSignoutClick');
+    }, (error) => {
+      console.log('GapiService.handleSignoutClick() error', error);
+      throw new Error(error);
     });
   }
 
@@ -128,6 +149,18 @@ class _GapiService {
    */
   renderSignInButton() {
 
+  }
+
+  /**
+   * Updates service state ReactJS-style
+   * @param {Object} stateUpdate
+   * @param {string} caller
+   */
+  setState(stateUpdate, caller='unknown') {
+    console.log('GapiService.setState() called by ' + caller + ' to update', this.state, 'with', stateUpdate);
+    this.state = Object.assign(this.state, stateUpdate);
+    console.log('GapiService.setState() updated state', this.state);
+    this.stateHandler && this.stateHandler(this.state);
   }
 
   /**

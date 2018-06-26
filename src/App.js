@@ -16,6 +16,7 @@ class App extends Component {
       'handleAnnouncementClose',
       'showWelcome',
       'handleWelcomeClose',
+      'onSignIn',
       );
     this.props.gapi.setStateHandler(this.handleGapiStateChange);
     this.state = {
@@ -23,7 +24,7 @@ class App extends Component {
       showWelcome: false,
       gapiState: this.props.gapi.state,
     };
-    console.log('App: ', this.props.gapi);
+    console.log('App.constructor() this.props.gapi:', this.props.gapi);
   }
 
   componentDidMount() {
@@ -89,7 +90,7 @@ class App extends Component {
     return (
       <div className={styles.googleLoader}>
         { this.state.gapiState.isClientLoaded
-          ? (this.state.gapiState.isSignInRequired ? this.renderDefaultGoogleSignIn('Please, sign in to your Google account')/*this.renderGoogleSignIn('large', 'Please, sign in to your Google account')*/ :
+          ? (this.state.gapiState.isSignInRequired ? this.renderDefaultGoogleSignIn('Please, sign in to your Google account') :
             <ProgressBar striped bsStyle="success" now={100} active label="Authenticating with Google..." />)
           : <ProgressBar striped bsStyle="warning" now={100} active label="Loading Google libraries..." />
         }
@@ -123,8 +124,9 @@ class App extends Component {
     return (
       <React.Fragment>
         {message}
-        <div className="g-signin2" data-onsuccess="GapiService.handleAuthClick"></div>
-        <Button bsStyle="primary" bsSize="large" onClick={this.props.gapi.handleAuthClick}>Sign In</Button>
+        <div id="g-signin2" />
+        {/*<div className="g-signin2" data-onsuccess="GapiService.handleAuthClick" data-width="300" data-height="200" data-longtitle="true"></div>
+        <Button bsStyle="primary" bsSize="large" onClick={this.props.gapi.handleAuthClick}>Sign In</Button> */}
       </React.Fragment>
     );
   }
@@ -140,6 +142,31 @@ class App extends Component {
   }
 
   /**
+   * Call back on successful google sign-in
+   * @param googleUser
+   */
+  onSignIn(googleUser) {
+    const profile = googleUser.getBasicProfile();
+    /* sessionStorage.setItem('authToken', profile.getId());
+    sessionStorage.setItem('name', profile.getName());
+    sessionStorage.setItem('imageUrl', profile.getImageUrl());
+    sessionStorage.setItem('email', profile.getEmail()); */
+
+    this.props.gapi.setState({
+      isSignedIn: true,
+      isSignInRequired: false,
+    });
+
+    /* const account = this.props.cursor.refine('account');
+    account.refine('authToken').set(sessionStorage.getItem('authToken'));
+    account.refine('name').set(sessionStorage.getItem('name'));
+    account.refine('imageUrl').set(sessionStorage.getItem('imageUrl'));
+    account.refine('email').set(sessionStorage.getItem('email')); */
+
+    console.log('App.onSignIn() profile', profile);
+  }
+
+  /**
    * Imports gapi state. Called from this.props.gapi
    * @param gapiState
    */
@@ -147,6 +174,15 @@ class App extends Component {
     console.log('App.handleGapiStateChange()', gapiState);
     this.setState({
       gapiState: gapiState,
+    });
+    this.state.gapiState.isClientLoaded && this.state.gapiState.isSignInRequired && window.gapi.signin2.render('g-signin2', {
+      scope: 'profile email', // 'https://www.googleapis.com/auth/plus.login'
+      width: 200,
+      height: 50,
+      longtitle: true,
+      theme: 'dark',
+      onsuccess: this.onSignIn,
+      // onfailure:
     });
   }
 
