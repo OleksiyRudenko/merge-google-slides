@@ -5,6 +5,13 @@
     padding-right: 0.3rem;
 }
 
-:local(.class-name) {
-    
+.col-min {
+    display: inline-block;
+    width: max-content;
+}
+
+:local(.rowFlex) {
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: start;
 }

@@ -4,13 +4,13 @@ import {
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import SourceDeck from "../SourceDeck";
-import "./SourceDecks.css";
+import styles from "./SourceDecks.css";
 import {SourceDecksService} from "../../services/SourceDecksService";
 
 export default class SourceDecks extends Component {
   constructor(props) {
     super(props);
-    SourceDecksService.setDecks(this.props.sourceList);
+    SourceDecksService.setDeckIds(this.props.sourceList);
     this.state = {
       decks: this.props.sourceList,
     };
@@ -44,9 +44,9 @@ export default class SourceDecks extends Component {
     return (
       <Panel.Body>
         <Grid>
-          <Row>
+          <Row className={styles.rowFlex}>
             {this.state.decks.map(id => {
-              return (<Col xs={3} className="col-padding" key={id}><SourceDeck deckId={id} /></Col>);
+              return (<Col className="col-padding col-min" key={id}><SourceDeck deckId={id} /></Col>);
             })}
           </Row>
         </Grid>

@@ -8,6 +8,12 @@
 
 }
 
+:local(.panelMin) {
+    display: inline-block;
+    width: max-content;
+    min-width: 10rem;
+}
+
 :local(.slidingTextContainer) {
     display: inline-block;
     margin-left: 1rem;
@@ -25,22 +31,25 @@
     margin-bottom: 0;
 }
 
-:local(.slidingTextContainer) > div > span {
+:local(.slidingTextContainer) > div > p {
+    margin: 0;
     white-space: nowrap;
-    animation: slide infinite 10s alternate;
+    animation: slide infinite 5s alternate;
     animation-delay: 2s;
 }
 
-:local(.slidingTextContainer:hover) > div > span {
+:local(.slidingTextContainer:hover) > div > p {
     animation-play-state: paused;
 }
 
 @keyframes slide {
     0%, 5% {
         margin-left: 0;
+        margin-right: -100%;
     }
     95%, 100% {
         margin-left: -100%;
+        margin-right: 0;
     }
 }
 

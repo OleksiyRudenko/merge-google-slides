@@ -6,7 +6,7 @@ class _SourceDecksService {
     this.store = {
       deckIds: [],
       decks: {},
-      slideThumbnails: {},
+      slideThumbnailUrls: {},
     };
   }
 
@@ -14,7 +14,7 @@ class _SourceDecksService {
    * Sets ordered list of deck ids
    * @param {Array} deckIds
    */
-  setDecks(deckIds) {
+  setDeckIds(deckIds) {
     this.store.deckIds = deckIds;
   }
 
@@ -34,6 +34,10 @@ class _SourceDecksService {
       }).then(res => this.store.decks[deckId] = JSON.parse(res.body), rej => { throw new Error({error:rej}); });
   }
 
+  getDeckIds() {
+    return this.store.deckIds;
+  }
+
   /**
    * Get list of slideIds
    * @param {string} deckId
@@ -47,11 +51,13 @@ class _SourceDecksService {
    * Get a slide thumbnail
    * @param {string} deckId
    * @param {string} slideId
+   * @param {number} width
    * @returns {Promise}
    */
-  getThumbnail(deckId, slideId) {
-    return (!!this.store.slideThumbnails[deckId][slideId])
-      ? Promise.resolve(this.store.slideThumbnails[deckId][slideId])
+  getThumbnail(deckId, slideId, width = 400) {
+    if (!this.store.slideThumbnailUrls[deckId]) this.store.slideThumbnailUrls[deckId] = {};
+    return (!!this.store.slideThumbnailUrls[deckId][slideId])
+      ? Promise.resolve(this.store.slideThumbnailUrls[deckId][slideId])
       : this.getDeck(deckId)
         .then(deck => {
           const slide = deck.slides.find(slide => slide.objectId === slideId);
@@ -65,9 +71,18 @@ class _SourceDecksService {
           })
         })
         .then(response => {
-          console.log('SourceDeckService.getThumbnail', response);
+          console.log('SourceDeckService.getThumbnail() response', response);
+          return JSON.parse(response.body);
         }, rej => {
-          throw(rej);
+          throw new Error(rej);
+        })
+        .then(data => {
+          console.log('SourceDeckService.getThumbnail() body ', data);
+          // replace terminal =s[\d+$] with required width
+          const rgxp = new RegExp(`=s${data.width}$`);
+          const url = data.contentUrl.replace(rgxp,`=s${width}`);
+          this.store.slideThumbnailUrls[deckId][slideId] = url;
+          return url;
         });
   }
 

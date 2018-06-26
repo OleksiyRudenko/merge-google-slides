@@ -10,8 +10,15 @@ export default class Slide extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      slideThumbnail: null,
+      slideThumbnailUrl: null,
     };
+  }
+
+  componentDidMount() {
+    SourceDecksService.getThumbnail(this.props.deckId, this.props.slideId)
+      .then(imageUrl => this.setState({
+        slideThumbnailUrl: imageUrl,
+      }));
   }
 
   /**
@@ -19,8 +26,11 @@ export default class Slide extends Component {
    */
   render() {
     return (
-      <div>
-        {this.props.deckId}#{this.props.slideId}
+      <div className={styles.slidesContainer}>
+        {this.state.slideThumbnailUrl
+          ? <img className={styles.slideThumbnail} src={this.state.slideThumbnailUrl} />
+          : <ProgressBar striped bsStyle="info" label={this.props.slideId} now={100} active />
+        }
       </div>
     );
   }

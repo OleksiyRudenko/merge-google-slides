@@ -1,49 +1,18 @@
 /* :local prefix when boilerplate generated with create-react-app */
-:local(.flexRow) {
-    display: flex;
-    flex-flow: row nowrap;
+:local(.slidesContainer) {
+    position: relative;
 }
 
-:local(.flexRow:last-child) {
-
+:local(.slideThumbnail) {
+    width: 200px;
+    height: auto;
+    border: 3px solid #ccc;
+    border-radius: 2px;
+    margin: 0.3rem 0 0 0;
+    padding: 2px;
 }
 
-:local(.slidingTextContainer) {
-    display: inline-block;
-    margin-left: 1rem;
-    width: calc(100% - 4rem);
-    overflow-x: hidden;
-}
-
-:local(.slidingTextContainer) > div {
-    display: inline-block;
-    min-height: 1rem;
-    width: 100%;
-}
-
-.progress {
-    margin-bottom: 0;
-}
-
-:local(.slidingTextContainer) > div > span {
-    white-space: nowrap;
-    animation: slide infinite 10s alternate;
-    animation-delay: 2s;
-}
-
-:local(.slidingTextContainer:hover) > div > span {
-    animation-play-state: paused;
-}
-
-@keyframes slide {
-    0%, 5% {
-        margin-left: 0;
-    }
-    95%, 100% {
-        margin-left: -100%;
-    }
-}
-
-:local(.btnSmall) {
-    padding: 0 0 0 0.5rem;
+:local(.slideThumbnail:hover) {
+    width: 400px;
+    position: relative;
 }

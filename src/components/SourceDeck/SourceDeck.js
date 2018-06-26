@@ -42,13 +42,13 @@ export default class SourceDeck extends Component {
    */
   render() {
     return (
-      <Panel>
+      <Panel className={styles.panelMin}>
         <Panel.Heading>
           <div className={styles.flexRow}>
-            <Glyphicon glyph="film" /> <div className={styles.slidingTextContainer}>
-              <div>{this.state.deckTitle ? <span className={styles.ellipsised} title={this.state.deckTitle}>
+            <Glyphicon glyph="film" /> <div className={styles.slidingTextContainer} title={this.state.deckTitle}>
+              <div>{this.state.deckTitle ? <p className={styles.ellipsised}>
                 {this.state.deckTitle}
-              </span> : <ProgressBar striped bsStyle="info" now={100} active />}</div>
+              </p> : <ProgressBar striped bsStyle="info" now={100} active />}</div>
             </div> <Button bsStyle="link" bsSize="small" title="Render preview" className={styles.btnSmall}>
               <Glyphicon glyph="play" />
             </Button>
