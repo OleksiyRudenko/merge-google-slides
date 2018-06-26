@@ -31,7 +31,7 @@ class _SourceDecksService {
       ? Promise.resolve(this.store.decks[deckId])
       : window.gapi.client.slides.presentations.get({
         "presentationId": deckId,
-      }).then(res => this.store.decks[deckId] = JSON.parse(res.body), rej => { throw(rej); });
+      }).then(res => this.store.decks[deckId] = JSON.parse(res.body), rej => { throw new Error({error:rej}); });
   }
 
   /**
@@ -56,7 +56,7 @@ class _SourceDecksService {
         .then(deck => {
           const slide = deck.slides.find(slide => slide.objectId === slideId);
           if (!slide) {
-            throw(`Slide ${deckId}#${slideId} not found`);
+            throw new Error(`Slide ${deckId}#${slideId} not found`);
           }
           return window.gapi.client.slides.presentations.pages.getThumbnail({
             "presentationId": deckId,
