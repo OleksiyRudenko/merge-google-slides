@@ -86,6 +86,9 @@ export default class Welcome extends Component {
     );
   }
 
+  /**
+   * Handle close action
+   */
   handleClose() {
     this.setState({
       show: false,

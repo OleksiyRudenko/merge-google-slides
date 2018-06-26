@@ -13,22 +13,16 @@ import "./Dashboard.css";
 // import RenderingOptions from '../RenderingOptions';
 import OutputPreview from '../OutputPreview';
 import SourceDecks from '../SourceDecks';
-// import Welcome from '../Welcome';
-import {bindHandlers} from "../../utils/bind";
 
 export default class Dashboard extends Component {
   constructor(props) {
     super(props);
-    const urlParams = queryString.parse(this.props.location.search.slice(1));
+    const urlParams = this.props.location.search ? queryString.parse(this.props.location.search.slice(1)) : {state: null};
     this.state = {
-      showWelcome: true,
       urlParams: urlParams,
       driveState: JSON.parse(urlParams.state),
     };
     console.log('Dashboard::state', this.state);
-    bindHandlers(this,
-      'handleWelcomeClose',
-    );
   }
   /**
    * Renders component view
@@ -75,19 +69,11 @@ export default class Dashboard extends Component {
               <OutputPreview />
             </Col>
             <Col xs={8} sm={8} md={9} lg={10} className="col-padding">
-              <SourceDecks sourceList={this.state.driveState.exportIds} />
+              <SourceDecks sourceList={this.state.driveState ? this.state.driveState.exportIds : []} />
             </Col>
           </Row>
         </Grid>
-        {/*<Welcome show={this.state.showWelcome} handleClose={this.handleWelcomeClose} />*/}
       </React.Fragment>
     );
-  }
-
-  handleWelcomeClose() {
-    console.log('Dashboard.handleWelcomeClose(): Closing Welcome');
-    this.setState({
-      showWelcome: false,
-    });
   }
 }
