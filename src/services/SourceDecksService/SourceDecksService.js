@@ -1,4 +1,5 @@
 import {decks} from "./fixtures.js";
+import {DeferredCachedRequestService} from "../../utils/DeferredCachedRequestService/DeferredCachedRequestService";
 
 class _SourceDecksService {
   constructor() {
@@ -31,9 +32,14 @@ class _SourceDecksService {
       ? Promise.resolve(this.store.decks[deckId])
       : window.gapi.client.slides.presentations.get({
         "presentationId": deckId,
+        "fields": "slides.objectId",
       }).then(res => this.store.decks[deckId] = JSON.parse(res.body), rej => { throw new Error({error:rej}); });
   }
 
+  /**
+   * Get current deck ids
+   * @returns {Array}
+   */
   getDeckIds() {
     return this.store.deckIds;
   }
