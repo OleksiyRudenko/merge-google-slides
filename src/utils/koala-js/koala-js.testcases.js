@@ -1,5 +1,5 @@
 import {bindHandlers} from "../bind";
-import {DeferredCachedRequestService} from './DeferredCachedRequestService';
+import KoalaJs from './';
 
 class _Querier {
   constructor() {
@@ -17,7 +17,9 @@ const Querier2 = new _Querier();
 
 class _A {
   constructor() {
+    bindHandlers(this, 'time', 'onSuccess');
     const queries = [
+      { o: Querier1, agent: Querier1.qu, query: 'a0', sleepingTime: 0 },
       { o: Querier1, agent: Querier1.qu, query: 'a1' },
       { o: Querier1, agent: Querier1.qu, query: 'b1' },
       { o: Querier2, agent: Querier2.qu, query: 'A2' },
@@ -30,12 +32,17 @@ class _A {
 
     queries.forEach(q => {
       console.log('TESTing ', q.o.constructor.name, q.query);
-      DeferredCachedRequestService.request({agent: q.agent, query: q.query}, {success: this.onSuccess});
+      KoalaJs.request(q, {success: this.onSuccess});
     });
   }
 
   onSuccess(res) {
-    console.log(res);
+    const d = new Date();
+    console.log(this.time(d) + ': ', res);
+  }
+
+  time(date) {
+    return date.getUTCHours()+':'+date.getUTCMinutes()+':'+date.getUTCSeconds()+'.'+date.getUTCMilliseconds();
   }
 }
 

@@ -1,5 +1,5 @@
 import {decks} from "./fixtures.js";
-import {DeferredCachedRequestService} from "../../utils/DeferredCachedRequestService/DeferredCachedRequestService";
+import KoalaJs from "../../utils/koala-js";
 
 class _SourceDecksService {
   constructor() {

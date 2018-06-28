@@ -1,3 +1,5 @@
+import {bindHandlers} from "../bind";
+
 /**
  * Agents that employ Promises are served only.
  * Unsuccessful responses won't be cached.
@@ -5,14 +7,20 @@
 
 class _DeferredCachedRequestService {
   constructor() {
-    this.debug = false;
+    this.debug = true;
     this.agentsCallsCount = 0;
     this.sleepingScheme = this.setSleepingScheme();
     this.isSleeping = false;
+    this.usePersistentCache = false;
+    this._persistentStorageName = 'KoalaJsCache';
     this.requestCache = {
       // agent: { query: response },
     };
     this.requestQueue = [];
+    this.usePersistentCache && this._loadPersistentCache();
+    bindHandlers(this, 'setSleepingScheme', 'setPersistency', 'request', '_enqueue', '_processQueue',
+      '_getNextSleep', '_loadPersistentCache', '_savePersistentCache', '_clearPersistentCache',
+      '_clearCache', '_stringify');
     this.debug && console.log('DCRS:', this.sleepingScheme);
   }
 
@@ -26,6 +34,18 @@ class _DeferredCachedRequestService {
   }
 
   /**
+   * Set whether requestCache should survive between sessions
+   * @param usePersistentCache
+   * @returns {*}
+   */
+  setPersistency(usePersistentCache = true) {
+    if (!usePersistentCache) {
+      this._clearPersistentCache();
+    }
+    return this.usePersistentCache = usePersistentCache;
+  }
+
+  /**
    * Serve request from cache || queue request+callback+sleep
    * @param {Object} request parameters
    * @param {Object} callbacks
@@ -36,6 +56,8 @@ class _DeferredCachedRequestService {
     request = Object.assign({
       agent: window.fetch || null,
       query: null,
+      skipCaching: false,    // if true then do not cache (and remove cached data)
+      forceRefresh: false,   // force non-cached response and update cache
     }, request);
     callbacks = Object.assign({
       success: null,
@@ -46,9 +68,10 @@ class _DeferredCachedRequestService {
       return false;
     }
     this.debug && console.log('DCRS.request(): Received request', request, callbacks);
-    if (this.requestCache[request.agent] && this.requestCache[request.agent][this._stringify(request.query)]) {
-      this.debug && console.log('DCRS.request(): Serving from cache >>>>>>>>>>>', this.requestCache[request.agent][this._stringify(request.query)]);
-      callbacks.success && callbacks.success(this.requestCache[request.agent][this._stringify(request.query)]);
+    const queryString = this._stringify(request.query);
+    if (this.requestCache[request.agent] && this.requestCache[request.agent][queryString] && !(request.forceRefresh || request.skipCaching)) {
+      this.debug && console.log('DCRS.request(): Serving from cache >>>>>>>>>>>', this.requestCache[request.agent][queryString]);
+      callbacks.success && callbacks.success(this.requestCache[request.agent][queryString]);
     } else {
       this.debug && console.log('DCRS.request(): enqueuing');
       this._enqueue(Object.assign(request, callbacks, {sleepingTime}));
@@ -77,12 +100,16 @@ class _DeferredCachedRequestService {
         this.debug && console.log('DCRS._processQueue(): No requests in queue');
         return;
       }
-      this.isSleeping = true; // force requests enqueueing
+      this.isSleeping = true; // force other requests enqueueing
       const request = this.requestQueue.shift();
+      const queryString = this._stringify(request.query);
       this.debug && console.log('DCRS._processQueue(): processing', request);
-      if (this.requestCache[request.agent] && this.requestCache[request.agent][this._stringify(request.query)]) {
-        this.debug && console.log('DCRS._processQueue(): serving', request, 'from cache >>>>>>>>>>>', this.requestCache[request.agent][this._stringify(request.query)],'<<<<<<');
-        request.success && request.success(this.requestCache[request.agent][this._stringify(request.query)]);
+      if (request.forceRefresh || request.skipCaching) {
+        this._clearCache(request);
+      }
+      if (this.requestCache[request.agent] && this.requestCache[request.agent][queryString]) {
+        this.debug && console.log('DCRS._processQueue(): serving', request, 'from cache >>>>>>>>>>>', this.requestCache[request.agent][queryString],'<<<<<<');
+        request.success && request.success(this.requestCache[request.agent][queryString]);
         this.isSleeping = false;
         // process next
         this._processQueue();
@@ -93,9 +120,12 @@ class _DeferredCachedRequestService {
         const sleepingTime = (request.sleepingTime === undefined) ? this._getNextSleep() : request.sleepingTime;
         request.agent(request.query).then(response => {
           if (!this.requestCache[request.agent]) this.requestCache[request.agent] = {};
-          // if (!this.requestCache[request.agent][this._stringify(request.query)]) this.requestCache[request.agent][this._stringify(request.query)] = null; // reserve a place
+          // if (!this.requestCache[request.agent][queryString]) this.requestCache[request.agent][queryString] = null; // reserve a place
           this.debug && console.log('DCRS._processQueue(): For', request, 'caching and serving >>>>>>>>>>>', response,'<<<<<<');
-          this.requestCache[request.agent][this._stringify(request.query)] = response;
+          if (!request.skipCaching) {
+            this.requestCache[request.agent][queryString] = response;
+            this.usePersistentCache && this._savePersistentCache();
+          }
           request.success && request.success(response);
           this.debug && console.log('DCRS._processQueue(): going asleep for', sleepingTime + 'ms');
           window.setTimeout(()=>{
@@ -129,7 +159,67 @@ class _DeferredCachedRequestService {
   }
 
   /**
-   * Stringifies data unless
+   * Loads cache stored in browser persistent storage
+   * @private
+   */
+  _loadPersistentCache() {
+    if (typeof(window.localStorage) !== "undefined"  && window.localStorage[this._persistentStorageName]) {
+      this.requestCache = Object.assign(JSON.parse(window.localStorage.getItem(this._persistentStorageName)), this.requestCache);
+    }
+  }
+
+  /**
+   * Saves cache in browser persistent storage
+   * @private
+   */
+  _savePersistentCache() {
+    if (typeof(window.localStorage) !== "undefined") {
+      window.localStorage.setItem(this._persistentStorageName, JSON.stringify(this.requestCache));
+    }
+  }
+
+  /**
+   * Removes cache from browser persistent storage
+   * @private
+   */
+  _clearPersistentCache() {
+    if (typeof(window.localStorage) !== "undefined") {
+      window.localStorage.removeItem(this._persistentStorageName);
+    }
+  }
+
+  /**
+   * Clears request cache
+   * @private
+   */
+  _clearCache(agent = null, query = null) {
+    if (typeof agent === 'string') {
+      agent = {
+        agent,
+        query,
+      }
+    }
+    if (agent.agent && this.requestCache[agent.agent]) {
+      if (agent.query) {
+        const queryString = this._stringify(agent.query);
+        if (this.requestCache[agent.agent][queryString]) {
+          delete this.requestCache[agent.agent][queryString];
+        }
+      } else {
+        // remove all caches associated with a given agent
+        delete this.requestCache[agent.agent];
+      }
+      // update persistent storage
+      this.usePersistentCache && this._savePersistentCache();
+    } else {
+      // remove all
+      this.requestCache = {};
+      this._clearPersistentCache();
+    }
+  }
+
+  /**
+   * Stringifies query payload unless it is a string
    * @param data
    * @private
    */
@@ -138,4 +228,4 @@ class _DeferredCachedRequestService {
   }
 }
 
-export const DeferredCachedRequestService = new _DeferredCachedRequestService();
+export const KoalaJs = new _DeferredCachedRequestService();
