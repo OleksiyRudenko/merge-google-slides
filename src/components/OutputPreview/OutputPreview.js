@@ -40,7 +40,7 @@ export default class OutputPreview extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Glyphicon glyph="film" /> <span className="hidden-xs">Preview</span>{' '}
+          <Glyphicon glyph="film" /> <span>Preview</span>{' '}
           <Button bsStyle="link" bsSize="small" title="Render preview">
             <Glyphicon glyph="play" />
           </Button>

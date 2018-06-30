@@ -26,7 +26,7 @@ export default class SourceDecks extends Component {
     return (
       <Panel>
         <Panel.Heading>
-          <Glyphicon glyph="th" /> <span className="hidden-xs">Source decks</span>{' '}
+          <Glyphicon glyph="th" /> <span>Source decks</span>{' '}
           <Button bsStyle="link" bsSize="small" title="Render preview">
             <Glyphicon glyph="play" />
           </Button>
