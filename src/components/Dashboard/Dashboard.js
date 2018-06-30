@@ -13,6 +13,7 @@ import "./Dashboard.css";
 // import RenderingOptions from '../RenderingOptions';
 import OutputPreview from '../OutputPreview';
 import SourceDecks from '../SourceDecks';
+import Guide from '../Guide';
 import {bindHandlers} from "../../utils/bind";
 import {SourceDecksService} from "../../services/SourceDecksService";
 
@@ -24,8 +25,9 @@ export default class Dashboard extends Component {
       urlParams: urlParams,
       driveState: JSON.parse(urlParams.state),
       renderingKey: Math.random(),
+      showGuide: !urlParams.state,
     };
-    bindHandlers(this, 'refreshAll');
+    bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose');
     console.log('Dashboard::state', this.state);
   }
   /**
@@ -79,6 +81,7 @@ export default class Dashboard extends Component {
             </Col>
           </Row>
         </Grid>
+        {this.showGuide ? <Guide show={this.state.showGuide} handleClose={this.handleGuideClose} /> : ''}
       </React.Fragment>
     );
   }
@@ -91,6 +94,25 @@ export default class Dashboard extends Component {
     SourceDecksService.clearCache();
     this.setState({
       renderingKey: Math.random(),
+    });
+  }
+
+  /**
+   * Set Welcome component visible
+   */
+  showGuide() {
+    this.setState({
+      showGuide: true,
+    });
+  }
+
+  /**
+   * Set Welcome component hidden
+   */
+  handleGuideClose() {
+    console.log('Dashboard.handleGuideClose()');
+    this.setState({
+      showGuide: false,
     });
   }
 }

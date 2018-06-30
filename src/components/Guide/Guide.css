@@ -1,0 +1,15 @@
+/* :local prefix when boilerplate generated with create-react-app */
+.carousel-indicators li {
+    border-color: #666;
+}
+
+.carousel-indicators .active {
+    background-color: #666;
+}
+
+.carousel-caption * {
+    color: #333;
+    background-color: rgba(196,212,255,0.8);
+    padding: 0.5rem;
+    border-radius: 3px;
+}
