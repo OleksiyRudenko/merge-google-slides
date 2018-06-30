@@ -3,16 +3,18 @@ import {
   Button, Glyphicon, Panel, ProgressBar,
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
-// import {SourceDecksService} from "../../services/SourceDecksService";
 import Slide from "../Slide";
 import styles from './OutputPreview.css';
+import SaveMergedDeck from "../SaveMergedDeck";
 
 export default class OutputPreview extends Component {
   constructor(props) {
     super(props);
     this.state = {
       slideList: this.props.sourceList,
+      showSaveDialog: false,
     };
+    bindHandlers(this, 'handleSaveDialogClose', 'handleSaveDialogOpen');
     console.log('OutputPreview.constructor', this.state);
   }
 
@@ -49,7 +51,9 @@ export default class OutputPreview extends Component {
       <Panel className={styles.panelMin}>
         <Panel.Heading>
           <Glyphicon glyph="film" /> <span>Merged</span>{' '}
-          <Button bsStyle="link" bsSize="small" title="Save merged" disabled={true}>
+          <Button bsStyle="link" bsSize="small" title="Save merged"
+                  disabled={!this.state.slideList}
+                  onClick={this.handleSaveDialogOpen}>
             <Glyphicon glyph="save" />
           </Button>
         </Panel.Heading>
@@ -58,8 +62,28 @@ export default class OutputPreview extends Component {
             ? this.state.slideList.map((slide, idx) => <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />)
             : <ProgressBar striped bsStyle="info" now={100} active /> }
         </Panel.Body>
+        {this.state.showSaveDialog
+          ? <SaveMergedDeck show={this.state.showSaveDialog} handleClose={this.handleSaveDialogClose} />
+          : ''}
       </Panel>
     );
   }
 
+  /**
+   * Hide Save Merged Deck dialog
+   */
+  handleSaveDialogClose() {
+    this.setState({
+      showSaveDialog: false,
+    });
+  }
+
+  /**
+   * Show Save Merged Deck dialog
+   */
+  handleSaveDialogOpen() {
+    this.setState({
+      showSaveDialog: true,
+    });
+  }
 }
