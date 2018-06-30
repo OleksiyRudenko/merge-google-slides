@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
-import { Button, Carousel, Col, Glyphicon, Modal, Nav, NavItem, Row, Tab,
-  Grid,
-//  Panel,
-} from 'react-bootstrap';
+import { Button, Carousel, Col, Glyphicon, Modal, Nav, NavItem, Row, Tab } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import './Guide.css';
 
@@ -47,14 +44,14 @@ export default class Guide extends Component {
       show: this.props.show,
     };
     bindHandlers(this, 'handleClose');
-    console.log('Guide::state', this.state);
+    // console.log('Guide::state', this.state);
   }
 
   /**
    * Renders component view
    */
   render() {
-    console.log('Guide.render()', this.state);
+    // console.log('Guide.render()', this.state);
     return (
       <Modal show={this.state.show} onHide={this.handleClose}>
         <Modal.Header closeButton>
@@ -107,7 +104,7 @@ export default class Guide extends Component {
     return (
       <Carousel interval={10000}>
         {images.map((image, idx) => <Carousel.Item key={idx}>
-          <img src={guideImagesBaseUrl + image.url} />
+          <img src={guideImagesBaseUrl + image.url} alt={image.url}/>
           <Carousel.Caption>
             <p>{image.caption}</p>
           </Carousel.Caption>
