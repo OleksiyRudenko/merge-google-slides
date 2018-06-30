@@ -1,5 +1,5 @@
 import {decks} from "./fixtures.js";
-import KoalaJs from "../../utils/koala-js";
+import KoalaJs from "../../utils/koala-js-promisified";
 
 class _SourceDecksService {
   constructor() {
@@ -30,10 +30,10 @@ class _SourceDecksService {
     }
     return (!!this.store.decks[deckId])
       ? Promise.resolve(this.store.decks[deckId])
-      : window.gapi.client.slides.presentations.get({
+      : KoalaJs.request({ agent: window.gapi.client.slides.presentations.get, query: {
         "presentationId": deckId,
-        "fields": "slides.objectId",
-      }).then(res => this.store.decks[deckId] = JSON.parse(res.body), rej => { throw new Error({error:rej}); });
+        "fields": "title,slides.objectId",
+      }}).then(res => this.store.decks[deckId] = JSON.parse(res.body), rej => { throw new Error({error:rej}); });
   }
 
   /**
@@ -70,25 +70,28 @@ class _SourceDecksService {
           if (!slide) {
             throw new Error(`Slide ${deckId}#${slideId} not found`);
           }
-          return window.gapi.client.slides.presentations.pages.getThumbnail({
-            "presentationId": deckId,
-            "pageObjectId": slideId,
-            "thumbnailProperties.thumbnailSize": "LARGE"
+          return KoalaJs.request({
+            agent: window.gapi.client.slides.presentations.pages.getThumbnail,
+            query: {
+              "presentationId": deckId,
+              "pageObjectId": slideId,
+              "thumbnailProperties.thumbnailSize": "LARGE"
+            }
           })
-        })
-        .then(response => {
-          console.log('SourceDeckService.getThumbnail() response', response);
-          return JSON.parse(response.body);
-        }, rej => {
-          throw new Error(rej);
-        })
-        .then(data => {
-          console.log('SourceDeckService.getThumbnail() body ', data);
-          // replace terminal =s[\d+$] with required width
-          const rgxp = new RegExp(`=s${data.width}$`);
-          const url = data.contentUrl.replace(rgxp,`=s${width}`);
-          this.store.slideThumbnailUrls[deckId][slideId] = url;
-          return url;
+            .then(response => {
+              console.log('SourceDeckService.getThumbnail() response', response);
+              return JSON.parse(response.body);
+            }, rej => {
+              throw new Error(rej);
+            })
+            .then(data => {
+              console.log('SourceDeckService.getThumbnail() body ', data);
+              // replace terminal =s[\d+$] with required width
+              const rgxp = new RegExp(`=s${data.width}$`);
+              const url = data.contentUrl.replace(rgxp, `=s${width}`);
+              this.store.slideThumbnailUrls[deckId][slideId] = url;
+              return url;
+            });
         });
   }
 
