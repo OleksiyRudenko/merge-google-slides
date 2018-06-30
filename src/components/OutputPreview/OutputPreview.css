@@ -1,4 +1,6 @@
 /* :local prefix when boilerplate generated with create-react-app */
-:local(.class-name) {
-    
+:local(.panelMin) {
+    display: inline-block;
+    width: max-content;
+    min-width: calc(202px + 0.6rem)
 }

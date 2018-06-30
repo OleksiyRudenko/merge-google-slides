@@ -5,7 +5,7 @@ import {
 import {bindHandlers} from "../../utils/bind";
 import {SourceDecksService} from "../../services/SourceDecksService";
 import Slide from "../Slide";
-// import styles from './OutputPreview.css';
+import styles from './OutputPreview.css';
 
 export default class OutputPreview extends Component {
   constructor(props) {
@@ -38,7 +38,7 @@ export default class OutputPreview extends Component {
    */
   render() {
     return (
-      <Panel>
+      <Panel className={styles.panelMin}>
         <Panel.Heading>
           <Glyphicon glyph="film" /> <span>Preview</span>{' '}
           <Button bsStyle="link" bsSize="small" title="Render preview">
