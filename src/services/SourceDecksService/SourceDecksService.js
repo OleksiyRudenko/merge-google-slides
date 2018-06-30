@@ -4,11 +4,7 @@ import KoalaJs from "../../utils/koala-js-promisified";
 class _SourceDecksService {
   constructor() {
     this.decks = decks;
-    this.store = {
-      deckIds: [],
-      decks: {},
-      slideThumbnailUrls: {},
-    };
+    this.clearCache(false);
   }
 
   /**
@@ -101,6 +97,19 @@ class _SourceDecksService {
    */
   getDecksList() {
     return Promise.resolve(this.store.deckIds.map(key => ({ key: key, value: this.store.decks[key].title })));
+  }
+
+  /**
+   * Clears caches
+   * @param {Boolean} clearDeeper into underlying caching service
+   */
+  clearCache(clearDeeper = true) {
+    this.store = {
+      deckIds: [],
+      decks: {},
+      slideThumbnailUrls: {},
+    };
+    clearDeeper && KoalaJs.clearCache();
   }
 }
 

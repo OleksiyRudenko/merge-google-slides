@@ -23,7 +23,7 @@ class _DeferredCachedRequestService {
     this.usePersistentCache && this._loadPersistentCache();
     bindHandlers(this, 'setSleepingScheme', 'setPersistency', 'request', '_enqueue', '_processQueue',
       '_getNextSleep', '_loadPersistentCache', '_savePersistentCache', '_clearPersistentCache',
-      '_clearCache', '_stringify');
+      'clearCache', '_stringify');
     this.debug && console.log('DCRS:', this.sleepingScheme);
   }
 
@@ -119,7 +119,7 @@ class _DeferredCachedRequestService {
         const queryString = this._stringify(request.query);
         this.debug && console.log('DCRS._processQueue(): processing', request);
         if (request.forceRefresh || request.skipCaching) {
-          this._clearCache(request);
+          this.clearCache(request);
         }
         if (this.requestCache[request.agent] && this.requestCache[request.agent][queryString]) {
           this.debug && console.log('DCRS._processQueue(): serving', request, 'from cache >>>>>>>>>>>', this.requestCache[request.agent][queryString],'<<<<<<');
@@ -207,14 +207,14 @@ class _DeferredCachedRequestService {
    * Clears request cache
    * @private
    */
-  _clearCache(agent = null, query = null) {
+  clearCache(agent = null, query = null) {
     if (typeof agent === 'string') {
       agent = {
         agent,
         query,
       }
     }
-    if (agent.agent && this.requestCache[agent.agent]) {
+    if (agent && agent.agent && this.requestCache[agent.agent]) {
       if (agent.query) {
         const queryString = this._stringify(agent.query);
         if (this.requestCache[agent.agent][queryString]) {

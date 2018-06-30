@@ -13,6 +13,8 @@ import "./Dashboard.css";
 // import RenderingOptions from '../RenderingOptions';
 import OutputPreview from '../OutputPreview';
 import SourceDecks from '../SourceDecks';
+import {bindHandlers} from "../../utils/bind";
+import {SourceDecksService} from "../../services/SourceDecksService";
 
 export default class Dashboard extends Component {
   constructor(props) {
@@ -21,7 +23,9 @@ export default class Dashboard extends Component {
     this.state = {
       urlParams: urlParams,
       driveState: JSON.parse(urlParams.state),
+      renderingKey: Math.random(),
     };
+    bindHandlers(this, 'refreshAll');
     console.log('Dashboard::state', this.state);
   }
   /**
@@ -65,15 +69,28 @@ export default class Dashboard extends Component {
         </Grid> */}
         <Grid>
           <Row className="clearfix">
-            <Col xs={3} sm={3} md={3} lg={2} className="col-padding">
-              <OutputPreview />
+            <Col xs={4} sm={4} md={3} lg={2} className="col-padding">
+              <OutputPreview key={this.state.renderingKey + 0} />
             </Col>
             <Col xs={8} sm={8} md={9} lg={10} className="col-padding">
-              <SourceDecks sourceList={this.state.driveState ? this.state.driveState.exportIds : []} />
+              <SourceDecks sourceList={this.state.driveState ? this.state.driveState.exportIds : []}
+                           refreshHandler={this.refreshAll}
+                           key={this.state.renderingKey + 1} />
             </Col>
           </Row>
         </Grid>
       </React.Fragment>
     );
+  }
+
+  /**
+   * Clear caches for decks|deck and/or slides thumbnails
+   */
+  refreshAll() {
+    console.log('Dashboard.refreshAll()');
+    SourceDecksService.clearCache();
+    this.setState({
+      renderingKey: Math.random(),
+    });
   }
 }

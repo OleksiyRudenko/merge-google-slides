@@ -27,8 +27,8 @@ export default class SourceDecks extends Component {
       <Panel>
         <Panel.Heading>
           <Glyphicon glyph="th" /> <span>Source decks</span>{' '}
-          <Button bsStyle="link" bsSize="small" title="Render preview">
-            <Glyphicon glyph="play" />
+          <Button bsStyle="link" bsSize="small" title="Refresh all">
+            <Glyphicon glyph="refresh" onClick={this.props.refreshHandler} />
           </Button>
         </Panel.Heading>
         { this.renderPanelBody() }
