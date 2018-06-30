@@ -1,4 +1,8 @@
 /* :local prefix when boilerplate generated with create-react-app */
+:local(.panelIcon) {
+    padding-right: 1rem;
+}
+
 :local(.flexRow) {
     display: flex;
     flex-flow: row nowrap;
@@ -11,46 +15,7 @@
 :local(.panelMin) {
     display: inline-block;
     width: max-content;
-    min-width: 10rem;
-}
-
-:local(.slidingTextContainer) {
-    display: inline-block;
-    margin-left: 1rem;
-    width: calc(100% - 4rem);
-    overflow-x: hidden;
-}
-
-:local(.slidingTextContainer) > div {
-    display: inline-block;
-    min-height: 1rem;
-    width: 100%;
-}
-
-.progress {
-    margin-bottom: 0;
-}
-
-:local(.slidingTextContainer) > div > p {
-    margin: 0;
-    white-space: nowrap;
-    animation: slide infinite 5s alternate;
-    animation-delay: 2s;
-}
-
-:local(.slidingTextContainer:hover) > div > p {
-    animation-play-state: paused;
-}
-
-@keyframes slide {
-    0%, 5% {
-        margin-left: 0;
-        margin-right: -100%;
-    }
-    95%, 100% {
-        margin-left: -100%;
-        margin-right: 0;
-    }
+    min-width: calc(202px + 0.6rem);
 }
 
 :local(.btnSmall) {

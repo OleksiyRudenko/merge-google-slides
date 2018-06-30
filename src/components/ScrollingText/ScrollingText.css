@@ -1,0 +1,38 @@
+/* :local prefix when boilerplate generated with create-react-app */
+:local(.scrollingTextContainer) {
+    width: 100%;
+    display: inline-block;
+    overflow-x: hidden;
+    min-height: 1rem;
+    position: relative;
+    --scrolling-text-container-width: calc(100%); /* for slide-alt animation */
+}
+
+:local(.scrollingTextContainer:hover) :local(.scrollingText) {
+    animation-play-state: paused;
+}
+
+:local(.scrollingText) {
+    position: absolute;
+    margin: 0 0 0 calc(var(--scrolling-text-container-width));
+    white-space: nowrap;
+    animation: autoscroll infinite linear 5s alternate;
+    margin-left: 0;
+}
+
+:local(.steadyText) {
+    margin: 0;
+}
+
+@keyframes autoscroll {
+    0%, 5% {
+        transform: translateX(-100%);
+    }
+    95%, 100% {
+        transform: translateX(0%);
+    }
+}
+
+:local(.noBottomMargin) {
+    margin-bottom: 0;
+}

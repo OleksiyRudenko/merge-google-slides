@@ -6,6 +6,7 @@ import {bindHandlers} from "../../utils/bind";
 import styles from "./SourceDeck.css";
 import {SourceDecksService} from "../../services/SourceDecksService";
 import Slide from "../Slide";
+import ScrollingText from "../ScrollingText/ScrollingText";
 
 export default class SourceDeck extends Component {
   constructor(props) {
@@ -22,34 +23,34 @@ export default class SourceDeck extends Component {
   componentDidMount() {
     SourceDecksService.getDeck(this.props.deckId)
       .then(deck => {
-        console.log('SourceDeck.componentDidMount()', deck);
+        console.log('SourceDeck.componentDidMount() getDeck.then()', deck);
         this.setState({
           deckTitle: deck.title,
         });
         SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
+          console.log('SourceDeck.componentDidMount() .getSlideIds.then()', slideIds);
           this.setState({
             slides: slideIds,
           });
         });
       })
-      .catch(
-      );
-
+      .catch(rejection => {
+        console.error('SourceDeck.componentDidMount() error ', rejection);
+      });
   }
 
   /**
    * Renders component view
    */
   render() {
+    console.log('SourceDeck.render()', this.state);
     return (
       <Panel className={styles.panelMin}>
         <Panel.Heading>
           <div className={styles.flexRow}>
-            <Glyphicon glyph="film" /> <div className={styles.slidingTextContainer} title={this.state.deckTitle}>
-              <div>{this.state.deckTitle ? <p className={styles.ellipsised}>
-                {this.state.deckTitle}
-              </p> : <ProgressBar striped bsStyle="info" now={100} active />}</div>
-            </div> <Button bsStyle="link" bsSize="small" title="Render preview" className={styles.btnSmall}>
+            <Glyphicon glyph="film" className={styles.panelIcon} />
+            <ScrollingText textData={this.state.deckTitle} idBase={this.props.deckId} />
+            <Button bsStyle="link" bsSize="small" title="Render preview" className={styles.btnSmall}>
               <Glyphicon glyph="play" />
             </Button>
           </div>
