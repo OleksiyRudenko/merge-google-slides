@@ -5,12 +5,16 @@
 import {bindHandlers} from "../bind";
 
 class _DeferredCachedRequestService {
-  constructor() {
-    this.debug = true;
+  constructor(params = {}) {
+    params = Object.assign({
+      onQueueEmpty: null,
+    }, params);
+    // this.onQueueEmpty = params.onQueueEmpty;
+    this.debug = false;
     this.agentsCallsCount = 0;
     this.sleepingScheme = this.setSleepingScheme();
     this.isSleeping = false;
-    this.usePersistentCache = false;
+    this.usePersistentCache = true;
     this._persistentStorageName = 'KoalaJsCache';
     this.requestCache = {
       // agent: { query: response },
@@ -45,6 +49,14 @@ class _DeferredCachedRequestService {
   }
 
   /**
+   * Sets a handler to call when queue gets empty
+   * @param onQueueEmpty
+   */
+  /* setQueueGetsEmptyHandler(onQueueEmpty = null) {
+    this.onQueueEmpty = onQueueEmpty;
+  } */
+
+  /**
    * Serve request from cache || queue request+callback+sleep
    * @param {Object} request parameters
    * @param {Number} sleepingTime until next request (ms), if undefined then use pre-set sleeping scheme
@@ -58,20 +70,23 @@ class _DeferredCachedRequestService {
       forceRefresh: false,   // force non-cached response and update cache
     }, request);
 
-    return new Promise((resolve, reject) => {
-      if (!request.agent || !request.query) {
-        reject(new Error('DCRS.request(): No agent or query defined'));
-      }
-      this.debug && console.log('DCRS.request(): Received request', request);
-      const queryString = this._stringify(request.query);
-      if (this.requestCache[request.agent] && this.requestCache[request.agent][queryString] && !(request.forceRefresh || request.skipCaching)) {
-        this.debug && console.log('DCRS.request(): Serving from cache >>>>>>>>>>>', this.requestCache[request.agent][queryString]);
-        resolve(this.requestCache[request.agent][queryString]);
-      } else {
-        this.debug && console.log('DCRS.request(): enqueuing');
-        resolve(this._enqueue(Object.assign(request, {sleepingTime})));
-      }
-    });
+    if (!request.agent || !request.query) {
+      return Promise.reject(new Error('DCRS.request(): No agent or query defined'));
+    }
+    this.debug && console.log('DCRS.request(): Received request', request);
+    const queryString = this._stringify(request.query);
+    if (this.requestCache[request.agent] && this.requestCache[request.agent][queryString] && !(request.forceRefresh || request.skipCaching)) {
+      this.debug && console.log('DCRS.request(): Serving from cache >>>>>>>>>>>', this.requestCache[request.agent][queryString]);
+      return Promise.resolve(this.requestCache[request.agent][queryString]);
+    } else {
+      this.debug && console.log('DCRS.request(): enqueuing');
+      let res, rej;
+      const promise = new Promise((resolve, reject) => {
+        res = resolve;
+        rej = reject;
+      });
+      return this._enqueue(Object.assign(request, {sleepingTime, resolve: res, reject: rej, promise}));
+    }
   }
 
   /**
@@ -82,7 +97,8 @@ class _DeferredCachedRequestService {
    */
   _enqueue(item) {
     this.requestQueue.push(item);
-    return this._processQueue();
+    this._processQueue();
+    return item.promise;
   }
 
   /**
@@ -91,60 +107,59 @@ class _DeferredCachedRequestService {
    * @private
    */
   _processQueue() {
-    return new Promise((resolve, reject) => {
-      if (this.isSleeping) {
-        this.debug && console.log('DCRS._processQueue(): Sleeping==', this.isSleeping, 'while queue contains', this.requestQueue);
-        window.setTimeout(resolve.bind(null, this._processQueue), 50);
+    if (this.isSleeping) {
+      this.debug && console.log('DCRS._processQueue(): Sleeping==', this.isSleeping, 'while queue contains', this.requestQueue);
+      window.setTimeout(this._processQueue, 50);
+    } else {
+      if (!this.requestQueue.length) { // no queue
+        Promise.reject(new Error('DCRS._processQueue(): No requests in queue'));
       } else {
-        if (!this.requestQueue.length) { // no queue
-          reject(new Error('DCRS._processQueue(): No requests in queue'));
+        this.isSleeping = true; // force other requests enqueueing
+        const request = this.requestQueue.shift();
+        const queryString = this._stringify(request.query);
+        this.debug && console.log('DCRS._processQueue(): processing', request);
+        if (request.forceRefresh || request.skipCaching) {
+          this._clearCache(request);
+        }
+        if (this.requestCache[request.agent] && this.requestCache[request.agent][queryString]) {
+          this.debug && console.log('DCRS._processQueue(): serving', request, 'from cache >>>>>>>>>>>', this.requestCache[request.agent][queryString],'<<<<<<');
+          this.isSleeping = false;
+          request.resolve(this.requestCache[request.agent][queryString]);
+          // process next
+          // this._processQueue();
         } else {
-          this.isSleeping = true; // force other requests enqueueing
-          const request = this.requestQueue.shift();
-          const queryString = this._stringify(request.query);
-          this.debug && console.log('DCRS._processQueue(): processing', request);
-          if (request.forceRefresh || request.skipCaching) {
-            this._clearCache(request);
-          }
-          if (this.requestCache[request.agent] && this.requestCache[request.agent][queryString]) {
-            this.debug && console.log('DCRS._processQueue(): serving', request, 'from cache >>>>>>>>>>>', this.requestCache[request.agent][queryString],'<<<<<<');
-            this.isSleeping = false;
-            resolve(this.requestCache[request.agent][queryString]);
-            // process next
-            // this._processQueue();
-          } else {
-            // make real request
-            this.debug && console.log('DCRS._processQueue(): Doing real request', request);
-            this.agentsCallsCount++;
-            const sleepingTime = (request.sleepingTime === undefined) ? this._getNextSleep() : request.sleepingTime;
-            return request.agent(request.query).then(response => {
-              if (!this.requestCache[request.agent]) this.requestCache[request.agent] = {};
-              // if (!this.requestCache[request.agent][queryString]) this.requestCache[request.agent][queryString] = null; // reserve a place
-              this.debug && console.log('DCRS._processQueue(): For', request, (request.skipCaching?'':'caching and ') + 'serving >>>>>>>>>>>', response,'<<<<<<');
-              if (!request.skipCaching) {
-                this.requestCache[request.agent][queryString] = response;
-                this.usePersistentCache && this._savePersistentCache();
-              }
-              this.debug && console.log('DCRS._processQueue(): going asleep for', sleepingTime + 'ms');
-              window.setTimeout(()=>{
-                this.debug && console.log('DCRS._processQueue(): awakened after successful response');
-                this.isSleeping = false;
-                // return this._processQueue();
-              }, sleepingTime);
-              resolve(response);
-            }, rejection => {
-              this.debug && console.log('DCRS._processQueue(): error', rejection);
-              window.setTimeout(()=>{
-                this.debug && console.log('DCRS._processQueue(): awakened after error');
-                this.isSleeping = false;
-                // this._processQueue();
-              }, sleepingTime);
-              reject(rejection);
-            });
-          }
+          // make real request
+          this.debug && console.log('DCRS._processQueue(): Doing real request', request);
+          this.agentsCallsCount++;
+          const sleepingTime = (request.sleepingTime === undefined) ? this._getNextSleep() : request.sleepingTime;
+          return request.agent(request.query).then(response => {
+            // TODO: when network response is errorneous then skip caching and reject
+            if (!this.requestCache[request.agent]) this.requestCache[request.agent] = {};
+            // if (!this.requestCache[request.agent][queryString]) this.requestCache[request.agent][queryString] = null; // reserve a place
+            this.debug && console.log('DCRS._processQueue(): For', request, (request.skipCaching?'':'caching and ') + 'serving >>>>>>>>>>>', response,'<<<<<<');
+            if (!request.skipCaching) {
+              this.requestCache[request.agent][queryString] = response;
+              this.usePersistentCache && this._savePersistentCache();
+            }
+            this.debug && console.log('DCRS._processQueue(): going asleep for', sleepingTime + 'ms');
+            window.setTimeout(()=>{
+              this.debug && console.log('DCRS._processQueue(): awakened after successful response');
+              this.isSleeping = false;
+              // return this._processQueue();
+            }, sleepingTime);
+            request.resolve(response);
+          }, rejection => {
+            this.debug && console.log('DCRS._processQueue(): error', rejection);
+            window.setTimeout(()=>{
+              this.debug && console.log('DCRS._processQueue(): awakened after error');
+              this.isSleeping = false;
+              // this._processQueue();
+            }, sleepingTime);
+            request.reject(rejection);
+          });
         }
       }
-    });
+    }
   }
 
   /**

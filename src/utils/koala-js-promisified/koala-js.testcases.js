@@ -7,13 +7,15 @@ class _Querier {
   }
   qu(q) {
     return new Promise(resolve => {
-      window.setTimeout(resolve.bind(null, 'Echo ' + q), 120);
+      window.setTimeout(resolve.bind(null, 'Echo ' + q), 30);
     });
   }
 }
 
 const Querier1 = new _Querier();
 const Querier2 = new _Querier();
+
+const log = [];
 
 class _A {
   constructor() {
@@ -34,10 +36,16 @@ class _A {
       console.log('TESTing ', q.o.constructor.name, q.query);
       KoalaJs.request(q).then(response => {
         const d = new Date();
-        console.log(this.time(d) + ': ' + response);
+        const logItem = this.time(d) + ': ' + response;
+        log.push(logItem);
+        console.log(logItem);
+        console.log(log);
       }, rejection => {
         const d = new Date();
-        console.log(this.time(d) + ': ' + rejection);
+        const logItem = this.time(d) + ': ' + rejection;
+        log.push(logItem);
+        console.log(logItem);
+        console.log(log);
       });
     });
   }
