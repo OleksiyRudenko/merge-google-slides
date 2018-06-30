@@ -9,10 +9,13 @@
     border: 3px solid #ccc;
     border-radius: 2px;
     margin: 0.3rem 0 0 0;
-    padding: 2px;
+    padding: 0;
 }
 
 :local(.slideThumbnail:hover) {
     width: 400px;
     position: relative;
+    z-index: 1;
+    box-shadow: 0 0 0.3rem 0.3rem lightblue;
+    border-color: lightblue;
 }
