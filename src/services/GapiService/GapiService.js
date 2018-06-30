@@ -98,7 +98,7 @@ class _GapiService {
    *  appropriately. After a sign-in, the API is called.
    */
   _updateSigninStatus(isSignedIn, isInitialSignedInState = false, caller = 'unknown or window.gapi.auth2.getAuthInstance().isSignedIn.listen()') {
-    console.log('GapiService._updateSigninStatus() called by ' + caller + ' with', isSignedIn, 'state = ', this.state);
+    // console.log('GapiService._updateSigninStatus() called by ' + caller + ' with', isSignedIn, 'state = ', this.state);
     this.setState({
       isSignedIn : isSignedIn,
       isSignInRequired : !isSignedIn && isInitialSignedInState,
@@ -157,9 +157,9 @@ class _GapiService {
    * @param {string} caller
    */
   setState(stateUpdate, caller='unknown') {
-    console.log('GapiService.setState() called by ' + caller + ' to update', this.state, 'with', stateUpdate);
+    // console.log('GapiService.setState() called by ' + caller + ' to update', this.state, 'with', stateUpdate);
     this.state = Object.assign(this.state, stateUpdate);
-    console.log('GapiService.setState() updated state', this.state);
+    // console.log('GapiService.setState() updated state', this.state);
     this.stateHandler && this.stateHandler(this.state);
   }
 
