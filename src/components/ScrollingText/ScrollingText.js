@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import styles from "./ScrollingText.css";
-import {bindHandlers} from "../../utils/bind";
 
 export default class ScrollingText extends Component {
   constructor(props) {
@@ -10,15 +9,10 @@ export default class ScrollingText extends Component {
       textData: this.props.textData,
       isScrolling: true,
     };
-    // bindHandlers(this, 'componentDidUpdate');
-  }
-
-  componentDidMount() {
-    console.log('ScrollingText.cDM()', this.state, this.props);
   }
 
   componentDidUpdate(prevProps, prevState) {
-    console.log('ScrollingText.cDU() props,state,prevProps,prevState', this.props, this.state, prevProps, prevState);
+    // console.log('ScrollingText.cDU() props,state,prevProps,prevState', this.props, this.state, prevProps, prevState);
     if (this.props.textData) {
       // remove scrolling class if <p> width is lesser than <div> width
       setTimeout(() => {
@@ -29,7 +23,7 @@ export default class ScrollingText extends Component {
             isScrolling: false,
           });
         }
-        console.log('ScrollingText.cDU()', this.props.textData, stcw, sttw);
+        // console.log('ScrollingText.cDU()', this.props.textData, stcw, sttw);
       }, 300);
     }
   }
@@ -38,7 +32,7 @@ export default class ScrollingText extends Component {
    * Renders component view
    */
   render() {
-    console.log('ScrollingText.render()', this.state, this.props);
+    // console.log('ScrollingText.render()', this.state, this.props);
     return (
       <div id={'stc' + this.props.idBase} className={styles.scrollingTextContainer}>
         {this.props.textData

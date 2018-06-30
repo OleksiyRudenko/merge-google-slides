@@ -24,7 +24,7 @@ class App extends Component {
       showWelcome: false,
       gapiState: this.props.gapi.state,
     };
-    console.log('App.constructor() this.props.gapi:', this.props.gapi);
+    // console.log('App.constructor() this.props.gapi:', this.props.gapi);
   }
 
   componentDidMount() {
@@ -171,7 +171,7 @@ class App extends Component {
    * @param gapiState
    */
   handleGapiStateChange(gapiState) {
-    console.log('App.handleGapiStateChange()', gapiState);
+    // console.log('App.handleGapiStateChange()', gapiState);
     this.setState({
       gapiState: gapiState,
     });
@@ -199,7 +199,7 @@ class App extends Component {
    * Set Welcome component hidden
    */
   handleWelcomeClose() {
-    console.log('App.handleWelcomeClose()');
+    // console.log('App.handleWelcomeClose()');
     this.setState({
       showWelcome: false,
     });
@@ -209,7 +209,7 @@ class App extends Component {
    * Set Announcement component hidden
    */
   handleAnnouncementClose() {
-    console.log('App.handleAnnouncementClose()');
+    // console.log('App.handleAnnouncementClose()');
     this.setState({
       showAnnouncement: false,
     });
