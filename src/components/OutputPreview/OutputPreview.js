@@ -3,7 +3,7 @@ import {
   Button, Glyphicon, Panel, ProgressBar,
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
-import {SourceDecksService} from "../../services/SourceDecksService";
+// import {SourceDecksService} from "../../services/SourceDecksService";
 import Slide from "../Slide";
 import styles from './OutputPreview.css';
 
@@ -11,16 +11,23 @@ export default class OutputPreview extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      slideList: null,
+      slideList: this.props.sourceList,
     };
-    bindHandlers(this,
-      'renderPanelBody',
-    );
+    console.log('OutputPreview.constructor', this.state);
   }
 
   componentDidMount() {
+    // console.log('OutputPreview.cDM()', this.state);
+    // this.loadSlides();
+  }
+
+  componentDidUpdate() {
+    // console.log('OutputPreview.cDU()', this.state);
+  }
+
+  /* loadSlides() {
     let slideList = [];
-    const deckIds = SourceDecksService.getDeckIds();
+    const deckIds = this.state.decks;
     Promise.all(deckIds.map(deckId => SourceDecksService.getSlideIds(deckId)))
       .then(slideIdsList => {
         slideIdsList.forEach((slideIds, idx) => {
@@ -28,39 +35,30 @@ export default class OutputPreview extends Component {
             slideList.push({deckId: deckIds[idx], slideId});
           });
         });
-        console.log('OutputPreview.componentDidMount()', slideList);
+        console.log('OutputPreview.loadSlides()', slideList);
         this.setState({slideList});
       });
-  }
+  } */
 
   /**
    * Renders component view
    */
   render() {
+    console.log('OutputPreview.render()', this.state);
     return (
       <Panel className={styles.panelMin}>
         <Panel.Heading>
-          <Glyphicon glyph="film" /> <span>Preview</span>{' '}
-          <Button bsStyle="link" bsSize="small" title="Render preview">
-            <Glyphicon glyph="play" />
+          <Glyphicon glyph="film" /> <span>Merged</span>{' '}
+          <Button bsStyle="link" bsSize="small" title="Save merged" disabled={true}>
+            <Glyphicon glyph="save" />
           </Button>
         </Panel.Heading>
-        { this.renderPanelBody() }
+        <Panel.Body>
+          {this.state.slideList
+            ? this.state.slideList.map((slide, idx) => <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />)
+            : <ProgressBar striped bsStyle="info" now={100} active /> }
+        </Panel.Body>
       </Panel>
-    );
-  }
-
-  /**
-   * Renders panel body
-   * @returns {*}
-   */
-  renderPanelBody() {
-    return (
-      <Panel.Body>
-        {this.state.slideList
-          ? this.state.slideList.map((slide, idx) => <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />)
-          : <ProgressBar striped bsStyle="info" now={100} active /> }
-      </Panel.Body>
     );
   }
 

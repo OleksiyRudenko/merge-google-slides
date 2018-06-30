@@ -5,17 +5,17 @@ import {
 import {bindHandlers} from "../../utils/bind";
 import SourceDeck from "../SourceDeck";
 import styles from "./SourceDecks.css";
-import {SourceDecksService} from "../../services/SourceDecksService";
 
 export default class SourceDecks extends Component {
   constructor(props) {
     super(props);
-    SourceDecksService.setDeckIds(this.props.sourceList);
     this.state = {
       decks: this.props.sourceList,
     };
     bindHandlers(this,
       'renderPanelBody',
+      'onMoveLeft',
+      'onMoveRight',
     );
   }
 
@@ -45,12 +45,37 @@ export default class SourceDecks extends Component {
       <Panel.Body>
         <Grid>
           <Row className={styles.rowFlex}>
-            {this.state.decks.map(id => {
-              return (<Col className="col-padding col-min" key={id}><SourceDeck deckId={id} /></Col>);
+            {this.state.decks.map((id, idx) => {
+              return (<Col className="col-padding col-min" key={id}>
+                <SourceDeck deckId={id}
+                            order={idx}
+                            moveLeft={idx ? this.onMoveLeft : null}
+                            moveRight={idx === this.state.decks.length - 1 ? null : this.onMoveRight}/>
+              </Col>);
             })}
           </Row>
         </Grid>
       </Panel.Body>
     );
+  }
+
+  /**
+   * Called from child component to move deck left
+   * @param {number} currentOrderPosition
+   * @param {string} deckId
+   */
+  onMoveLeft(currentOrderPosition, deckId) {
+    console.log('SourceDecks.onMoveLeft()', currentOrderPosition, deckId);
+    this.props.moveDeckHandler(currentOrderPosition, -1);
+  }
+
+  /**
+   * Called from child component to move deck right
+   * @param {number} currentOrderPosition
+   * @param {string} deckId
+   */
+  onMoveRight(currentOrderPosition, deckId) {
+    console.log('SourceDecks.onMoveRight()', currentOrderPosition, deckId);
+    this.props.moveDeckHandler(currentOrderPosition, 1);
   }
 }

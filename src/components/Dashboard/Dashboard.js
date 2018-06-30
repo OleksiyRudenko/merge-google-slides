@@ -26,10 +26,24 @@ export default class Dashboard extends Component {
       driveState: JSON.parse(urlParams.state),
       renderingKey: Math.random(),
       showGuide: !urlParams.state,
+      sourceDecksList: null,
+      sourceSlidesList: null,
     };
-    bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose');
+    this.state.sourceDecksList = this.state.driveState ? this.state.driveState.exportIds : [];
+    SourceDecksService.setDeckIds(this.state.sourceDecksList);
+    bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose', 'moveDeck', 'loadSlides');
     console.log('Dashboard::state', this.state);
   }
+
+  componentDidMount() {
+    console.log('Dashboard.cDM()');
+    this.loadSlides();
+  }
+
+  componentDidUpdate() {
+    console.log('Dashboard.cDU()');
+  }
+
   /**
    * Renders component view
    */
@@ -72,12 +86,15 @@ export default class Dashboard extends Component {
         <Grid>
           <Row className="clearfix">
             <Col xs={4} sm={4} md={3} lg={2} className="col-padding">
-              <OutputPreview key={this.state.renderingKey + 0} />
+              <OutputPreview
+                sourceList={this.state.sourceSlidesList}
+                key={Math.random()} />
             </Col>
             <Col xs={8} sm={8} md={9} lg={10} className="col-padding">
-              <SourceDecks sourceList={this.state.driveState ? this.state.driveState.exportIds : []}
+              <SourceDecks sourceList={this.state.sourceDecksList}
                            refreshHandler={this.refreshAll}
-                           key={this.state.renderingKey + 1} />
+                           moveDeckHandler={this.moveDeck}
+                           key={Math.random()} />
             </Col>
           </Row>
         </Grid>
@@ -114,5 +131,46 @@ export default class Dashboard extends Component {
     this.setState({
       showGuide: false,
     });
+  }
+
+  /**
+   * Move deck in a list
+   * @param {Number} currentOrderPosition
+   * @param {Number} targetOffset (<0 to the left, >0 to the right)
+   */
+  moveDeck(currentOrderPosition, targetOffset) {
+    console.log('Dashboard.moveDeck()', currentOrderPosition, targetOffset);
+    console.log('Dashboard.moveDeck() old list', SourceDecksService.getDeckIds());
+    if (SourceDecksService.moveDeckId(currentOrderPosition, targetOffset)) {
+      console.log('Dashboard.moveDeck() new list', SourceDecksService.getDeckIds());
+      this.setState({
+        sourceDecksList: SourceDecksService.getDeckIds(),
+      });
+      this.loadSlides();
+    }
+  }
+
+  /**
+   * Updates source slides list
+   */
+  loadSlides() {
+    console.log('Dashboard.loadSlides()');
+    let sourceSlidesList = [];
+    const deckIds = this.state.sourceDecksList;
+    console.log('Dashboard.loadSlides() deckIds', deckIds);
+    const self = this;
+    Promise.all(deckIds.map(deckId => SourceDecksService.getSlideIds(deckId)))
+      .then(slideIdsList => {
+        slideIdsList.forEach((slideIds, idx) => {
+          slideIds.forEach(slideId => {
+            sourceSlidesList.push({deckId: deckIds[idx], slideId});
+          });
+        });
+        console.log('Dashboard.loadSlides() sourceSlidesList', sourceSlidesList);
+        self.setState({
+          sourceSlidesList: sourceSlidesList,
+        });
+        console.log('Dashboard.loadSlides() state', this.state);
+      });
   }
 }

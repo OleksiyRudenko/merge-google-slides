@@ -75,13 +75,13 @@ class _SourceDecksService {
             }
           })
             .then(response => {
-              console.log('SourceDeckService.getThumbnail() response', response);
+              // console.log('SourceDeckService.getThumbnail() response', response);
               return JSON.parse(response.body);
             }, rej => {
               throw new Error(rej);
             })
             .then(data => {
-              console.log('SourceDeckService.getThumbnail() body ', data);
+              // console.log('SourceDeckService.getThumbnail() body ', data);
               // replace terminal =s[\d+$] with required width
               const rgxp = new RegExp(`=s${data.width}$`);
               const url = data.contentUrl.replace(rgxp, `=s${width}`);
@@ -89,6 +89,39 @@ class _SourceDecksService {
               return url;
             });
         });
+  }
+
+  /**
+   * Move deckId in a list
+   * @param {Number} currentOrderPosition
+   * @param {Number} targetOffset (<0 to the left, >0 to the right)
+   * @returns {Boolean} any changes happened?
+   */
+  moveDeckId(currentOrderPosition, targetOffset) {
+    if (this.store.deckIds.length && currentOrderPosition < this.store.deckIds.length && targetOffset ) {
+      let newPosition = currentOrderPosition + targetOffset;
+      if (newPosition < 0) newPosition = 0;
+      if (newPosition > this.store.deckIds.length) newPosition = this.store.deckIds.length - 1;
+      if (newPosition === currentOrderPosition) return false;
+      // relocate item
+      // this.store.deckIds = [];
+      const tmp = this.store.deckIds[currentOrderPosition];
+      if (currentOrderPosition < newPosition) {
+        // target element down, other elements up
+        for (let i = currentOrderPosition; i < newPosition; i++) {
+          this.store.deckIds[i] = this.store.deckIds[i + 1];
+        }
+      } else {
+        // target element up, other elements down
+        for (let i = currentOrderPosition; i > newPosition; i--) {
+          this.store.deckIds[i] = this.store.deckIds[i - 1];
+        }
+      }
+      this.store.deckIds[newPosition] = tmp;
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**

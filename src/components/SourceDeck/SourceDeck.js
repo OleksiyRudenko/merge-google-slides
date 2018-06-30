@@ -17,18 +17,20 @@ export default class SourceDeck extends Component {
     };
     bindHandlers(this,
       'renderPanelBody',
+      'onMoveLeft',
+      'onMoveRight',
     );
   }
 
   componentDidMount() {
     SourceDecksService.getDeck(this.props.deckId)
       .then(deck => {
-        console.log('SourceDeck.componentDidMount() getDeck.then()', deck);
+        // console.log('SourceDeck.componentDidMount() getDeck.then()', deck);
         this.setState({
           deckTitle: deck.title,
         });
         SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
-          console.log('SourceDeck.componentDidMount() .getSlideIds.then()', slideIds);
+          // console.log('SourceDeck.componentDidMount() .getSlideIds.then()', slideIds);
           this.setState({
             slides: slideIds,
           });
@@ -43,15 +45,22 @@ export default class SourceDeck extends Component {
    * Renders component view
    */
   render() {
-    console.log('SourceDeck.render()', this.state);
+    // console.log('SourceDeck.render()', this.state);
     return (
       <Panel className={styles.panelMin}>
         <Panel.Heading>
           <div className={styles.flexRow}>
             <Glyphicon glyph="film" className={styles.panelIcon} />
             <ScrollingText textData={this.state.deckTitle} idBase={this.props.deckId} />
-            <Button bsStyle="link" bsSize="small" title="Render preview" className={styles.btnSmall}>
-              <Glyphicon glyph="play" />
+            <Button bsStyle="link" bsSize="small" title="Move left" className={styles.btnSmall}
+                    disabled={!this.props.moveLeft}
+                    onClick={this.onMoveLeft}>
+              <Glyphicon glyph="triangle-left" />
+            </Button>
+            <Button bsStyle="link" bsSize="small" title="Move right" className={styles.btnSmall}
+                    disabled={!this.props.moveRight}
+                    onClick={this.onMoveRight}>
+              <Glyphicon glyph="triangle-right" />
             </Button>
           </div>
         </Panel.Heading>
@@ -69,9 +78,27 @@ export default class SourceDeck extends Component {
       <Panel.Body>
         {this.state.slides
           ? this.state.slides.map((slideId, idx) => <Slide key={idx} deckId={this.props.deckId} slideId={slideId} />)
-          : 'Loading...'
+          : <ProgressBar striped bsStyle="info" now={100} active />
         }
       </Panel.Body>
     );
+  }
+
+  /**
+   * Handle Move Left button click
+   */
+  onMoveLeft() {
+    if (this.props.moveLeft) {
+      this.props.moveLeft(this.props.order, this.props.deckId);
+    }
+  }
+
+  /**
+   * Handle Move Right button click
+   */
+  onMoveRight() {
+    if (this.props.moveRight) {
+      this.props.moveRight(this.props.order, this.props.deckId);
+    }
   }
 }
