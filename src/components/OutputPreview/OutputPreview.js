@@ -19,12 +19,15 @@ export default class OutputPreview extends Component {
   }
 
   componentDidMount() {
-    // console.log('OutputPreview.cDM()', this.state);
+    console.log('OutputPreview.cDM()', this.props, this.state);
     // this.loadSlides();
   }
 
   componentDidUpdate() {
-    // console.log('OutputPreview.cDU()', this.state);
+    console.log('OutputPreview.cDU()', this.props, this.state);
+    /* this.setState({
+      slideList: this.props.sourceList,
+    }); */
   }
 
   /* loadSlides() {
@@ -46,20 +49,23 @@ export default class OutputPreview extends Component {
    * Renders component view
    */
   render() {
-    console.log('OutputPreview.render()', this.state);
+    console.log('OutputPreview.render()', this.props, this.state);
     return (
       <Panel className={styles.panelMin}>
         <Panel.Heading>
           <Glyphicon glyph="film" /> <span>Merged</span>{' '}
           <Button bsStyle="link" bsSize="small" title="Save merged"
-                  disabled={!this.state.slideList}
+                  disabled={!this.props.sourceList}
                   onClick={this.handleSaveDialogOpen}>
             <Glyphicon glyph="save" />
           </Button>
         </Panel.Heading>
         <Panel.Body>
-          {this.state.slideList
-            ? this.state.slideList.map((slide, idx) => <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />)
+          {this.props.sourceList
+            ? this.props.sourceList.map((slide, idx) => {
+              console.log(slide);
+              return <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />;
+            })
             : <ProgressBar striped bsStyle="info" now={100} active /> }
         </Panel.Body>
         {this.state.showSaveDialog

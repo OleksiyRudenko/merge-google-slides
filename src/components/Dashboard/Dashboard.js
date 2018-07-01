@@ -36,7 +36,7 @@ export default class Dashboard extends Component {
   }
 
   componentDidMount() {
-    console.log('Dashboard.cDM()');
+    console.log('Dashboard.cDM() call .loadSlides()');
     this.loadSlides();
   }
 
@@ -88,13 +88,13 @@ export default class Dashboard extends Component {
             <Col xs={4} sm={4} md={3} lg={2} className="col-padding">
               <OutputPreview
                 sourceList={this.state.sourceSlidesList}
-                key={Math.random()} />
+                key={this.state.renderingKey + 1} />
             </Col>
             <Col xs={8} sm={8} md={9} lg={10} className="col-padding">
               <SourceDecks sourceList={this.state.sourceDecksList}
                            refreshHandler={this.refreshAll}
                            moveDeckHandler={this.moveDeck}
-                           key={Math.random()} />
+                           key={this.state.renderingKey + 2} />
             </Col>
           </Row>
         </Grid>
@@ -144,9 +144,8 @@ export default class Dashboard extends Component {
     if (SourceDecksService.moveDeckId(currentOrderPosition, targetOffset)) {
       console.log('Dashboard.moveDeck() new list', SourceDecksService.getDeckIds());
       this.setState({
-        sourceDecksList: SourceDecksService.getDeckIds(),
-      });
-      this.loadSlides();
+        sourceDecksList: SourceDecksService.getDeckIds().slice(),
+      }, this.loadSlides);
     }
   }
 
@@ -155,8 +154,8 @@ export default class Dashboard extends Component {
    */
   loadSlides() {
     console.log('Dashboard.loadSlides()');
-    let sourceSlidesList = [];
-    const deckIds = this.state.sourceDecksList;
+    const sourceSlidesList = [];
+    const deckIds = SourceDecksService.getDeckIds(); // this.state.sourceDecksList;
     console.log('Dashboard.loadSlides() deckIds', deckIds);
     const self = this;
     Promise.all(deckIds.map(deckId => SourceDecksService.getSlideIds(deckId)))
@@ -168,9 +167,10 @@ export default class Dashboard extends Component {
         });
         console.log('Dashboard.loadSlides() sourceSlidesList', sourceSlidesList);
         self.setState({
-          sourceSlidesList: sourceSlidesList,
+          sourceSlidesList: sourceSlidesList.slice(),
+        }, () => {
+          console.log('Dashboard.loadSlides() state updated', this.state);
         });
-        console.log('Dashboard.loadSlides() state', this.state);
       });
   }
 }

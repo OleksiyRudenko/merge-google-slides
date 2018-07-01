@@ -46,6 +46,7 @@ class _SourceDecksService {
    * @returns {Promise<Array>}
    */
   getSlideIds(deckId) {
+    console.log('SourceDecksService.getSlideIds()', deckId);
     return this.getDeck(deckId).then(deck => deck.slides.map(slide => slide.objectId));
   }
 
