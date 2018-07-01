@@ -31,7 +31,8 @@ export default class Dashboard extends Component {
     };
     this.state.sourceDecksList = this.state.driveState ? this.state.driveState.exportIds : [];
     SourceDecksService.setDeckIds(this.state.sourceDecksList);
-    bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose', 'moveDeck', 'loadSlides', 'addDeck', 'onFilesPicked');
+    bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose',
+      'moveDeck', 'deleteDeck', 'loadSlides', 'addDeck', 'onFilesPicked');
     console.log('Dashboard::state', this.state);
   }
 
@@ -94,6 +95,7 @@ export default class Dashboard extends Component {
               <SourceDecks sourceList={this.state.sourceDecksList}
                            refreshHandler={this.refreshAll}
                            moveDeckHandler={this.moveDeck}
+                           deleteDeckHandler={this.deleteDeck}
                            key={this.state.renderingKey + 2}
                            addDeckHandler={this.addDeck}
               />
@@ -149,6 +151,17 @@ export default class Dashboard extends Component {
         sourceDecksList: SourceDecksService.getDeckIds().slice(),
       }, this.loadSlides);
     }
+  }
+
+  /**
+   * Delete deck from source list
+   * @param deckId
+   */
+  deleteDeck(deckId) {
+    SourceDecksService.deleteDeckId(deckId);
+    this.setState({
+      sourceDecksList: SourceDecksService.getDeckIds().slice(),
+    }, this.loadSlides);
   }
 
   /**

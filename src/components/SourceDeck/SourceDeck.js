@@ -19,6 +19,7 @@ export default class SourceDeck extends Component {
       'renderPanelBody',
       'onMoveLeft',
       'onMoveRight',
+      'onDeleteDeck',
     );
   }
 
@@ -56,6 +57,11 @@ export default class SourceDeck extends Component {
                     disabled={!this.props.moveLeft}
                     onClick={this.onMoveLeft}>
               <Glyphicon glyph="triangle-left" />
+            </Button>
+            <Button bsStyle="link" bsSize="small" title="Remove deck" className={styles.btnSmall}
+                    disabled={!this.props.deleteDeck}
+                    onClick={this.onDeleteDeck}>
+              <Glyphicon glyph="trash" />
             </Button>
             <Button bsStyle="link" bsSize="small" title="Move right" className={styles.btnSmall}
                     disabled={!this.props.moveRight}
@@ -99,6 +105,15 @@ export default class SourceDeck extends Component {
   onMoveRight() {
     if (this.props.moveRight) {
       this.props.moveRight(this.props.order, this.props.deckId);
+    }
+  }
+
+  /**
+   * Handle Delete deck button click
+   */
+  onDeleteDeck() {
+    if (this.props.deleteDeck) {
+      this.props.deleteDeck(this.props.deckId);
     }
   }
 }

@@ -24,6 +24,16 @@ class _SourceDecksService {
   }
 
   /**
+   * Removes a deckId from the list
+   * @param {string} deckId
+   */
+  deleteDeckId(deckId) {
+    console.log('>>>>>>>>>', deckId, this.store.deckIds);
+    this.store.deckIds = this.store.deckIds.filter(item => item !== deckId);
+    console.log('>>>>>>>>>', deckId, this.store.deckIds);
+  }
+
+  /**
    * Load a presentation
    * @param {string} deckId
    * @returns {Promise}

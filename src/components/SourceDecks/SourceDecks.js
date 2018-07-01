@@ -17,6 +17,7 @@ export default class SourceDecks extends Component {
       'onMoveLeft',
       'onMoveRight',
       'addDeck',
+      'deleteDeck',
     );
   }
 
@@ -58,12 +59,14 @@ export default class SourceDecks extends Component {
       <Panel.Body>
         <Grid>
           <Row className={styles.rowFlex}>
-            {this.state.decks.map((id, idx) => {
+            {this.props.sourceList.map((id, idx) => {
               return (<Col className="col-padding col-min" key={id}>
                 <SourceDeck deckId={id}
                             order={idx}
                             moveLeft={idx ? this.onMoveLeft : null}
-                            moveRight={idx === this.state.decks.length - 1 ? null : this.onMoveRight}/>
+                            moveRight={idx === this.state.decks.length - 1 ? null : this.onMoveRight}
+                            deleteDeck={this.deleteDeck}
+                />
               </Col>);
             })}
           </Row>
@@ -98,5 +101,13 @@ export default class SourceDecks extends Component {
   addDeck() {
     console.log('SourceDeck.addDeck()');
     this.props.addDeckHandler();
+  }
+
+  /**
+   * Delete a deck
+   */
+  deleteDeck(deckId) {
+    console.log('SourceDeck.deleteDeck()');
+    this.props.deleteDeckHandler(deckId);
   }
 }
