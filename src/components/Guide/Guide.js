@@ -60,6 +60,7 @@ export default class Guide extends Component {
         {this.renderMain()}
         <Modal.Footer>
           <Button bsStyle="primary" href="https://drive.google.com/" target="_blank">Open your Google Drive</Button>
+          <Button target="_blank" href="https://oleksiyrudenko.github.io/merge-google-slides/?state=%7B%22exportIds%22:%5B%221sLBRTLD5fTsRIi5rr-ndVD554G9odLdbHdFDfWY8Y10%22,%221L2NSaN4dPK0u8iuiqDtt5RaWHEeRZvY0Eybc_TPhXTw%22,%221ri6oKxQFjElzFhMPE_NeiQZh7xYY6lOA02Azc_ZJroQ%22%5D,%22action%22:%22open%22,%22userId%22:%22109188810585487526474%22%7D">Try with demo Slides</Button>
           <Button onClick={this.handleClose}>Close</Button>
         </Modal.Footer>
       </Modal>
