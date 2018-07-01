@@ -28,6 +28,7 @@ class _GapiService {
    */
   init(gapiParams) {
     this.gapiParams = this._normalizeClientInitParams(gapiParams);
+    // this.gapiParamsBackup = gapiParams;
     // load script
     const gapiScriptTag = document.createElement('script');
     const self = this;
@@ -250,6 +251,41 @@ class _GapiService {
     this.state = Object.assign(this.state, stateUpdate);
     // console.log('GapiService.setState() updated state', this.state);
     this.stateHandler && this.stateHandler(this.state);
+  }
+
+  createPickerPresentations(callback) {
+    this.getUserProfile().then(profile => {
+      const gpapi = window.google.picker;
+      console.log('>>>>>>>>>>>>', gpapi);
+
+      const picker = new gpapi.PickerBuilder()
+        .enableFeature(gpapi.Feature.SUPPORT_TEAM_DRIVES)
+        .enableFeature(gpapi.Feature.MULTISELECT_ENABLED)
+        .addView(new gpapi.DocsView(gpapi.ViewId.PRESENTATIONS) // gpapi.ViewId.PRESENTATIONS
+            .setMimeTypes('application/vnd.google-apps.presentation')
+          //  .setIncludeFolders(true)
+          // .setSelectFolderEnabled(true)
+          // .setEnableTeamDrives(true)
+        )
+        .addView(new gpapi.DocsView(gpapi.ViewId.PRESENTATIONS)
+          .setMimeTypes('application/vnd.google-apps.presentation')
+          .setIncludeFolders(true)
+          // .setMode(gpapi.DocsViewMode.LIST)
+          // .setSelectFolderEnabled(true)
+          // .setEnableTeamDrives(true)
+          .setLabel('Browse folders')
+        )
+        .addView(gpapi.ViewId['RECENTLY_PICKED'])
+        .setMaxItems(5)
+          // https://developers.google.com/picker/docs/
+        // .addView(new window.google.picker.DocsUploadView())
+        .setOAuthToken(profile.authData.access_token)
+        // .setDeveloperKey('AIzaSyDLomXTkw7nadJGzSJKAdX3Mla22NKEWuQ')
+        .setAppId(this.gapiParams.clientId)
+        .setCallback(callback)
+        .build();
+      picker.setVisible(true);
+    });
   }
 
   /**

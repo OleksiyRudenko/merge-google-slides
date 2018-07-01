@@ -31,7 +31,7 @@ export default class Dashboard extends Component {
     };
     this.state.sourceDecksList = this.state.driveState ? this.state.driveState.exportIds : [];
     SourceDecksService.setDeckIds(this.state.sourceDecksList);
-    bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose', 'moveDeck', 'loadSlides');
+    bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose', 'moveDeck', 'loadSlides', 'addDeck', 'onFilesPicked');
     console.log('Dashboard::state', this.state);
   }
 
@@ -94,7 +94,9 @@ export default class Dashboard extends Component {
               <SourceDecks sourceList={this.state.sourceDecksList}
                            refreshHandler={this.refreshAll}
                            moveDeckHandler={this.moveDeck}
-                           key={this.state.renderingKey + 2} />
+                           key={this.state.renderingKey + 2}
+                           addDeckHandler={this.addDeck}
+              />
             </Col>
           </Row>
         </Grid>
@@ -172,5 +174,40 @@ export default class Dashboard extends Component {
           console.log('Dashboard.loadSlides() state updated', this.state);
         });
       });
+  }
+
+  /**
+   * Add a Slides deck
+   */
+  addDeck() {
+    console.log('Dashboard.addDeck()');
+    this.props.gapi.createPickerPresentations(this.onFilesPicked);
+  }
+
+  /**
+   * Process data from google picker
+   * @param data
+   */
+  onFilesPicked(data) {
+    console.log('Dashboard.onFilesPicked()', data);
+    if (data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED) {
+      // https://developers.google.com/picker/docs/
+      const docList = data[window.google.picker.Response.DOCUMENTS];
+      const docIds = docList
+        .filter(doc => doc[window.google.picker.Document.MIME_TYPE] === "application/vnd.google-apps.presentation")
+        .map(doc => doc[window.google.picker.Document.ID]);
+      // console.log('Dashboard.onFilesPicked()', data, docIds, window.google.picker.Document);
+
+      // remove duplicates
+      const deckIds = SourceDecksService.getDeckIds();
+      const uniqueDocIds = docIds.filter(el => !deckIds.includes(el));
+      console.log('Dashboard.onFilesPicked()', uniqueDocIds);
+      if (uniqueDocIds.length) {
+        SourceDecksService.appendDeckIds(uniqueDocIds);
+        this.setState({
+          sourceDecksList: SourceDecksService.getDeckIds().slice(),
+        }, this.loadSlides);
+      }
+    }
   }
 }

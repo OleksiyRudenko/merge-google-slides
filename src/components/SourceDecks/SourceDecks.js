@@ -16,6 +16,7 @@ export default class SourceDecks extends Component {
       'renderPanelBody',
       'onMoveLeft',
       'onMoveRight',
+      'addDeck',
     );
   }
 
@@ -29,10 +30,18 @@ export default class SourceDecks extends Component {
           <Glyphicon glyph="th" /> <span>Source decks</span>{' '}
           <Button bsStyle="link"
                   bsSize="small"
+                  title="Add Slides deck"
+                  onClick={this.addDeck}
+          >
+            <Glyphicon glyph="plus" />
+          </Button>
+          <Button bsStyle="link"
+                  bsSize="small"
                   title="Refresh all"
+                  onClick={this.props.refreshHandler}
                   disabled={!this.props.sourceList || !this.props.sourceList.length}
           >
-            <Glyphicon glyph="refresh" onClick={this.props.refreshHandler} />
+            <Glyphicon glyph="refresh" />
           </Button>
         </Panel.Heading>
         { this.renderPanelBody() }
@@ -81,5 +90,13 @@ export default class SourceDecks extends Component {
   onMoveRight(currentOrderPosition, deckId) {
     console.log('SourceDecks.onMoveRight()', currentOrderPosition, deckId);
     this.props.moveDeckHandler(currentOrderPosition, 1);
+  }
+
+  /**
+   * Add a deck to the list
+   */
+  addDeck() {
+    console.log('SourceDeck.addDeck()');
+    this.props.addDeckHandler();
   }
 }

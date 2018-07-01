@@ -16,6 +16,14 @@ class _SourceDecksService {
   }
 
   /**
+   * Appends deck ids to the list. Dups not checked
+   * @param {Array} deckIds
+   */
+  appendDeckIds(deckIds) {
+    this.store.deckIds.push(...deckIds);
+  }
+
+  /**
    * Load a presentation
    * @param {string} deckId
    * @returns {Promise}

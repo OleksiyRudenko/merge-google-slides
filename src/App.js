@@ -43,7 +43,9 @@ class App extends Component {
       <Router>
         <React.Fragment>
           {this.renderNavbar()}
-          {this.state.gapiState.isSignedIn ? <Route path="/" component={Dashboard} /> : this.renderGoogleLoaders()}
+          {this.state.gapiState.isSignedIn
+            ? <Route path="/" render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} />} />
+            : this.renderGoogleLoaders()}
         </React.Fragment>
       </Router>
     );
