@@ -5,6 +5,7 @@ export const gapiParams = {
     "https://www.googleapis.com/discovery/v1/apis/drive/v3/rest",
     "https://slides.googleapis.com/$discovery/rest?version=v1",
   ],
+  prompt: 'select_account',
   // next is intended to be joined with spaces: scope.join(' ')
   scope: [
     'https://www.googleapis.com/auth/drive.install',
