@@ -267,6 +267,7 @@ class _GapiService {
           // .setSelectFolderEnabled(true)
           // .setEnableTeamDrives(true)
         )
+        .setMaxItems(3)
         .addView(new gpapi.DocsView(gpapi.ViewId.PRESENTATIONS)
           .setMimeTypes('application/vnd.google-apps.presentation')
           .setIncludeFolders(true)
@@ -275,8 +276,9 @@ class _GapiService {
           // .setEnableTeamDrives(true)
           .setLabel('Browse folders')
         )
+        .setMaxItems(3)
         .addView(gpapi.ViewId['RECENTLY_PICKED'])
-        .setMaxItems(5)
+        .setMaxItems(3)
           // https://developers.google.com/picker/docs/
         // .addView(new window.google.picker.DocsUploadView())
         .setOAuthToken(profile.authData.access_token)
