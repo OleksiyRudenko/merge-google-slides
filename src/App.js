@@ -76,7 +76,10 @@ class App extends Component {
           <Announcement
             announcementStyle="warning"
             title="Important note!"
-            message="This app is in alpha state and is publicly available only since otherwise I cannot proceed developing it. MVP is expected somewhere in August."
+            message={<React.Fragment>
+              This app is in alpha state and is publicly available only since otherwise I cannot proceed developing it.
+              MVP is expected somewhere in <strike>August</strike> late July.
+            </React.Fragment>}
             callToAction="Learn more"
             action={this.showWelcome}
             handleClose={this.handleAnnouncementClose}
