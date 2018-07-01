@@ -21,3 +21,25 @@
   margin: auto;
   margin-top: 2rem;
 }
+
+:local(.userProfileContainer) {
+  position: relative;
+}
+
+:local(.userImage) {
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  margin: 0;
+  padding: 0;
+}
+
+:local(.userImage:hover) {
+  box-shadow: 0 0 10px #eee;
+}
+
+:local(.profileTooltip) {
+  padding-top: 1rem;
+  text-align: left;
+}

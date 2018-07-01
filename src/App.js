@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Button, Image, MenuItem,  Navbar, Nav, NavDropdown, NavItem, ProgressBar } from 'react-bootstrap';
+import { Button, Image, MenuItem,  Navbar, Nav, NavDropdown, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import {bindHandlers} from './utils/bind.js';
 import logo from './merge-google-slides.png';
 import styles from './App.css';
 import Announcement from "./components/Announcement";
 import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
+import UserProfile from "./components/UserProfile";
 
 class App extends Component {
   constructor(props) {
@@ -16,13 +17,19 @@ class App extends Component {
       'handleAnnouncementClose',
       'showWelcome',
       'handleWelcomeClose',
+      'showUserProfile',
+      'handleUserProfileClose',
       'onSignIn',
       );
     this.props.gapi.setStateHandler(this.handleGapiStateChange);
     this.state = {
       showAnnouncement: true,
       showWelcome: false,
+      showUserProfile: false,
       gapiState: this.props.gapi.state,
+      userName: null,
+      userEmail: null,
+      userImage: null,
     };
     // console.log('App.constructor() this.props.gapi:', this.props.gapi);
   }
@@ -63,13 +70,11 @@ class App extends Component {
                   Terms of Service
                 </MenuItem>
               </NavDropdown>
-              <NavItem href="https://github.com/OleksiyRudenko/merge-google-slides" target="_blank">
+              {/*<NavItem href="https://github.com/OleksiyRudenko/merge-google-slides" target="_blank">
                 GitHub
-              </NavItem>
-              <NavItem>
-                { this.state.gapiState.isSignedIn ? this.renderGoogleSignOut() : this.renderGoogleSignIn() }
-              </NavItem>
+              </NavItem>*/}
             </Nav>
+            { this.state.gapiState.isSignedIn ? <Nav pullRight><NavItem>{this.renderGoogleSignOut()}</NavItem></Nav> : '' }
           </Navbar.Collapse>
         </Navbar>
         { this.state.showAnnouncement ?
@@ -85,6 +90,15 @@ class App extends Component {
             handleClose={this.handleAnnouncementClose}
           /> : '' }
         { this.state.showWelcome ? <Welcome show={this.state.showWelcome} handleClose={this.handleWelcomeClose} /> : '' }
+        { this.state.showUserProfile ?
+          <UserProfile
+            show={this.state.showUserProfile}
+            userImage={this.state.userImage}
+            userName={this.state.userName}
+            userEmail={this.state.userEmail}
+            handleClose={this.handleUserProfileClose}
+            handleLogout={this.props.gapi.handleSignoutClick}
+          /> : '' }
       </React.Fragment>
     );
   }
@@ -93,27 +107,11 @@ class App extends Component {
     return (
       <div className={styles.googleLoader}>
         { this.state.gapiState.isClientLoaded
-          ? (this.state.gapiState.isSignInRequired ? this.renderDefaultGoogleSignIn('Please, sign in to your Google account') :
+          ? (this.state.gapiState.isSignInRequired ? this.renderDefaultGoogleSignIn('Please, sign in with your Google account') :
             <ProgressBar striped bsStyle="success" now={100} active label="Authenticating with Google..." />)
           : <ProgressBar striped bsStyle="warning" now={100} active label="Loading Google libraries..." />
         }
       </div>
-    );
-  }
-
-  /**
-   * Render Google Sign-In button
-   * @param {string} buttonSize
-   * @param {string} message
-   * @returns {*}
-   */
-  renderGoogleSignIn(buttonSize="xsmall", message) {
-    if (message) message+=' ';
-    return (
-      <React.Fragment>
-        {message}
-        <Button bsStyle="primary" bsSize={buttonSize} onClick={this.props.gapi.handleAuthClick}>Sign In</Button>
-      </React.Fragment>
     );
   }
 
@@ -126,10 +124,17 @@ class App extends Component {
     if (message) message+=' ';
     return (
       <React.Fragment>
-        {message}
+        <p>{message}
+          {/*<div className="g-signin2" data-onsuccess="GapiService.handleAuthClick" data-width="300" data-height="200" data-longtitle="true"></div>
+          <Button bsStyle="primary" bsSize="large" onClick={this.props.gapi.handleAuthClick}>Sign In</Button> */}
+        </p>
         <div id="g-signin2" />
-        {/*<div className="g-signin2" data-onsuccess="GapiService.handleAuthClick" data-width="300" data-height="200" data-longtitle="true"></div>
-        <Button bsStyle="primary" bsSize="large" onClick={this.props.gapi.handleAuthClick}>Sign In</Button> */}
+        <p/>
+        <p><b>Why should I?</b></p>
+        <p>For the app could load the Slides to merge.</p>
+        <p><b>Is this app verified by Google?</b></p>
+        <p>It is under revision yet. Please, check come back later (not sure yet when and how the verification process would complete)
+        or when prompted click <u>Advanced</u> and then <u>Go to oleksiyrudenko.github.io (unsafe)</u>.</p>
       </React.Fragment>
     );
   }
@@ -140,7 +145,20 @@ class App extends Component {
    */
   renderGoogleSignOut() {
     return (
-      <Button bsStyle="default" bsSize="xsmall" onClick={this.props.gapi.handleSignoutClick}>Sign Out</Button>
+      <React.Fragment>
+        {this.state.userName
+          ? <div className={styles.userProfileContainer}>
+              <OverlayTrigger placement="bottom" onClick={this.showUserProfile} overlay={
+                <Tooltip className={styles.profileTooltip} id="App-user-ptofile-tooltip" positionLeft={100} arrowOffsetLeft={20}>
+                  <p><strong>Google account</strong></p>
+                  <p>{this.state.userName}</p>
+                  <p>{this.state.userEmail}</p>
+                </Tooltip>}>
+                <Image className={styles.userImage} src={this.state.userImage} alt={this.state.userName} circle responsive />
+              </OverlayTrigger>
+            </div>
+          : <Button bsStyle="default" bsSize="xsmall" onClick={this.props.gapi.handleSignoutClick}>Sign Out</Button>}
+      </React.Fragment>
     );
   }
 
@@ -150,23 +168,14 @@ class App extends Component {
    */
   onSignIn(googleUser) {
     const profile = googleUser.getBasicProfile();
-    /* sessionStorage.setItem('authToken', profile.getId());
-    sessionStorage.setItem('name', profile.getName());
-    sessionStorage.setItem('imageUrl', profile.getImageUrl());
-    sessionStorage.setItem('email', profile.getEmail()); */
-
     this.props.gapi.setState({
       isSignedIn: true,
       isSignInRequired: false,
     });
-
-    /* const account = this.props.cursor.refine('account');
-    account.refine('authToken').set(sessionStorage.getItem('authToken'));
-    account.refine('name').set(sessionStorage.getItem('name'));
-    account.refine('imageUrl').set(sessionStorage.getItem('imageUrl'));
-    account.refine('email').set(sessionStorage.getItem('email')); */
-
     console.log('App.onSignIn() profile', profile);
+    this.props.gapi.getUserProfile().then(uprofile => {
+      console.log('App.onSignIn() profile from gapi', uprofile);
+    });
   }
 
   /**
@@ -178,15 +187,20 @@ class App extends Component {
     this.setState({
       gapiState: gapiState,
     });
-    this.state.gapiState.isClientLoaded && this.state.gapiState.isSignInRequired && window.gapi.signin2.render('g-signin2', {
-      scope: 'profile email', // 'https://www.googleapis.com/auth/plus.login'
-      width: 200,
-      height: 50,
-      longtitle: true,
-      theme: 'dark',
-      onsuccess: this.onSignIn,
-      // onfailure:
-    });
+    this.state.gapiState.isClientLoaded &&
+      this.state.gapiState.isSignInRequired &&
+      this.props.gapi.renderSignInButton(this.onSignIn, 50);
+    // preload profile
+    if (this.state.gapiState.isSignedIn) {
+      this.props.gapi.getUserProfile().then(profile => {
+        console.log('App.handleGapiStateChange', profile);
+        this.setState({
+          userName: profile.profile.name,
+          userEmail: profile.profile.email,
+          userImage: profile.profile.image,
+        });
+      });
+    }
   }
 
   /**
@@ -207,6 +221,27 @@ class App extends Component {
       showWelcome: false,
     });
   }
+
+  /**
+   * Set Welcome component visible
+   */
+  showUserProfile() {
+    console.log("App.showUserProfile()");
+    this.setState({
+      showUserProfile: true,
+    });
+  }
+
+  /**
+   * Set Welcome component hidden
+   */
+  handleUserProfileClose() {
+    // console.log('App.handleWelcomeClose()');
+    this.setState({
+      showUserProfile: false,
+    });
+  }
+
 
   /**
    * Set Announcement component hidden

@@ -1,0 +1,20 @@
+:local(.container) {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+:local(.container) img {
+    padding-right: 2rem;
+}
+
+:local(.userName) {
+    font-weight: 700;
+}
+
+:local(.userEmail) {
+    color: #999;
+}
+
+:local(.logout:hover) {
+    color: Red;
+}
