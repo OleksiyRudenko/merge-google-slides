@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { Button, Image, MenuItem,  Navbar, Nav, NavDropdown, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
+import { Button, Image,  Navbar, Nav, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import {bindHandlers} from './utils/bind.js';
 import logo from './merge-google-slides.png';
 import styles from './App.css';
