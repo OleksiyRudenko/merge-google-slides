@@ -60,6 +60,7 @@ export default class SourceDecks extends Component {
            {this.props.sourceList.map((id, idx) => {
               return (
                 <SourceDeck deckId={id}
+                            key={idx}
                             order={idx}
                             moveLeft={idx ? this.onMoveLeft : null}
                             moveRight={idx === this.state.decks.length - 1 ? null : this.onMoveRight}
