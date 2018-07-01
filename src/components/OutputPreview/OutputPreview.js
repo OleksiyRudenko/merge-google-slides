@@ -55,7 +55,7 @@ export default class OutputPreview extends Component {
         <Panel.Heading>
           <Glyphicon glyph="film" /> <span>Merged</span>{' '}
           <Button bsStyle="link" bsSize="small" title="Save merged"
-                  disabled={!this.props.sourceList}
+                  disabled={!this.props.sourceList || !this.props.sourceList.length}
                   onClick={this.handleSaveDialogOpen}>
             <Glyphicon glyph="save" />
           </Button>

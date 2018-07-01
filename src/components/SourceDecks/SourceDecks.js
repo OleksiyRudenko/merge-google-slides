@@ -27,7 +27,11 @@ export default class SourceDecks extends Component {
       <Panel>
         <Panel.Heading>
           <Glyphicon glyph="th" /> <span>Source decks</span>{' '}
-          <Button bsStyle="link" bsSize="small" title="Refresh all">
+          <Button bsStyle="link"
+                  bsSize="small"
+                  title="Refresh all"
+                  disabled={!this.props.sourceList || !this.props.sourceList.length}
+          >
             <Glyphicon glyph="refresh" onClick={this.props.refreshHandler} />
           </Button>
         </Panel.Heading>
