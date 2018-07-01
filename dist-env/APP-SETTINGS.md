@@ -2,6 +2,10 @@
 
 The tokens below are referred to in [README.md](README.md).
 
+* [CWS dev dashboard](https://chrome.google.com/webstore/developer/dashboard?pli=1&authuser=1)
+* [CWS dev dahsboard (new)](https://chrome.google.com/u/1/webstore/devconsole/g15019603610996171075/apjijeojdpjochnfenmmkegnifcgfaam/edit/package?hl=en_US)
+* [Google Cloud console](https://console.cloud.google.com/apis/credentials?project=merge-slides&authuser=1)
+
 `[Bracketed pieces]` are reservations for future use.
 
 Also check [Reference section](#reference) for related
