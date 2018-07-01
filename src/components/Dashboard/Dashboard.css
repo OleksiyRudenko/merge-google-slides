@@ -4,9 +4,52 @@
     width: calc(100% - 2rem);
 }
 
-.col-padding {
-    padding-left: 0.3rem;
-    padding-right: 0.3rem;
+.renderBoardContainer {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.renderBoardContainer > * {
+    margin-left: 0.5rem;
+}
+
+.renderBoardContainer:last-child {
+    padding-right: 0.5rem;
+}
+
+.minimalisticPanel {
+    display: inline-block;
+    width: max-content;
+    min-width: calc(202px + 0.6rem);
+}
+
+.minimalisticPanelBody {
+    display: flex;
+    flex-flow: column;
+    overflow-y: auto;
+}
+
+.fillingPanel {
+    flex: 1 0;
+}
+
+.fillingPanelBody {
+    display: flex;
+    flex-flow: row;
+    overflow: auto;
+}
+
+.fillingPanelBody > * {
+    margin-left: 0.5rem;
+}
+
+.fillingPanelBody:last-child {
+    margin-right: 0.5rem;
+}
+
+.panel-body {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 #dashboard-settings .panel {

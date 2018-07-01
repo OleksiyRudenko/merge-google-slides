@@ -51,7 +51,7 @@ export default class OutputPreview extends Component {
   render() {
     console.log('OutputPreview.render()', this.props, this.state);
     return (
-      <Panel className={styles.panelMin}>
+      <Panel className="minimalisticPanel">
         <Panel.Heading>
           <Glyphicon glyph="film" /> <span>Merged</span>{' '}
           <Button bsStyle="link" bsSize="small" title="Save merged"
@@ -61,12 +61,14 @@ export default class OutputPreview extends Component {
           </Button>
         </Panel.Heading>
         <Panel.Body>
+          <div  className="minimalisticPanelBody">
           {this.props.sourceList
             ? this.props.sourceList.map((slide, idx) => {
               console.log(slide);
               return <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />;
             })
             : <ProgressBar striped bsStyle="info" now={100} active /> }
+          </div>
         </Panel.Body>
         {this.state.showSaveDialog
           ? <SaveMergedDeck show={this.state.showSaveDialog} handleClose={this.handleSaveDialogClose} />

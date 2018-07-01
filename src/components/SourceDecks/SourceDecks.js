@@ -26,7 +26,7 @@ export default class SourceDecks extends Component {
    */
   render() {
     return (
-      <Panel>
+      <Panel className="fillingPanel">
         <Panel.Heading>
           <Glyphicon glyph="th" /> <span>Source decks</span>{' '}
           <Button bsStyle="link"
@@ -56,21 +56,17 @@ export default class SourceDecks extends Component {
    */
   renderPanelBody() {
     return (
-      <Panel.Body>
-        <Grid>
-          <Row className={styles.rowFlex}>
-            {this.props.sourceList.map((id, idx) => {
-              return (<Col className="col-padding col-min" key={id}>
+      <Panel.Body className="fillingPanelBody">
+           {this.props.sourceList.map((id, idx) => {
+              return (
                 <SourceDeck deckId={id}
                             order={idx}
                             moveLeft={idx ? this.onMoveLeft : null}
                             moveRight={idx === this.state.decks.length - 1 ? null : this.onMoveRight}
                             deleteDeck={this.deleteDeck}
                 />
-              </Col>);
+              );
             })}
-          </Row>
-        </Grid>
       </Panel.Body>
     );
   }

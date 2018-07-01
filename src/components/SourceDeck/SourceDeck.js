@@ -48,7 +48,7 @@ export default class SourceDeck extends Component {
   render() {
     // console.log('SourceDeck.render()', this.state);
     return (
-      <Panel className={styles.panelMin}>
+      <Panel className="minimalisticPanel">
         <Panel.Heading>
           <div className={styles.flexRow}>
             <Glyphicon glyph="film" className={styles.panelIcon} />

@@ -7,7 +7,7 @@ import { Col,
   Row,
 //  Tab
 } from 'react-bootstrap';
-import "./Dashboard.css";
+import styles from "./Dashboard.css";
 // import SettingsFile from '../SettingsFile';
 // import Destination from '../Destination';
 // import RenderingOptions from '../RenderingOptions';
@@ -84,24 +84,18 @@ export default class Dashboard extends Component {
             </Tab.Container>
           </Row>
         </Grid> */}
-        <Grid>
-          <Row className="clearfix">
-            <Col xs={4} sm={4} md={3} lg={2} className="col-padding">
-              <OutputPreview
-                sourceList={this.state.sourceSlidesList}
-                key={this.state.renderingKey + 1} />
-            </Col>
-            <Col xs={8} sm={8} md={9} lg={10} className="col-padding">
-              <SourceDecks sourceList={this.state.sourceDecksList}
-                           refreshHandler={this.refreshAll}
-                           moveDeckHandler={this.moveDeck}
-                           deleteDeckHandler={this.deleteDeck}
-                           key={this.state.renderingKey + 2}
-                           addDeckHandler={this.addDeck}
-              />
-            </Col>
-          </Row>
-        </Grid>
+        <div className="renderBoardContainer">
+          <OutputPreview
+            sourceList={this.state.sourceSlidesList}
+            key={this.state.renderingKey + 1} />
+          <SourceDecks sourceList={this.state.sourceDecksList}
+                       refreshHandler={this.refreshAll}
+                       moveDeckHandler={this.moveDeck}
+                       deleteDeckHandler={this.deleteDeck}
+                       key={this.state.renderingKey + 2}
+                       addDeckHandler={this.addDeck}
+          />
+        </div>
         {this.showGuide ? <Guide show={this.state.showGuide} handleClose={this.handleGuideClose} /> : ''}
       </React.Fragment>
     );
