@@ -62,14 +62,12 @@ class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
-              <NavDropdown eventKey={1} title="Docs" id="basic-nav-dropdown">
-                <MenuItem href="https://react-bootstrap.github.io/components/navbar/" target="_blank">
+              <NavItem href="https://oleksiyrudenko.github.io/merge-google-slides--privacy-policy.html" target="_blank">
                   Privacy Policy
-                </MenuItem>
-                <MenuItem href="http://getbootstrap.com/components/#glyphicons" target="_blank">
-                  Terms of Service
-                </MenuItem>
-              </NavDropdown>
+                </NavItem>
+              <NavItem href="https://oleksiyrudenko.github.io/general--terms-of-service.html" target="_blank">
+                Terms of Service
+              </NavItem>
               {/*<NavItem href="https://github.com/OleksiyRudenko/merge-google-slides" target="_blank">
                 GitHub
               </NavItem>*/}
