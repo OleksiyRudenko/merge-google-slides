@@ -14,7 +14,7 @@
 }
 
 .renderBoardContainer:last-child {
-    padding-right: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 .minimalisticPanel {
@@ -48,8 +48,7 @@
 }
 
 .panel-body {
-    padding-top: 0.5rem;
-    padding-bottom: 0.5rem;
+    padding: 0.5rem 0.3rem 0.5rem 0.3rem;
 }
 
 #dashboard-settings .panel {

@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import {
-  Button, Col, Glyphicon, Grid, Panel, Row,
+  Button, Glyphicon, Panel,
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import SourceDeck from "../SourceDeck";
-import styles from "./SourceDecks.css";
+// import "./SourceDecks.css";
 
 export default class SourceDecks extends Component {
   constructor(props) {
