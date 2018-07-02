@@ -9,8 +9,7 @@ export const gapiParams = {
   // next is intended to be joined with spaces: scope.join(' ')
   scope: [
     'https://www.googleapis.com/auth/drive.install',
-    'https://www.googleapis.com/auth/drive.file',
-    'https://www.googleapis.com/auth/drive.readonly',
-    'https://www.googleapis.com/auth/presentations.readonly',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/presentations',
   ],
 };

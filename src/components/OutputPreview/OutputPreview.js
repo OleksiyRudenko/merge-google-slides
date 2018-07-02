@@ -4,7 +4,7 @@ import {
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import Slide from "../Slide";
-import styles from './OutputPreview.css';
+// import styles from './OutputPreview.css';
 import SaveMergedDeck from "../SaveMergedDeck";
 
 export default class OutputPreview extends Component {
