@@ -1,56 +1,17 @@
-/* :local prefix when boilerplate generated with create-react-app */
-
-.container {
-    width: calc(100% - 2rem);
-}
-
-.renderBoardContainer {
+:local(.container) {
     display: flex;
     flex-flow: row nowrap;
+    margin: 1rem 2rem;
 }
 
-.renderBoardContainer > * {
-    margin-left: 0.5rem;
+:local(.container) > div {
+    margin: 0 3rem;
 }
 
-.renderBoardContainer:last-child {
-    margin-right: 0.5rem;
+:local(.container) > div > div {
+    margin: 2rem 0;
 }
 
-.minimalisticPanel {
-    display: inline-block;
-    width: max-content;
-    min-width: calc(202px + 0.6rem);
-}
-
-.minimalisticPanelBody {
-    display: flex;
-    flex-flow: column;
-    overflow-y: auto;
-}
-
-.fillingPanel {
-    flex: 1 0;
-}
-
-.fillingPanelBody {
-    display: flex;
-    flex-flow: row;
-    overflow: auto;
-}
-
-.fillingPanelBody > * {
-    margin-left: 0.5rem;
-}
-
-.fillingPanelBody:last-child {
-    margin-right: 0.5rem;
-}
-
-.panel-body {
-    padding: 0.5rem 0.3rem 0.5rem 0.3rem;
-}
-
-#dashboard-settings .panel {
-    border-top: none;
+:local(.carouselContainer) {
+    border: 1px solid DarkGray;
 }
