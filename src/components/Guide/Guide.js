@@ -55,7 +55,7 @@ export default class Guide extends Component {
     return (
       <Modal show={this.state.show} onHide={this.handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>This app is intented to get launched from your Google Drive!</Modal.Title>
+          <Modal.Title>This app is intended to get launched from your Google Drive!</Modal.Title>
         </Modal.Header>
         {this.renderMain()}
         <Modal.Footer>
