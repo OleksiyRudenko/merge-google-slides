@@ -1,0 +1,56 @@
+/* :local prefix when boilerplate generated with create-react-app */
+
+.container {
+    width: calc(100% - 2rem);
+}
+
+.renderBoardContainer {
+    display: flex;
+    flex-flow: row nowrap;
+}
+
+.renderBoardContainer > * {
+    margin-left: 0.5rem;
+}
+
+.renderBoardContainer:last-child {
+    margin-right: 0.5rem;
+}
+
+.minimalisticPanel {
+    display: inline-block;
+    width: max-content;
+    min-width: calc(202px + 0.6rem);
+}
+
+.minimalisticPanelBody {
+    display: flex;
+    flex-flow: column;
+    overflow-y: auto;
+}
+
+.fillingPanel {
+    flex: 1 0;
+}
+
+.fillingPanelBody {
+    display: flex;
+    flex-flow: row;
+    overflow: auto;
+}
+
+.fillingPanelBody > * {
+    margin-left: 0.5rem;
+}
+
+.fillingPanelBody:last-child {
+    margin-right: 0.5rem;
+}
+
+.panel-body {
+    padding: 0.5rem 0.3rem 0.5rem 0.3rem;
+}
+
+#dashboard-settings .panel {
+    border-top: none;
+}

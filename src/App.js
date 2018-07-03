@@ -8,6 +8,7 @@ import Announcement from "./components/Announcement";
 import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
 import UserProfile from "./components/UserProfile";
+import GoogleDriveInstallation from "./components/GoogleDriveInstallation";
 
 class App extends Component {
   constructor(props) {
@@ -44,7 +45,10 @@ class App extends Component {
         <React.Fragment>
           {this.renderNavbar()}
           {this.state.gapiState.isSignedIn
-            ? <Route path="/" render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} />} />
+            ? <React.Fragment>
+                <Route exact path="/" render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} />} />
+                <Route exact path={this.props.gapi.gapiParams.gDrive.installationCallBackPath} render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />} />
+              </React.Fragment>
             : this.renderGoogleLoaders()}
         </React.Fragment>
       </Router>

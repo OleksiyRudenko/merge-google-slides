@@ -1,4 +1,4 @@
-export const gapiParams = {
+const gapiParams = {
   apiKey: 'AIzaSyDLomXTkw7nadJGzSJKAdX3Mla22NKEWuQ',
   clientId: '79318749743-6phfjh4h3jn1iro2t5uaf7t4ajai92s8.apps.googleusercontent.com',
   discoveryDocs: [
@@ -12,4 +12,14 @@ export const gapiParams = {
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/presentations',
   ],
+  gDrive: {
+    installationCallBackPath: '/install',
+    installationCallBackUrl: null,
+    installationCodeParamName: 'installation_code',
+  },
 };
+
+const wloc = window.location;
+gapiParams.gDrive.installationCallBackUrl = wloc.protocol + '//' + wloc.host + gapiParams.gDrive.installationCallBackPath;
+
+export { gapiParams };

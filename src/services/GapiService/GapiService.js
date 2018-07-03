@@ -65,7 +65,7 @@ class _GapiService {
    * @private
    */
   _initClient() {
-    return window.gapi.client.init(this.gapiParams)
+    return window.gapi.client.init(Object.assign({}, this.gapiParams)) // .init mutates the params object
       .then(() => {
         this.setState({isClientLoaded: true}, 'GapiService._initClient().then(success)');
 
@@ -97,7 +97,7 @@ class _GapiService {
    * @private
    */
   _normalizeClientInitParams(params) {
-    return (typeof params.scope === 'string') ? params : Object.assign(params, {scope: params.scope.join(' ')});
+    return (typeof params.scope === 'string') ? Object.assign({}, params) : Object.assign({}, params, {scope: params.scope.join(' ')});
   }
 
   /**
@@ -241,6 +241,17 @@ class _GapiService {
     });
   }
 
+  getGDriveInstallationUrl() {
+    return new URL('?' + new URLSearchParams({
+      redirect_uri: this.gapiParams.gDrive.installationCallBackUrl,
+      response_type: this.gapiParams.gDrive.installationCodeParamName,
+      client_id: this.gapiParams.clientId,
+      approval_prompt: 'force',
+      scope: this.gapiParams.scope,
+      access_type: 'offline',
+    }), 'https://accounts.google.com/o/oauth2/auth');
+  }
+
   /**
    * Updates service state ReactJS-style
    * @param {Object} stateUpdate
@@ -253,6 +264,10 @@ class _GapiService {
     this.stateHandler && this.stateHandler(this.state);
   }
 
+  /**
+   * Creates Google Picker instance for Presentations
+   * @param {callback} callback to call when user completes Picker action
+   */
   createPickerPresentations(callback) {
     this.getUserProfile().then(profile => {
       const gpapi = window.google.picker;
