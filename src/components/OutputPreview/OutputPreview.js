@@ -54,7 +54,7 @@ export default class OutputPreview extends Component {
       <Panel className="minimalisticPanel">
         <Panel.Heading>
           <Glyphicon glyph="film" /> <span>Merged</span>{' '}
-          <Button bsStyle="link" bsSize="small" title="Save merged"
+          <Button bsStyle="link" bsSize="small" title="Save merged to Google Drive"
                   disabled={!this.props.sourceList || !this.props.sourceList.length}
                   onClick={this.handleSaveDialogOpen}>
             <Glyphicon glyph="save" />
