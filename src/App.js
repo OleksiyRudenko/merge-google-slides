@@ -9,6 +9,7 @@ import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
 import UserProfile from "./components/UserProfile";
 import GoogleDriveInstallation from "./components/GoogleDriveInstallation";
+import ButtonSignInWithGoogle from "./components/ButtonSignInWithGoogle/ButtonSignInWithGoogle";
 
 class App extends Component {
   constructor(props) {
@@ -46,8 +47,12 @@ class App extends Component {
           {this.renderNavbar()}
           {this.state.gapiState.isSignedIn
             ? <React.Fragment>
-                <Route exact path="/" render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} />} />
-                <Route exact path={this.props.gapi.gapiParams.gDrive.installationCallBackPath} render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />} />
+                <Route exact path="/"
+                       render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} />}
+                />
+                <Route exact path={this.props.gapi.gapiParams.gDrive.installationCallBackPath}
+                       render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />}
+                />
               </React.Fragment>
             : this.renderGoogleLoaders()}
         </React.Fragment>
@@ -132,7 +137,7 @@ class App extends Component {
           {/*<div className="g-signin2" data-onsuccess="GapiService.handleAuthClick" data-width="300" data-height="200" data-longtitle="true"></div>
           <Button bsStyle="primary" bsSize="large" onClick={this.props.gapi.handleAuthClick}>Sign In</Button> */}
         </p>
-        <div id="g-signin2" />
+        <ButtonSignInWithGoogle />
         <p/>
         <p><b>Why should I?</b></p>
         <p>For the app could load the Slides to merge.</p>
