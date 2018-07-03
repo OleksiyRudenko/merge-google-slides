@@ -152,6 +152,11 @@ class _GapiService {
     }, error => { throw new Error(error)});
   }
 
+  handleRevokeAccess() {
+    window.gapi.auth2.getAuthInstance().disconnect();
+    // SET STATE!
+  }
+
   /**
    * Renders Default sign in button
    * @param {callback|object} [callbacks] {onSuccess,onFailure}
