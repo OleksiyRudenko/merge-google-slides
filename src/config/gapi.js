@@ -14,8 +14,8 @@ const gapiParams = {
   ],
   gDrive: {
     installationCallBackPath: '/install',
-    installationCallBackUrl: null,
-    installationCodeParamName: 'installation_code',
+    installationCallBackUrl: undefined,
+    installationCodeParamName: 'code',
   },
 };
 
