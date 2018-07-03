@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import styles from "./Slide.css";
 import {SourceDecksService} from "../../services/SourceDecksService";
-// import {bindHandlers} from "../../utils/bind";
+import {bindHandlers} from "../../utils/bind";
 
 export default class Slide extends Component {
   constructor(props) {
@@ -11,8 +11,11 @@ export default class Slide extends Component {
       deckId: this.props.deckId,
       slideId: this.props.slideId,
       slideThumbnailUrl: null,
+      isError: false,
+      slideLabel: '',
+      slideTitle: '',
     };
-    // bindHandlers(this, 'loadThumbnail');
+    bindHandlers(this, 'loadThumbnail', '_makeSlideName');
   }
 
   /**
@@ -28,12 +31,26 @@ export default class Slide extends Component {
    */
   componentDidUpdate() {
     console.log('Slide.cDU()');
-    if (this.props.deckId !== this.state.deckId || this.props.slideId !== this.state.slideId) {
+    if (this.props.slideId === null) {
       this.setState({
         deckId: this.props.deckId,
         slideId: this.props.slideId,
-      });
-      this.loadThumbnail();
+        slideThumbnailUrl: null,
+        isError: false,
+        slideLabel: 'loading thumbnail...',
+        slideTitle: 'Loading ' + this._makeSlideName(this.props.deckId, this.props.slideId),
+      }, this.loadThumbnail());
+    } else {
+      if (this.props.deckId !== this.state.deckId || this.props.slideId !== this.state.slideId) {
+        this.setState({
+          deckId: this.props.deckId,
+          slideId: this.props.slideId,
+          slideThumbnailUrl: null,
+          isError: false,
+          slideLabel: 'loading thumbnail...',
+          slideTitle: 'Loading ' + this._makeSlideName(this.props.deckId, this.props.slideId),
+        }, this.loadThumbnail());
+      }
     }
   }
 
@@ -47,8 +64,14 @@ export default class Slide extends Component {
         {this.state.slideThumbnailUrl
           ? <img className={styles.slideThumbnail}
                  src={this.state.slideThumbnailUrl}
-                 alt={this.props.deckId + '/' + this.props.slideId} />
-          : <ProgressBar striped bsStyle="info" label={this.props.slideId} now={100} active />
+                 alt={this.state.deckId + '#' + this.state.slideId}
+                 title={this.state.deckId + '#' + this.state.slideId}
+          />
+          : <ProgressBar striped
+                         bsStyle={this.state.isError ? "danger" : "info"}
+                         title={this.state.slideTitle}
+                         label={this.state.slideLabel}
+                         now={100} active />
         }
       </div>
     );
@@ -58,10 +81,33 @@ export default class Slide extends Component {
    * Load/update thumbnail
    */
   loadThumbnail() {
-    console.log('Slide.loadThumbnail()');
+    console.log('Slide.loadThumbnail()', this.props);
     SourceDecksService.getThumbnail(this.props.deckId, this.props.slideId)
       .then(imageUrl => this.setState({
         slideThumbnailUrl: imageUrl,
-      }));
+        isError: false,
+        slideLabel: '',
+        slideTitle: this._makeSlideName(this.props.deckId, this.props.slideId),
+      }))
+      .catch(rejection => {
+        this.setState({
+          slideThumbnailUrl: null,
+          isError: true,
+          slideLabel: 'Error. Hover for details',
+          slideTitle: 'Please, refresh source decks. Couldn\'t load ' + this._makeSlideName(this.props.deckId, this.props.slideId),
+        });
+        console.log('Slide.loadThumbnail() catch', rejection);
+      });
+  }
+
+  /**
+   * Construct slide name
+   * @param {string} deckId
+   * @param {string} slideId
+   * @returns {string}
+   * @private
+   */
+  _makeSlideName(deckId, slideId) {
+    return deckId + '#' + slideId;
   }
 }

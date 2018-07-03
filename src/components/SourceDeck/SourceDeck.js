@@ -12,6 +12,7 @@ export default class SourceDeck extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      deckId: this.props.deckId,
       deckTitle: null,
       slides: null,
     };
@@ -40,6 +41,32 @@ export default class SourceDeck extends Component {
       .catch(rejection => {
         console.error('SourceDeck.componentDidMount() error ', rejection);
       });
+  }
+
+  componentDidUpdate() {
+    if (this.props.deckId !== this.state.deckId) {
+      this.setState({
+        deckId: this.props.deckId,
+        deckTitle: null,
+        slides: null,
+      });
+      SourceDecksService.getDeck(this.props.deckId)
+        .then(deck => {
+          // console.log('SourceDeck.componentDidMount() getDeck.then()', deck);
+          this.setState({
+            deckTitle: deck.title,
+          });
+          SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
+            // console.log('SourceDeck.componentDidMount() .getSlideIds.then()', slideIds);
+            this.setState({
+              slides: slideIds,
+            });
+          });
+        })
+        .catch(rejection => {
+          console.error('SourceDeck.componentDidMount() error ', rejection);
+        });
+    }
   }
 
   /**
