@@ -41,6 +41,7 @@ class App extends Component {
   }
 
   render() {
+    console.log('App.render() props, window.location', this.props, window.location);
     return (
       <Router basename={this.props.baseUrlPath}>
         <React.Fragment>

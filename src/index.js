@@ -15,6 +15,6 @@ unregister(); // -- disable client-side caching
 GapiService.init(gapiParams);
 
 
-ReactDOM.render(<App gapi={GapiService} baseUrlPath={window.location.hostname === 'localhost' ? '/merge-google-slides' : ''} />,
+ReactDOM.render(<App gapi={GapiService} baseUrlPath={window.location.hostname === 'localhost' ? '' : '/merge-google-slides'} />,
   document.getElementById('root'));
 // registerServiceWorker(); -- enable client-side caching
