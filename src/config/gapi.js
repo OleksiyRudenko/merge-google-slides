@@ -22,6 +22,6 @@ const gapiParams = {
 };
 
 const wloc = window.location;
-gapiParams.gDrive.installationCallBackUrl = wloc.protocol + '//' + wloc.host + gapiParams.gDrive.installationCallBackPath;
+gapiParams.gDrive.installationCallBackUrl = wloc.protocol + '//' + wloc.host + wloc.pathname + gapiParams.gDrive.installationCallBackPath;
 
 export { gapiParams };
