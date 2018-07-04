@@ -28,7 +28,6 @@ class _GapiService {
    */
   init(gapiParams) {
     this.gapiParams = this._normalizeClientInitParams(gapiParams);
-    // this.gapiParamsBackup = gapiParams;
     // load script
     const gapiScriptTag = document.createElement('script');
     const self = this;
@@ -65,7 +64,7 @@ class _GapiService {
    * @private
    */
   _initClient() {
-    return window.gapi.client.init(Object.assign({}, this.gapiParams)) // .init mutates the params object
+    return window.gapi.client.init(this._normalizeClientInitParams(this.gapiParams)) // .init mutates the params object
       .then(() => {
         this.setState({isClientLoaded: true}, 'GapiService._initClient().then(success)');
 
@@ -97,7 +96,14 @@ class _GapiService {
    * @private
    */
   _normalizeClientInitParams(params) {
-    return (typeof params.scope === 'string') ? Object.assign({}, params) : Object.assign({}, params, {scope: params.scope.join(' ')});
+    return Object.assign({}, params, {
+      redirect_uri: this._getCurrentUri(),
+    }, (typeof params.scope === 'string') ? {} : {scope: params.scope.join(' ')});
+  }
+
+  _getCurrentUri() {
+    const wloc = window.location;
+    return wloc.protocol + '//' + wloc.host + wloc.pathname;
   }
 
   /**
@@ -247,12 +253,13 @@ class _GapiService {
   }
 
   getGDriveInstallationUrl() {
+    const gapiParams = this._normalizeClientInitParams(this.gapiParams);
     return new URL('?' + new URLSearchParams({
-      redirect_uri: this.gapiParams.gDrive.installationCallBackUrl,
-      response_type: this.gapiParams.gDrive.installationCodeParamName,
-      client_id: this.gapiParams.clientId,
+      redirect_uri: gapiParams.gDrive.installationCallBackUrl,
+      response_type: gapiParams.gDrive.installationCodeParamName,
+      client_id: gapiParams.clientId,
       approval_prompt: 'force',
-      scope: this.gapiParams.scope,
+      scope: gapiParams.scope,
       access_type: 'offline',
     }), 'https://accounts.google.com/o/oauth2/auth');
   }
