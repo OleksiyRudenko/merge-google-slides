@@ -51,6 +51,18 @@ class _GapiService {
   }
 
   /**
+   * Sets gapiProps.login_hint
+   * @param userId
+   */
+  setGoogleLoginHint(userId) {
+    if (!!userId) {
+      this.gapiParams.login_hint = userId;
+    } else {
+      delete this.gapiParams.login_hint;
+    }
+  }
+
+  /**
    * On load, called to load the auth2 library and API client library.
    * @private
    */
@@ -254,14 +266,18 @@ class _GapiService {
 
   getGDriveInstallationUrl() {
     const gapiParams = this._normalizeClientInitParams(this.gapiParams);
-    return new URL('?' + new URLSearchParams({
+    const queryParams = {
       redirect_uri: gapiParams.gDrive.installationCallBackUrl,
       response_type: gapiParams.gDrive.installationCodeParamName,
       client_id: gapiParams.clientId,
       approval_prompt: 'force',
       scope: gapiParams.scope,
       access_type: 'offline',
-    }), 'https://accounts.google.com/o/oauth2/auth');
+    };
+    if (gapiParams.login_hint) {
+      queryParams.login_hint = gapiParams.login_hint;
+    }
+    return new URL('?' + new URLSearchParams(queryParams), 'https://accounts.google.com/o/oauth2/auth');
   }
 
   /**
