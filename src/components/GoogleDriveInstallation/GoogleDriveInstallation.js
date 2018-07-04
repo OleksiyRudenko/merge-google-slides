@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import queryString from 'qs';
-import { Button, Carousel } from 'react-bootstrap';
+import { Button, Carousel, ListGroup, ListGroupItem } from 'react-bootstrap';
+import { LinkContainer } from 'react-router-bootstrap';
 import ButtonWorksWithGoogleDrive from "../ButtonWorksWithGoogleDrive/ButtonWorksWithGoogleDrive";
 import ButtonInstallOnGoogleDrive from "../ButtonInstallOnGoogleDrive/ButtonInstallOnGoogleDrive";
 import styles from "./GoogleDriveInstallation.css";
@@ -58,7 +59,24 @@ export default class GoogleDriveInstallation extends Component {
         </div>
         <div>
           <h3>Already have the app installed?</h3>
-          Navigate to your Google Drive to select Slides to merge or add Slides one-by-one.
+          {this.props.gapi.state.isSignedIn ?
+            <React.Fragment>
+                <div>You've been already signed in.</div>
+                <div>To select Slides to merge navigate to either
+                  <ListGroup>
+                    <ListGroupItem href="https://drive.google.com/drive/" target="_blank">
+                      <img src="./assets/Google-Drive-icon-x24.png" alt="Google Drive icon" /> Google Drive™
+                    </ListGroupItem>
+                    <LinkContainer to="/" exact>
+                      <ListGroupItem>
+                        <img src="./ico/favicon-32x32.png" width="24" alt="Merge Google Slides icon" /> Merge Google Slides home page
+                      </ListGroupItem>
+                    </LinkContainer>
+                  </ListGroup>
+                </div>
+            </React.Fragment>
+            : <ButtonSignInWithGoogle />
+            }
         </div>
       </div>
     );
