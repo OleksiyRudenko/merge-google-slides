@@ -43,7 +43,7 @@ class App extends Component {
   render() {
     console.log('App.render() props, window.location', this.props, window.location);
     return (
-      <Router basename={this.props.baseUrlPath}>
+      <Router basename={this.props.appBaseUrlPath}>
         <React.Fragment>
           {this.renderNavbar()}
           {this.state.gapiState.isSignedIn
