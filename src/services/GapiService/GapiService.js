@@ -31,6 +31,8 @@ class _GapiService {
     // load script
     const gapiScriptTag = document.createElement('script');
     const self = this;
+    gapiScriptTag.async = true;
+    gapiScriptTag.type = 'text/javascript';
     gapiScriptTag.onload = function() {
       this.onload=function(){};
       self._handleClientLoad();
@@ -194,6 +196,16 @@ class _GapiService {
       onsuccess: callbacks.onSuccess,
       onfailure: callbacks.onFailure,
     });
+  }
+
+  renderGSuiteIntegrateWithGoogleButton(container = '', ui = {}) {
+    ui = Object.assign({}, {
+      width: 250,
+      theme: 'light',
+    }, ui);
+    if (this.gapiParams.applicationId) {
+      window.gapi.additnow.render(container, {applicationid: this.gapiParams.applicationId});
+    }
   }
 
   /**
