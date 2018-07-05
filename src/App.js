@@ -49,7 +49,7 @@ class App extends Component {
           {this.state.gapiState.isSignedIn
             ? <React.Fragment>
                 <Route exact path="/"
-                       render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} />}
+                       render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} gDriveState={this.props.gDriveState} />}
                 />
                 <Route exact path={this.props.gapi.gapiParams.gDrive.installationCallBackPath}
                        render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />}

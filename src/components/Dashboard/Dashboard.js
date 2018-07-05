@@ -16,7 +16,7 @@ export default class Dashboard extends Component {
     const urlParams = this.props.location.search ? queryString.parse(this.props.location.search.slice(1)) : {state: null};
     this.state = {
       urlParams: urlParams,
-      driveState: JSON.parse(urlParams.state),
+      driveState: this.props.gDriveState,
       renderingKey: Math.random(),
       showGuide: !urlParams.state,
       sourceDecksList: null,
