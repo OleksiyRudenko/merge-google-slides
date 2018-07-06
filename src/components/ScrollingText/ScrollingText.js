@@ -16,14 +16,20 @@ export default class ScrollingText extends Component {
     if (this.props.textData) {
       // remove scrolling class if <p> width is lesser than <div> width
       setTimeout(() => {
-        const stcw = document.getElementById('stc' + this.props.idBase).clientWidth;
-        const sttw = document.getElementById('stt' + this.props.idBase).offsetWidth;
-        if (stcw > sttw) {
-          this.setState({
-            isScrolling: false,
-          });
+        const stc = document.getElementById('stc' + this.props.idBase);
+        const stt = document.getElementById('stt' + this.props.idBase);
+        if (stc && stt) {
+          const stcw = stc.clientWidth;
+          const sttw = stt.offsetWidth;
+          if (stcw > sttw) {
+            this.setState({
+              isScrolling: false,
+            });
+          }
+          // console.log('ScrollingText.cDU()', this.props.textData, stcw, sttw);
+        } else {
+          console.error('ScrollingText.cDU() -- targeted elements do not exist anymore!', stc, stt);
         }
-        // console.log('ScrollingText.cDU()', this.props.textData, stcw, sttw);
       }, 300);
     }
   }
