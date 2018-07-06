@@ -8,7 +8,7 @@
 
 import {bindHandlers} from '../../utils/bind.js';
 
-class _GapiService {
+class GapiService {
   constructor(gapiParams=null) {
     if (!!gapiParams) {
       this.gapiParams = this._normalizeClientInitParams(gapiParams);
@@ -367,4 +367,4 @@ class _GapiService {
   } */
 }
 
-export const GapiService = new _GapiService();
+export default new GapiService();
