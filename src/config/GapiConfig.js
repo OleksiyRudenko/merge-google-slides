@@ -24,6 +24,7 @@ const gapiConfig = {
     },
     gDriveInstall: {
       // redirect_uri: gapiParams.gDrive.installationCallBackUrl,
+      // redirect+ : #/install
       response_type: 'code',
       approval_prompt: 'force',
       access_type: 'offline',

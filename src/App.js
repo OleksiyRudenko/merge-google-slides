@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route } from 'react-router-dom';
 import { Button, Image,  Navbar, Nav, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import {bindHandlers} from './utils/bind.js';
 import styles from './App.css';
@@ -8,7 +8,6 @@ import Welcome from './components/Welcome';
 import Dashboard from './components/Dashboard';
 import UserProfile from "./components/UserProfile";
 import GoogleDriveInstallation from "./components/GoogleDriveInstallation";
-import ButtonSignInWithGoogle from "./components/ButtonSignInWithGoogle/ButtonSignInWithGoogle";
 
 class App extends Component {
   constructor(props) {
@@ -42,18 +41,21 @@ class App extends Component {
   render() {
     console.log('App.render() props, window.location', this.props, window.location);
     return (
-      <Router basename={this.props.appBaseUrlPath}>
+      <Router noslash basename="">
         <React.Fragment>
           {this.renderNavbar()}
           {this.props.gapi.state.isClientLoaded
-            ? (this.props.gapi.state.isSignedUp && !this.props.appUrlSearchParams.install
+            ? <React.Fragment>
+              {this.props.gapi.state.isSignedIn
                 ? <Route exact path="/"
-                       render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} gDriveState={this.props.gDriveState} />}
+                         render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi}
+                                                          gDriveState={this.props.gDriveState}/>}
                 />
-                : <Route exact path="/"
-                       render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />}
-                />
-            )
+                : ''}
+              <Route exact path="/install"
+              render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />}
+              />
+            </React.Fragment>
             : this.renderGoogleLoaders()}
         </React.Fragment>
       </Router>
@@ -83,7 +85,7 @@ class App extends Component {
                 GitHub
               </NavItem>*/}
             </Nav>
-            { this.state.gapiState.isSignedIn ? <Nav pullRight><NavItem>{this.renderGoogleSignOut()}</NavItem></Nav> : '' }
+            { this.props.gapi.state.isSignedIn ? <Nav pullRight><NavItem>{this.renderGoogleSignOut()}</NavItem></Nav> : '' }
           </Navbar.Collapse>
         </Navbar>
         { this.state.showAnnouncement ?
@@ -115,36 +117,11 @@ class App extends Component {
   renderGoogleLoaders() {
     return (
       <div className={styles.googleLoader}>
-        { this.state.gapiState.isClientLoaded
-          ? (this.state.gapiState.isSignInRequired ? this.renderDefaultGoogleSignIn('Please, sign in with your Google account') :
-            <ProgressBar striped bsStyle="success" now={100} active label="Authenticating with Google..." />)
+        { this.props.gapi.state.isClientLoaded
+          ? <ProgressBar striped bsStyle="success" now={100} active label="Authenticating with Google..." />
           : <ProgressBar striped bsStyle="warning" now={100} active label="Loading Google libraries..." />
         }
       </div>
-    );
-  }
-
-  /**
-   * Render Google Sign-In button
-   * @param {string} message
-   * @returns {*}
-   */
-  renderDefaultGoogleSignIn(message) {
-    if (message) message+=' ';
-    return (
-      <React.Fragment>
-        <p>{message}
-          {/*<div className="g-signin2" data-onsuccess="GapiService.handleAuthClick" data-width="300" data-height="200" data-longtitle="true"></div>
-          <Button bsStyle="primary" bsSize="large" onClick={this.props.gapi.handleAuthClick}>Sign In</Button> */}
-        </p>
-        <ButtonSignInWithGoogle />
-        <p/>
-        <p><b>Why should I?</b></p>
-        <p>For the app could load the Slides to merge.</p>
-        <p><b>Is this app verified by Google?</b></p>
-        <p>It is under revision yet. Please, check come back later (not sure yet when and how the verification process would complete)
-        or when prompted click <u>Advanced</u> and then <u>Go to oleksiyrudenko.github.io (unsafe)</u>.</p>
-      </React.Fragment>
     );
   }
 
