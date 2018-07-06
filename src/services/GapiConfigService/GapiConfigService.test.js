@@ -1,4 +1,5 @@
 import GapiConfigService from "./GapiConfigService";
+import "url-search-params-polyfill";
 
 const gapiConfig = {
   general: {
@@ -106,7 +107,7 @@ it('adds oauth property and produces default oAuthObject as expected', () => {
 
 it('renders default oauth url properly', () => {
   expect(GapiConfigService.getOAuthUri({},{},'https://google/'))
-    .toBe('https://google/?clientId=11318749711-6phfjh4h3jn1iro2t5uaf7t4ajai92s8.apps.googleusercontent.com&discoveryDocs=https%3A%2F%2Fwww.googleapis.com%2Fdiscovery%2Fv1%2Fapis%2Fdrive%2Fv3%2Frest%2Chttps%3A%2F%2Fslides.googleapis.com%2F%24discovery%2Frest%3Fversion%3Dv1&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.install%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive%20https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fpresentations&redirect_uri=%2Fredirect-to-url');
+    .toBe('https://google/?clientId=11318749711-6phfjh4h3jn1iro2t5uaf7t4ajai92s8.apps.googleusercontent.com&discoveryDocs=https%3A%2F%2Fwww.googleapis.com%2Fdiscovery%2Fv1%2Fapis%2Fdrive%2Fv3%2Frest%2Chttps%3A%2F%2Fslides.googleapis.com%2F%24discovery%2Frest%3Fversion%3Dv1&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive.install+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fpresentations&redirect_uri=%2Fredirect-to-url');
 });
 
 it('renders filtered oauth search uri properly', () => {

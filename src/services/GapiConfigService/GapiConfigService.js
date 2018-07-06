@@ -158,9 +158,10 @@ class GapiConfigService {
     // build search string
     const params = {};
     Object.keys(paramsMap).forEach(key => { params[key] = oAuthObject[paramsMap[key]] || ''; });
-    const searchString = Object.keys(params)
+    /* const searchString = Object.keys(params)
         .map(param => encodeURIComponent(param) + '=' + encodeURIComponent(params[param]))
-        .join('&');
+        .join('&'); */
+    const searchString = new URLSearchParams(params).toString();
     return url + searchString;
   }
 

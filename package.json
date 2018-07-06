@@ -19,5 +19,8 @@
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
     "push-gh-pages": "push-dir --dir=build --branch=gh-pages --cleanup --verbose"
+  },
+  "devDependencies": {
+    "url-search-params-polyfill": "^4.0.0"
   }
 }
