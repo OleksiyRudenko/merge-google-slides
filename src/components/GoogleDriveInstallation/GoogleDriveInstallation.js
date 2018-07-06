@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import queryString from 'qs';
 import { Button, Carousel, Image, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import ButtonWorksWithGoogleDrive from "../ButtonWorksWithGoogleDrive/ButtonWorksWithGoogleDrive";
-import ButtonInstallOnGoogleDrive from "../ButtonInstallOnGoogleDrive/ButtonInstallOnGoogleDrive";
+// import ButtonInstallOnGoogleDrive from "../ButtonInstallOnGoogleDrive/ButtonInstallOnGoogleDrive";
 import styles from "./GoogleDriveInstallation.css";
 import ButtonSignInWithGoogle from "../ButtonSignInWithGoogle/ButtonSignInWithGoogle";
 import {bindHandlers} from "../../utils/bind";
@@ -17,13 +16,7 @@ const imagesBaseUrl = './guide/640x400/';
 export default class GoogleDriveInstallation extends Component {
   constructor(props) {
     super(props);
-    this.installationCodeParamName = this.props.gapi.gapiParams.gDrive.installationCodeParamName;
-    const defaultGDriveInstallationParam = {};
-    defaultGDriveInstallationParam[this.installationCodeParamName] = null;
-    const urlParams = this.props.location.search ? queryString.parse(this.props.location.search.slice(1)) : defaultGDriveInstallationParam;
-    this.state = {
-      urlParams: urlParams,
-    };
+    // this.installationCodeParamName = this.props.gapi.gapiParams.gDrive.installationCodeParamName;
     bindHandlers(this, 'onSignIn');
     console.log('GoogleDriveInstallation::props, state, installation URL', this.props, this.state, this.props.gapi.getGDriveInstallationUrl());
   }
@@ -70,11 +63,12 @@ export default class GoogleDriveInstallation extends Component {
               : <React.Fragment>
                 <h3>First time here?</h3>
                 <div>
-                  <ButtonInstallOnGoogleDrive bsSize="large" href={this.props.gapi.getGDriveInstallationUrl().toString()} />
+                  <ButtonSignInWithGoogle />
+                  {/*<ButtonInstallOnGoogleDrive bsSize="large" href={this.props.gapi.getGDriveInstallationUrl().toString()} /> */}
                 </div>
                 <h3>Already have the app installed?</h3>
-                <p>Please, sign in with your Google account</p>
-                <ButtonSignInWithGoogle />
+                <p>Please, sign in with your Google account above</p>
+                {/* <ButtonSignInWithGoogle /> */ }
                 <p><b>I did before. Why again?</b></p>
                 <p>Possible reasons are:</p>
                 <ul>

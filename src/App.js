@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter as Router, Route } from 'react-router-dom';
+import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import { Button, Image,  Navbar, Nav, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import {bindHandlers} from './utils/bind.js';
 import styles from './App.css';
@@ -46,15 +46,16 @@ class App extends Component {
           {this.renderNavbar()}
           {this.props.gapi.state.isClientLoaded
             ? <React.Fragment>
-              {this.props.gapi.state.isSignedIn
-                ? <Route exact path="/"
-                         render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi}
-                                                          gDriveState={this.props.gDriveState}/>}
+                <Route exact path="/"
+                       render={routeProps => (
+                         this.props.gapi.state.isSignedIn
+                           ? <Dashboard {...routeProps} gapi={this.props.gapi} gDriveState={this.props.gDriveState} />
+                           : <Redirect to="/install" />
+                       )}
                 />
-                : ''}
-              <Route exact path="/install"
-              render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />}
-              />
+                <Route exact path="/install"
+                  render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} /> }
+                />
             </React.Fragment>
             : this.renderGoogleLoaders()}
         </React.Fragment>

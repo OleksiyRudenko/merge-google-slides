@@ -15,7 +15,7 @@ const gapiParams = {
     'https://www.googleapis.com/auth/presentations',
   ],
   gDrive: {
-    installationCallBackPath: '#/install',
+    installationCallBackPath: '',
     installationCallBackUrl: undefined,
     installationCodeParamName: 'code',
   },

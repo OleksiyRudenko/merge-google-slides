@@ -18,7 +18,7 @@ export default class Dashboard extends Component {
       urlParams: urlParams,
       driveState: this.props.gDriveState,
       renderingKey: Math.random(),
-      showGuide: !urlParams.state,
+      showGuide: false, // !urlParams.state,
       sourceDecksList: null,
       sourceSlidesList: null,
     };
