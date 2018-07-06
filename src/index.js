@@ -14,7 +14,12 @@ unregister(); // -- disable client-side caching
 // initialize services
 GapiService.init(gapiParams);
 
-ReactDOM.render(<App gapi={GapiService} appStartUrl={getAppStartUrl()} appBaseUrlPath={getAppBasePathName()} gDriveState={getGDriveState()} />,
+ReactDOM.render(<App
+    gapi={GapiService}
+    appStartUrl={getAppStartUrl()}
+    appBaseUrlPath={getAppBasePathName()}
+    appUrlSearchParams={getUrlSearchParams()}
+    gDriveState={getGDriveState()} />,
   document.getElementById('root'));
 // registerServiceWorker(); -- enable client-side caching
 
@@ -36,4 +41,13 @@ function getAppBasePathName() {
 function getGDriveState() {
   const state = new URLSearchParams(window.location.search).get('state');
   return !!state ? JSON.parse(state) : undefined;
+}
+
+function getUrlSearchParams() {
+  let params = {};
+  const search = new URLSearchParams(window.location.search);
+  for (let p of search) {
+    params[p[0]] = p[1];
+  }
+  return params;
 }
