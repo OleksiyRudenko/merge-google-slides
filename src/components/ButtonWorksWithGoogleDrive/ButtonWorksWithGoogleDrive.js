@@ -1,7 +1,4 @@
 import React, { Component } from 'react';
-import { Button } from 'react-bootstrap';
-import logoGray from './Works-with-Google-Drive--Gray.png';
-import logoWhite from './Works-with-Google-Drive--White.png';
 
 export default class ButtonWorksWithGoogleDrive extends Component {
   /**
@@ -9,9 +6,9 @@ export default class ButtonWorksWithGoogleDrive extends Component {
    */
   render() {
     return (
-      <Button bsStyle={this.props.bsStyle || 'link'} bsSize={this.props.bsSize || 'small'} href={this.props.href} target="_blank">
-        <img src={this.props.white ? logoWhite : logoGray} alt="Works with Google Drive logo" />
-      </Button>
+      <a href={this.props.href} target="_blank">
+        <img src={`./assets/Works-with-Google-Drive--${this.props.white ? 'White' : 'Gray'}-contracted.png`} alt="Works with Google Drive logo" />
+      </a>
     );
   }
 }
