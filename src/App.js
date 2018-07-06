@@ -33,7 +33,7 @@ class App extends Component {
       userEmail: null,
       userImage: null,
     };
-    // console.log('App.constructor() this.props.gapi:', this.props.gapi);
+    console.log('App.constructor() props', this.props);
   }
 
   componentDidMount() {
@@ -46,15 +46,15 @@ class App extends Component {
       <Router basename={this.props.appBaseUrlPath}>
         <React.Fragment>
           {this.renderNavbar()}
-          {this.state.gapiState.isSignedIn
-            ? <React.Fragment>
-                <Route exact path="/"
+          {this.props.gapi.state.isClientLoaded
+            ? (this.props.gapi.state.isSignedUp && !this.props.appUrlSearchParams.install
+                ? <Route exact path="/"
                        render={routeProps => <Dashboard {...routeProps} gapi={this.props.gapi} gDriveState={this.props.gDriveState} />}
                 />
-                <Route exact path={this.props.gapi.gapiParams.gDrive.installationCallBackPath}
+                : <Route exact path="/"
                        render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />}
                 />
-              </React.Fragment>
+            )
             : this.renderGoogleLoaders()}
         </React.Fragment>
       </Router>
