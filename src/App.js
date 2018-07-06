@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Button, Image,  Navbar, Nav, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import {bindHandlers} from './utils/bind.js';
-import logo from './merge-google-slides.png';
 import styles from './App.css';
 import Announcement from "./components/Announcement";
 import Welcome from './components/Welcome';
@@ -67,7 +66,7 @@ class App extends Component {
         <Navbar inverse fixedTop>
           <Navbar.Header>
             <Navbar.Brand>
-              <Image src={logo} alt="Merge Google Slides logo" />
+              <Image src="./ico/android-icon-48x48.png" alt="Merge Google Slides logo" />
               Merge Google Slides
             </Navbar.Brand>
             <Navbar.Toggle />
