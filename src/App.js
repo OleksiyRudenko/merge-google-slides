@@ -136,7 +136,7 @@ class App extends Component {
         {this.state.userName
           ? <div className={styles.userProfileContainer}>
               <OverlayTrigger placement="bottom" onClick={this.showUserProfile} overlay={
-                <Tooltip className={styles.profileTooltip} id="App-user-ptofile-tooltip" positionLeft={100} arrowOffsetLeft={20}>
+                <Tooltip className={styles.profileTooltip} id="App-user-profile-tooltip" positionLeft={100} arrowOffsetLeft={20}>
                   <p><strong>Google account</strong></p>
                   <p>{this.state.userName}</p>
                   <p>{this.state.userEmail}</p>
