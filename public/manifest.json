@@ -1,6 +1,7 @@
 {
-  "short_name": "Merge Google Slides",
   "name": "Merge Google Slides",
+  "short_name": "Merge Google Slides",
+  "description": "Merge Google Slides decks into a single deck",
   "icons": [
     {
       "src": ".\/favicon.ico",
@@ -44,8 +45,29 @@
       "density": "4.0"
     }
   ],
-  "start_url": "./index.html",
+  "start_url": ".",
   "display": "standalone",
   "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "#ffffff",
+  "container": ["DOMAIN_INSTALLABLE", "GOOGLE_DRIVE"],
+  "api_console_project_id": "79318749743",
+  "app": {
+    "urls": [
+      "https://oleksiyrudenko.github.io/merge-google-slides/"
+    ],
+    "launch": {
+      "web_url": "https://oleksiyrudenko.github.io/merge-google-slides/"
+    }
+  },
+  "gdrive_mime_types": {
+    "http://drive.google.com/intents/opendrivedoc": [
+      {
+        "type": ["application/pdf", "application/vnd.google.drive.ext-type.pdf",
+          "application/vnd.google-apps.presentation"],
+        "href": "https://oleksiyrudenko.github.io/merge-google-slides/",
+        "title": "Open",
+        "disposition": "window"
+      }
+    ]
+  }
 }
