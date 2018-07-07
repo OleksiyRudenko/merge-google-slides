@@ -44,17 +44,17 @@ export default class Welcome extends Component {
         <h4>Hi there!</h4>
         <p>
           You must have landed here
-          from <a href="https://chrome.google.com/webstore/detail/merge-google-slides/apjijeojdpjochnfenmmkegnifcgfaam">Chrome Web Store</a> or <a href="https://gsuite.google.com/marketplace">
+          from <a href="https://chrome.google.com/webstore/detail/merge-google-slides/apjijeojdpjochnfenmmkegnifcgfaam" target="_blank">Chrome Web Store</a> or <a href="https://gsuite.google.com/marketplace" target="_blank">
           G Suite Marketplace</a>.
         </p>
         <p>
           My apologies it is still alpha-version and is publicly available only since otherwise
           I cannot proceed developing it. I expect to offer you an MVP (simple sticking Google Slides
           together) somewhere in late August. More features are to come later. Please, feel free checking
-          out <a href="https://github.com/OleksiyRudenko/merge-google-slide">the project on GitHub</a>.
+          out <a href="https://github.com/OleksiyRudenko/merge-google-slide" target="_blank">the project on GitHub</a>.
         </p>
         <p>
-          Please, feel free <a href="https://goo.gl/forms/G4zwJklIrxOP60ys1">subscribing for announcements</a> while
+          Please, feel free <a href="https://goo.gl/forms/G4zwJklIrxOP60ys1" target="_blank">subscribing for announcements</a> while
           I promise:
         </p>
         <ul>
@@ -75,7 +75,7 @@ export default class Welcome extends Component {
           generation of auto-export URLs for Native Google Documents and also shortening URLs for any files stored on Google Drive.
         </p>
         <p>
-          Feel free checking it out on <a href="https://gsuite.google.com/marketplace/app/link_manager_for_google_drive_gassa/940998321600">G Suite Marketplace</a> or <a href="https://chrome.google.com/webstore/detail/link-manager-for-google-d/nakhlchefdilapgmhehbpmkgchadojjl">
+          Feel free checking it out on <a href="https://gsuite.google.com/marketplace/app/link_manager_for_google_drive_gassa/940998321600">G Suite Marketplace</a> or <a href="https://chrome.google.com/webstore/detail/link-manager-for-google-d/nakhlchefdilapgmhehbpmkgchadojjl" target="_blank">
           Chrome Web Store</a>. You may be required to install
           it from the context of Google Drive:
         </p>
