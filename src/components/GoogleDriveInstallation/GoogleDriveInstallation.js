@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Button, Carousel, Image, ListGroup, ListGroupItem } from 'react-bootstrap';
 import { LinkContainer } from 'react-router-bootstrap';
 import ButtonWorksWithGoogleDrive from "../ButtonWorksWithGoogleDrive/ButtonWorksWithGoogleDrive";
-// import ButtonInstallOnGoogleDrive from "../ButtonInstallOnGoogleDrive/ButtonInstallOnGoogleDrive";
+import ButtonInstallOnGoogleDrive from "../ButtonInstallOnGoogleDrive/ButtonInstallOnGoogleDrive";
 import styles from "./GoogleDriveInstallation.css";
 import ButtonSignInWithGoogle from "../ButtonSignInWithGoogle/ButtonSignInWithGoogle";
 import {bindHandlers} from "../../utils/bind";
@@ -63,12 +63,11 @@ export default class GoogleDriveInstallation extends Component {
               : <React.Fragment>
                 <h3>First time here?</h3>
                 <div>
-                  <ButtonSignInWithGoogle />
-                  {/*<ButtonInstallOnGoogleDrive bsSize="large" href={this.props.gapi.getGDriveInstallationUrl().toString()} /> */}
+                  <ButtonInstallOnGoogleDrive bsSize="large" href={this.props.gapi.getGDriveInstallationUrl().toString()} />
                 </div>
                 <h3>Already have the app installed?</h3>
                 <p>Please, sign in with your Google account above</p>
-                {/* <ButtonSignInWithGoogle /> */ }
+                <ButtonSignInWithGoogle />
                 <p><b>I did before. Why again?</b></p>
                 <p>Possible reasons are:</p>
                 <ul>

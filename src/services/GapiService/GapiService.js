@@ -279,7 +279,7 @@ class GapiService {
   getGDriveInstallationUrl() {
     const gapiParams = this._normalizeClientInitParams(this.gapiParams);
     const queryParams = {
-      redirect_uri: gapiParams.gDrive.installationCallBackUrl,
+      redirect_uri: gapiParams.redirect_uri,
       response_type: gapiParams.gDrive.installationCodeParamName,
       client_id: gapiParams.clientId,
       approval_prompt: 'force',

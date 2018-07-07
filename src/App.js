@@ -178,7 +178,7 @@ class App extends Component {
       this.state.gapiState.isSignInRequired &&
       this.props.gapi.renderSignInButton(this.onSignIn, 50);
     // preload profile
-    if (this.state.gapiState.isSignedIn) {
+    if (this.props.gapi.state.isSignedIn) {
       this.props.gapi.getUserProfile().then(profile => {
         console.log('App.handleGapiStateChange', profile);
         this.setState({
