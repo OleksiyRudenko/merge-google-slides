@@ -11,6 +11,11 @@ import { gapiParams } from "./config/gapi";
 import { unregister } from './registerServiceWorker'; // -- disable client-side caching
 unregister(); // -- disable client-side caching
 
+const gDriveState = getGDriveState();
+if (gDriveState && gDriveState.userId) {
+  gapiParams.login_hint = gDriveState.userId;
+}
+
 // initialize services
 GapiService.init(gapiParams);
 
