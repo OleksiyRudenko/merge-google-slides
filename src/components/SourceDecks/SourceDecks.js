@@ -66,17 +66,31 @@ export default class SourceDecks extends Component {
   renderPanelBody() {
     return (
       <Panel.Body className="fillingPanelBody">
-           {this.props.sourceList.map((id, idx) => {
-              return (
-                <SourceDeck deckId={id}
-                            key={idx}
-                            order={idx}
-                            moveLeft={idx ? this.onMoveLeft : null}
-                            moveRight={idx === this.state.decks.length - 1 ? null : this.onMoveRight}
-                            deleteDeck={this.deleteDeck}
-                />
-              );
-            })}
+        {!this.props.sourceList || !this.props.sourceList.length
+          ? <div>
+            <p>No decks to merge yet.</p>
+            <Button bsStyle="link"
+                    bsSize="small"
+                    title="Add Slides deck"
+                    onClick={this.addDeck}
+            >
+              <Glyphicon glyph="plus" /> Add some
+            </Button>
+            right here or start from <a title="Start from your Google Drive" href="https://drive.google.com/drive/" >
+              your <img src="./assets/Google-Drive-icon-x24.png" alt="Go to Google Drive" /> Google Drive</a>
+          </div>
+          : ''}
+        {this.props.sourceList.map((id, idx) => {
+          return (
+            <SourceDeck deckId={id}
+                        key={idx}
+                        order={idx}
+                        moveLeft={idx ? this.onMoveLeft : null}
+                        moveRight={idx === this.state.decks.length - 1 ? null : this.onMoveRight}
+                        deleteDeck={this.deleteDeck}
+            />
+          );
+        })}
       </Panel.Body>
     );
   }
