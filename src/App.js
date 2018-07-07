@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
 import { Button, Image,  Navbar, Nav, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import {bindHandlers} from './utils/bind.js';
@@ -31,6 +31,7 @@ class App extends Component {
       userEmail: null,
       userImage: null,
     };
+    this.isRedirected = false;
     console.log('App.constructor() props', this.props);
   }
 
@@ -42,31 +43,42 @@ class App extends Component {
     console.log('App.render() props, window.location', this.props, window.location);
     return (
       <Router noslash basename="">
-        <React.Fragment>
+        <Fragment>
           {this.renderNavbar()}
           {this.props.gapi.state.isClientLoaded
-            ? <React.Fragment>
+            ? <Fragment>
                 <Route exact path="/"
                        render={routeProps => (
                          this.props.gapi.state.isSignedIn
-                           ? <Dashboard {...routeProps} gapi={this.props.gapi} gDriveState={this.props.gDriveState} />
-                           : <Redirect to="/install" />
+                           ? (<Fragment>
+                             { this.isRedirected = false}
+                             <Dashboard {...routeProps} gapi={this.props.gapi} gDriveState={this.props.gDriveState} />
+                           </Fragment>)
+                           : (<Fragment>
+                             { this.isRedirected = true } <Redirect to="/install" />
+                           </Fragment>)
                        )}
                 />
                 <Route exact path="/install"
-                  render={routeProps => <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} /> }
+                  render={routeProps => (
+                    this.isRedirected && this.props.gapi.state.isSignedIn
+                      ? (<Fragment>
+                        { this.isRedirected = false } <Redirect to="/" />
+                      </Fragment>)
+                      : <GoogleDriveInstallation {...routeProps} gapi={this.props.gapi} />
+                  )}
                 />
-            </React.Fragment>
+            </Fragment>
             : this.renderGoogleLoaders()}
-        </React.Fragment>
+        </Fragment>
       </Router>
     );
   }
 
   renderNavbar() {
     return (
-      <React.Fragment>
-        <Navbar inverse fixedTop>
+      <Fragment>
+        <Navbar inverse fixedTop fluid={true} collapseOnSelect={true}>
           <Navbar.Header>
             <Navbar.Brand>
               <Image src="./ico/android-icon-48x48.png" alt="Merge Google Slides logo" />
@@ -93,10 +105,10 @@ class App extends Component {
           <Announcement
             announcementStyle="warning"
             title="Important note!"
-            message={<React.Fragment>
+            message={<Fragment>
               This app is in alpha state and is publicly available only since otherwise I cannot proceed developing it.
               MVP is expected somewhere in <strike>August</strike> late July.
-            </React.Fragment>}
+            </Fragment>}
             callToAction="Learn more"
             action={this.showWelcome}
             handleClose={this.handleAnnouncementClose}
@@ -111,7 +123,7 @@ class App extends Component {
             handleClose={this.handleUserProfileClose}
             handleLogout={this.props.gapi.handleSignoutClick}
           /> : '' }
-      </React.Fragment>
+      </Fragment>
     );
   }
 
@@ -132,7 +144,7 @@ class App extends Component {
    */
   renderGoogleSignOut() {
     return (
-      <React.Fragment>
+      <Fragment>
         {this.state.userName
           ? <div className={styles.userProfileContainer}>
               <OverlayTrigger placement="bottom" onClick={this.showUserProfile} overlay={
@@ -145,7 +157,7 @@ class App extends Component {
               </OverlayTrigger>
             </div>
           : <Button bsStyle="default" bsSize="xsmall" onClick={this.props.gapi.handleSignoutClick}>Sign Out</Button>}
-      </React.Fragment>
+      </Fragment>
     );
   }
 
@@ -174,8 +186,8 @@ class App extends Component {
     this.setState({
       gapiState: gapiState,
     });
-    this.state.gapiState.isClientLoaded &&
-      this.state.gapiState.isSignInRequired &&
+    this.props.gapi.state.isClientLoaded &&
+      this.props.gapi.state.isSignInRequired &&
       this.props.gapi.renderSignInButton(this.onSignIn, 50);
     // preload profile
     if (this.props.gapi.state.isSignedIn) {
