@@ -36,6 +36,15 @@ export default class SourceDecks extends Component {
           >
             <Glyphicon glyph="plus" />
           </Button>
+          {!this.props.sourceList || !this.props.sourceList.length
+            ? <a
+              title="Start from your Google Drive"
+              href="https://drive.google.com/drive/"
+            >
+              <img src="./assets/Google-Drive-icon-x24.png" alt="Go to Google Drive" />
+            </a>
+            : ''
+          }
           <Button bsStyle="link"
                   bsSize="small"
                   title="Refresh all"
