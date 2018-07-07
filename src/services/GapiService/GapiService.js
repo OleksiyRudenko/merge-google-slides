@@ -188,7 +188,7 @@ class GapiService {
     callbacks = this._normalizeGoogleSignInButtonCallbacks(callbacks);
     console.log('GapiService.renderSignInButton', ui, callbacks);
     window.gapi.signin2.render(ui.id, {
-      scope: 'profile email', // 'https://www.googleapis.com/auth/plus.login'
+      scope: 'profile email ' + this.gapiParams.scope, // 'https://www.googleapis.com/auth/plus.login'
       width: ui.width,
       height: ui.height,
       longtitle: ui.longtitle,
