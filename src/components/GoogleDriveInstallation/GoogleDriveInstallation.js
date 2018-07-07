@@ -84,7 +84,7 @@ export default class GoogleDriveInstallation extends Component {
                 </p>
                 <p><b>Is this app verified by Google?</b></p>
                 <p>It is under revision yet. Not sure yet when and how the verification process would complete.
-                  Please, come back later or when prompted click <u>Advanced</u> and then <u>Go to Merge Google Slides (unsafe)</u>.</p>
+                  Please, come back later or when prompted click <u>Advanced</u> and then <u>Go to oleksiyrudenko.github.io (unsafe)</u>.</p>
               </React.Fragment>}
           </div>
           <div>
