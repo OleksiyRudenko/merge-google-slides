@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { HashRouter as Router, Route, Redirect } from 'react-router-dom';
-import { Button, Image,  Navbar, Nav, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
+import { Button, Glyphicon, Image, Navbar, Nav, NavItem, OverlayTrigger, ProgressBar, Tooltip } from 'react-bootstrap';
 import {bindHandlers} from './utils/bind.js';
 import styles from './App.css';
 import Announcement from "./components/Announcement";
@@ -88,9 +88,12 @@ class App extends Component {
           </Navbar.Header>
           <Navbar.Collapse>
             <Nav>
+              <NavItem href="https://goo.gl/forms/G4zwJklIrxOP60ys1" target="_blank" title="Submit a bug report or suggestion">
+                <Glyphicon glyph="flash" />
+              </NavItem>
               <NavItem href="https://oleksiyrudenko.github.io/merge-google-slides--privacy-policy.html" target="_blank">
                   Privacy Policy
-                </NavItem>
+              </NavItem>
               <NavItem href="https://oleksiyrudenko.github.io/general--terms-of-service.html" target="_blank">
                 Terms of Service
               </NavItem>
