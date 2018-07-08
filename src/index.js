@@ -5,11 +5,15 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 import App from './App';
 import GapiService from './services/GapiService';
+import SourceDecksService from './services/SourceDecksService';
 import { gapiParams } from "./config/gapi";
+import GSlidesService from "./services/GSlidesService";
 // import './utils/koala-js-promisified/koala-js.testcases';
 // import registerServiceWorker from './registerServiceWorker'; // -- enable client-side caching
 import { unregister } from './registerServiceWorker'; // -- disable client-side caching
 unregister(); // -- disable client-side caching
+
+GSlidesService.init(SourceDecksService);
 
 const gDriveState = getGDriveState();
 if (gDriveState && gDriveState.userId) {
