@@ -1,20 +1,39 @@
 import React, { Component } from 'react';
 import {
-  Modal, Button, Glyphicon,
+  Button, Glyphicon, Modal, ProgressBar
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
+import GSlidesService from "../../services/GSlidesService";
+import SourceDecksService from "../../services/SourceDecksService/SourceDecksService";
 
 export default class SaveMergedDeck extends Component {
   constructor(props) {
     super(props);
-    console.log('SaveMergedDeck.constructor()', this.props);
+    this.debug = true;
+    this.debug && console.log('SaveMergedDeck.constructor()', this.props);
     this.state = {
       show: this.props.show,
+      fileName: undefined,
+      folderName: undefined,
+      folderId: undefined,
     };
     bindHandlers(this,
       'renderMain',
       'handleClose',
+      'handleSave',
     );
+  }
+
+  componentDidMount() {
+    this.debug && console.log('SaveMergedDeck.cDM()');
+    if (this.state.show && !this.state.fileName) {
+      this.updateDestination();
+    }
+  }
+
+  componentDidUpdate() {
+    this.debug && console.log('SaveMergedDeck.cDU()');
+    // (this.state.show && this.state.fileName) || this.updateDestination();
   }
 
   /**
@@ -28,7 +47,7 @@ export default class SaveMergedDeck extends Component {
         </Modal.Header>
         {this.renderMain()}
         <Modal.Footer>
-          <Button bsStyle="primary" disabled={true}><Glyphicon glyph="save" /> Save</Button>
+          <Button bsStyle="primary" disabled={!this.state.fileName} onClick={this.handleSave}><Glyphicon glyph="save" /> Save</Button>
           <Button onClick={this.handleClose}>Close</Button>
         </Modal.Footer>
       </Modal>
@@ -47,6 +66,12 @@ export default class SaveMergedDeck extends Component {
           This is still an alpha version of the app. Please, check the <b>Important note</b> on the main page for details.
           Please, come back after July 15, 2018 to check beta version.
         </p>
+        {this.state.fileName
+          ? <p>Output will be created as <u><b>{this.state.fileName}</b></u> under <a href={`https://drive.google.com/drive/u/0/folders/${this.state.folderId}`} target="_blank" rel="noopener noreferrer">
+            {this.state.folderName}</a> folder.
+          </p>
+          : <ProgressBar striped bsStyle="info" now={100} active />
+        }
       </Modal.Body>
     );
   }
@@ -59,5 +84,41 @@ export default class SaveMergedDeck extends Component {
       show: false,
     });
     this.props.handleClose();
+  }
+
+  updateDestination() {
+    GSlidesService.getSuggestedDestination().then(destination => {
+      this.debug && console.log('SaveMergedDeck.updateDestination() destination', destination);
+      this.state.show && this.setState({
+        fileName: destination.filename + ' (' + this.getCurrentDT() + ')',
+        folderName: destination.parentFolder.name,
+        folderId: destination.parentFolder.id,
+      });
+    });
+  }
+
+  handleSave() {
+    this.debug && console.log('SaveMergedDeck.handleSave()');
+    GSlidesService.createDeck({
+      fileName: this.state.fileName,
+      parentFolderId: this.state.folderId,
+    }).then(file => {
+      this.debug && console.log('SaveMergedDeck.handleSave() file', file);
+      return GSlidesService.mergeDecks(file.id, SourceDecksService.getDeckIds());
+    }).then(result => {
+      this.debug && console.log('SaveMergedDeck.handleSave() merger result', result);
+    }).catch(err => {
+      // ERRORS
+    });
+  }
+
+  getCurrentDT() {
+    const d = new Date();
+    return [ d.getFullYear(), this.pad(d.getMonth() + 1), this.pad(d.getDate()) ].join('-') +
+      ' ' + [this.pad(d.getHours()), this.pad(d.getMinutes()), this.pad(d.getSeconds()) ].join('-');
+  }
+
+  pad(str) {
+    return str.toString().padStart(2, '0');
   }
 }
