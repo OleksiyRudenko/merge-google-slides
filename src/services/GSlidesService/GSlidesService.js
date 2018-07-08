@@ -17,7 +17,7 @@ class GSlidesService {
   getSuggestedDestination() {
     const deckIds = this.sds.getDeckIds();
     let destination = {
-      filename: undedfined,
+      filename: undefined,
       parentFolder: {
         id: undefined,
         name: undefined,
