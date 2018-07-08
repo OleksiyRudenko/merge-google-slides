@@ -12,6 +12,7 @@ import GoogleDriveInstallation from "./components/GoogleDriveInstallation";
 class App extends Component {
   constructor(props) {
     super(props);
+    this.debug = false;
     bindHandlers(this,
       'handleGapiStateChange',
       'handleAnnouncementClose',
@@ -32,7 +33,7 @@ class App extends Component {
       userImage: null,
     };
     this.isRedirected = false;
-    console.log('App.constructor() props', this.props);
+    this.debug && console.log('App.constructor() props', this.props);
   }
 
   componentDidMount() {
@@ -40,7 +41,7 @@ class App extends Component {
   }
 
   render() {
-    console.log('App.render() props, window.location', this.props, window.location);
+    this.debug && console.log('App.render() props, window.location', this.props, window.location);
     return (
       <Router noslash basename="">
         <Fragment>
@@ -174,9 +175,9 @@ class App extends Component {
       isSignedIn: true,
       isSignInRequired: false,
     });
-    console.log('App.onSignIn() profile', profile);
+    this.debug && console.log('App.onSignIn() profile', profile);
     this.props.gapi.getUserProfile().then(uprofile => {
-      console.log('App.onSignIn() profile from gapi', uprofile);
+      this.debug && console.log('App.onSignIn() profile from gapi', uprofile);
     });
   }
 
@@ -185,7 +186,7 @@ class App extends Component {
    * @param gapiState
    */
   handleGapiStateChange(gapiState) {
-    // console.log('App.handleGapiStateChange()', gapiState);
+    // this.debug && console.log('App.handleGapiStateChange()', gapiState);
     this.setState({
       gapiState: gapiState,
     });
@@ -195,7 +196,7 @@ class App extends Component {
     // preload profile
     if (this.props.gapi.state.isSignedIn) {
       this.props.gapi.getUserProfile().then(profile => {
-        console.log('App.handleGapiStateChange', profile);
+        this.debug && console.log('App.handleGapiStateChange', profile);
         this.setState({
           userName: profile.profile.name,
           userEmail: profile.profile.email,
@@ -218,7 +219,7 @@ class App extends Component {
    * Set Welcome component hidden
    */
   handleWelcomeClose() {
-    // console.log('App.handleWelcomeClose()');
+    // this.debug && console.log('App.handleWelcomeClose()');
     this.setState({
       showWelcome: false,
     });
@@ -228,7 +229,7 @@ class App extends Component {
    * Set Welcome component visible
    */
   showUserProfile() {
-    console.log("App.showUserProfile()");
+    this.debug && console.log("App.showUserProfile()");
     this.setState({
       showUserProfile: true,
     });
@@ -238,7 +239,7 @@ class App extends Component {
    * Set Welcome component hidden
    */
   handleUserProfileClose() {
-    // console.log('App.handleWelcomeClose()');
+    // this.debug && console.log('App.handleWelcomeClose()');
     this.setState({
       showUserProfile: false,
     });
@@ -249,7 +250,7 @@ class App extends Component {
    * Set Announcement component hidden
    */
   handleAnnouncementClose() {
-    // console.log('App.handleAnnouncementClose()');
+    // this.debug && console.log('App.handleAnnouncementClose()');
     this.setState({
       showAnnouncement: false,
     });

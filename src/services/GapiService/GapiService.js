@@ -10,6 +10,7 @@ import {bindHandlers} from '../../utils/bind.js';
 
 class GapiService {
   constructor(gapiParams=null) {
+    this.debug = false;
     if (!!gapiParams) {
       this.gapiParams = this._normalizeClientInitParams(gapiParams);
     }
@@ -87,7 +88,7 @@ class GapiService {
 
         // Handle the initial sign-in state.
         const googleAuth = window.gapi.auth2.getAuthInstance();
-        // console.log('Gapi._initClient() googleAuth', googleAuth);
+        // this.debug && console.log('Gapi._initClient() googleAuth', googleAuth);
 
         googleAuth.then(auth => {
           const isSignedIn = auth.isSignedIn.get();
@@ -95,7 +96,7 @@ class GapiService {
         });
         return window.gapi.client;
       }, (error) => {
-        console.log('GapiService._initClient() error', error);
+        console.error('GapiService._initClient() error', error);
         this.setState({
           isClientLoaded: true,
         }, 'GapiService._initClient().then((),error)');
@@ -125,7 +126,7 @@ class GapiService {
    *  appropriately. After a sign-in, the API is called.
    */
   _updateSigninStatus(isSignedIn, isInitialSignedInState = false, caller = 'unknown or window.gapi.auth2.getAuthInstance().isSignedIn.listen()') {
-    console.log('GapiService._updateSigninStatus() called by ' + caller + ' with', isSignedIn, 'state = ', this.state);
+    this.debug && console.log('GapiService._updateSigninStatus() called by ' + caller + ' with', isSignedIn, 'state = ', this.state);
     this.setState({
       isSignedIn : isSignedIn,
       isSignInRequired : !isSignedIn && isInitialSignedInState,
@@ -141,13 +142,13 @@ class GapiService {
    */
   handleAuthClick(event) {
     window.gapi.auth2.getAuthInstance().signIn().then((data) => {
-      console.log('Gapi.handleAuthClick().success', data);
+      this.debug && console.log('Gapi.handleAuthClick().success', data);
       this.setState({
         isSignedIn: true,
         isSignInRequired: false,
       }, 'handleAuthClick');
     }, (error) => {
-      console.log('GapiService.handleAuthClick() error', error);
+      console.error('GapiService.handleAuthClick() error', error);
       this.setState({
         isSignedIn: false,
         isSignInRequired: true,
@@ -167,7 +168,7 @@ class GapiService {
         isSignInRequired: true,
       }, 'handleSignoutClick');
     }, (error) => {
-      console.log('GapiService.handleSignoutClick() error', error);
+      console.error('GapiService.handleSignoutClick() error', error);
       throw new Error(error);
     }, error => { throw new Error(error)});
   }
@@ -186,7 +187,7 @@ class GapiService {
                      ui = undefined) { // domElementId, dims = 50, onSuccess = undefined, onFailure = undefined) {
     ui = this._normalizeGoogleSignInButtonUi(ui);
     callbacks = this._normalizeGoogleSignInButtonCallbacks(callbacks);
-    console.log('GapiService.renderSignInButton', ui, callbacks);
+    this.debug && console.log('GapiService.renderSignInButton', ui, callbacks);
     window.gapi.signin2.render(ui.id, {
       scope: 'profile email ' + this.gapiParams.scope, // 'https://www.googleapis.com/auth/plus.login'
       width: ui.width,
@@ -298,9 +299,9 @@ class GapiService {
    * @param {string} caller
    */
   setState(stateUpdate, caller='unknown') {
-    // console.log('GapiService.setState() called by ' + caller + ' to update', this.state, 'with', stateUpdate);
+    // this.debug && console.log('GapiService.setState() called by ' + caller + ' to update', this.state, 'with', stateUpdate);
     this.state = Object.assign(this.state, stateUpdate);
-    // console.log('GapiService.setState() updated state', this.state);
+    // this.debug && console.log('GapiService.setState() updated state', this.state);
     this.stateHandler && this.stateHandler(this.state);
   }
 
@@ -311,7 +312,7 @@ class GapiService {
   createPickerPresentations(callback) {
     this.getUserProfile().then(profile => {
       const gpapi = window.google.picker;
-      console.log('>>>>>>>>>>>>', gpapi);
+      this.debug && console.log('>>>>>>>>>>>>', gpapi);
 
       const picker = new gpapi.PickerBuilder()
         .enableFeature(gpapi.Feature.SUPPORT_TEAM_DRIVES)
@@ -353,15 +354,15 @@ class GapiService {
       'pageSize': 10,
       'fields': "nextPageToken, files(id, name)"
     }).then(response => {
-      console.log('GapiService.listFiles():');
+      this.debug && console.log('GapiService.listFiles():');
       let files = response.result.files;
       if (files && files.length > 0) {
         for (let i = 0; i < files.length; i++) {
           let file = files[i];
-          console.log('GapiService.listFiles() file:', file.name + ' (' + file.id + ')');
+          this.debug && console.log('GapiService.listFiles() file:', file.name + ' (' + file.id + ')');
         }
       } else {
-        console.log('GapiService.listFiles(): No files found.');
+        this.debug && console.log('GapiService.listFiles(): No files found.');
       }
     });
   } */

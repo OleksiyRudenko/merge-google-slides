@@ -10,21 +10,22 @@ import SaveMergedDeck from "../SaveMergedDeck";
 export default class OutputPreview extends Component {
   constructor(props) {
     super(props);
+    this.debug = false;
     this.state = {
       slideList: this.props.sourceList,
       showSaveDialog: false,
     };
     bindHandlers(this, 'handleSaveDialogClose', 'handleSaveDialogOpen');
-    console.log('OutputPreview.constructor', this.state);
+    this.debug && console.log('OutputPreview.constructor', this.state);
   }
 
   componentDidMount() {
-    console.log('OutputPreview.cDM()', this.props, this.state);
+    this.debug && console.log('OutputPreview.cDM()', this.props, this.state);
     // this.loadSlides();
   }
 
   componentDidUpdate() {
-    console.log('OutputPreview.cDU()', this.props, this.state);
+    this.debug && console.log('OutputPreview.cDU()', this.props, this.state);
     /* this.setState({
       slideList: this.props.sourceList,
     }); */
@@ -40,7 +41,7 @@ export default class OutputPreview extends Component {
             slideList.push({deckId: deckIds[idx], slideId});
           });
         });
-        console.log('OutputPreview.loadSlides()', slideList);
+        this.debug && console.log('OutputPreview.loadSlides()', slideList);
         this.setState({slideList});
       });
   } */
@@ -49,7 +50,7 @@ export default class OutputPreview extends Component {
    * Renders component view
    */
   render() {
-    console.log('OutputPreview.render()', this.props, this.state);
+    this.debug && console.log('OutputPreview.render()', this.props, this.state);
     return (
       <Panel className="minimalisticPanel">
         <Panel.Heading>
@@ -64,7 +65,7 @@ export default class OutputPreview extends Component {
           <div  className="minimalisticPanelBody">
           {this.props.sourceList
             ? this.props.sourceList.map((slide, idx) => {
-              console.log(slide);
+              this.debug && console.log(slide);
               return <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />;
             })
             : <ProgressBar striped bsStyle="info" now={100} active /> }

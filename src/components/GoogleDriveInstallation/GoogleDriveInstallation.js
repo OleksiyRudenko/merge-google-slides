@@ -16,17 +16,18 @@ const imagesBaseUrl = './guide/640x400/';
 export default class GoogleDriveInstallation extends Component {
   constructor(props) {
     super(props);
+    this.debug = false;
     // this.installationCodeParamName = this.props.gapi.gapiParams.gDrive.installationCodeParamName;
     bindHandlers(this, 'onSignIn');
-    console.log('GoogleDriveInstallation::props, state, installation URL', this.props, this.state, this.props.gapi.getGDriveInstallationUrl());
+    this.debug && console.log('GoogleDriveInstallation::props, state, installation URL', this.props, this.state, this.props.gapi.getGDriveInstallationUrl());
   }
 
   componentDidMount() {
-    console.log('GoogleDriveInstallation.cDM()');
+    this.debug && console.log('GoogleDriveInstallation.cDM()');
   }
 
   componentDidUpdate() {
-    console.log('GoogleDriveInstallation.cDU()');
+    this.debug && console.log('GoogleDriveInstallation.cDU()');
     this.props.gapi.state.isClientLoaded && this.props.gapi.state.isSignInRequired && this.props.gapi.renderSignInButton(this.onSignIn, 50);
   }
 
@@ -34,7 +35,7 @@ export default class GoogleDriveInstallation extends Component {
    * Renders component view
    */
   render() {
-    console.log('GoogleDriveInstallation.render()', this.state);
+    this.debug && console.log('GoogleDriveInstallation.render()', this.state);
     return (
       <div className={styles.page}>
         <h2><Image src="./ico/android-icon-48x48.png" /> Merge Google Slides at a breeze!</h2>
@@ -122,9 +123,9 @@ export default class GoogleDriveInstallation extends Component {
       isSignedIn: true,
       isSignInRequired: false,
     });
-    console.log('GoogleDriveInstallation.onSignIn() profile', profile);
+    this.debug && console.log('GoogleDriveInstallation.onSignIn() profile', profile);
     this.props.gapi.getUserProfile().then(uprofile => {
-      console.log('GoogleDriveInstallation.onSignIn() profile from gapi', uprofile);
+      this.debug && console.log('GoogleDriveInstallation.onSignIn() profile from gapi', uprofile);
     });
   }
 }
