@@ -4,7 +4,7 @@ import {
 } from 'react-bootstrap';
 import {bindHandlers} from "../../utils/bind";
 import styles from "./SourceDeck.css";
-import {SourceDecksService} from "../../services/SourceDecksService";
+import SourceDecksService from "../../services/SourceDecksService";
 import Slide from "../Slide";
 import ScrollingText from "../ScrollingText/ScrollingText";
 

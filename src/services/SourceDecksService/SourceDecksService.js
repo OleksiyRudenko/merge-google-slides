@@ -1,7 +1,7 @@
 import {decks} from "./fixtures.js";
 import KoalaJs from "../../utils/koala-js-promisified";
 
-class _SourceDecksService {
+class SourceDecksService {
   constructor() {
     this.decks = decks;
     this.clearCache(false);
@@ -165,4 +165,4 @@ class _SourceDecksService {
   }
 }
 
-export const SourceDecksService = new _SourceDecksService();
+export default new SourceDecksService();

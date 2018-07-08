@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import styles from "./Slide.css";
-import {SourceDecksService} from "../../services/SourceDecksService";
+import SourceDecksService from "../../services/SourceDecksService";
 import {bindHandlers} from "../../utils/bind";
 
 export default class Slide extends Component {
   constructor(props) {
     super(props);
+    this.debug = false;
     this.state = {
       deckId: this.props.deckId,
       slideId: this.props.slideId,
@@ -22,7 +23,7 @@ export default class Slide extends Component {
    * Update state on first mount
    */
   componentDidMount() {
-    console.log('Slide.cDM()');
+    this.debug && console.log('Slide.cDM()');
     this.loadThumbnail();
   }
 
@@ -30,7 +31,7 @@ export default class Slide extends Component {
    * Update state snapshot and derived state properties based on props changed
    */
   componentDidUpdate() {
-    console.log('Slide.cDU()');
+    this.debug && console.log('Slide.cDU()');
     if (this.props.slideId === null) {
       this.setState({
         deckId: this.props.deckId,
@@ -58,7 +59,7 @@ export default class Slide extends Component {
    * Renders component view
    */
   render() {
-    console.log('Slide.render()', this.props, this.state);
+    this.debug && console.log('Slide.render()', this.props, this.state);
     return (
       <div className={styles.slidesContainer}>
         {this.state.slideThumbnailUrl
@@ -81,7 +82,7 @@ export default class Slide extends Component {
    * Load/update thumbnail
    */
   loadThumbnail() {
-    console.log('Slide.loadThumbnail()', this.props);
+    this.debug && console.log('Slide.loadThumbnail()', this.props);
     SourceDecksService.getThumbnail(this.props.deckId, this.props.slideId)
       .then(imageUrl => this.setState({
         slideThumbnailUrl: imageUrl,
@@ -96,7 +97,7 @@ export default class Slide extends Component {
           slideLabel: 'Error. Hover for details',
           slideTitle: 'Please, refresh source decks. Couldn\'t load ' + this._makeSlideName(this.props.deckId, this.props.slideId),
         });
-        console.log('Slide.loadThumbnail() catch', rejection);
+        console.error('Slide.loadThumbnail() catch', rejection);
       });
   }
 

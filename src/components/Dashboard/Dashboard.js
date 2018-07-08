@@ -8,7 +8,7 @@ import OutputPreview from '../OutputPreview';
 import SourceDecks from '../SourceDecks';
 import Guide from '../Guide';
 import {bindHandlers} from "../../utils/bind";
-import {SourceDecksService} from "../../services/SourceDecksService";
+import SourceDecksService from "../../services/SourceDecksService";
 
 export default class Dashboard extends Component {
   constructor(props) {
