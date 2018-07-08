@@ -75,7 +75,7 @@ export default class Welcome extends Component {
           generation of auto-export URLs for Native Google Documents and also shortening URLs for any files stored on Google Drive.
         </p>
         <p>
-          Feel free checking it out on <a href="https://gsuite.google.com/marketplace/app/link_manager_for_google_drive_gassa/940998321600">G Suite Marketplace</a> or <a href="https://chrome.google.com/webstore/detail/link-manager-for-google-d/nakhlchefdilapgmhehbpmkgchadojjl" target="_blank">
+          Feel free checking it out on <a href="https://gsuite.google.com/marketplace/app/link_manager_for_google_drive_gassa/940998321600" target="_blank">G Suite Marketplace</a> or <a href="https://chrome.google.com/webstore/detail/link-manager-for-google-d/nakhlchefdilapgmhehbpmkgchadojjl" target="_blank">
           Chrome Web Store</a>. You may be required to install
           it from the context of Google Drive:
         </p>
