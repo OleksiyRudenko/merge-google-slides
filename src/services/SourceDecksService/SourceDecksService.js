@@ -3,6 +3,7 @@ import KoalaJs from "../../utils/koala-js-promisified";
 
 class SourceDecksService {
   constructor() {
+    this.debug = false;
     this.decks = decks;
     this.clearCache(false);
   }
@@ -28,9 +29,9 @@ class SourceDecksService {
    * @param {string} deckId
    */
   deleteDeckId(deckId) {
-    console.log('>>>>>>>>>', deckId, this.store.deckIds);
+    this.debug && console.log('>>>>>>>>>', deckId, this.store.deckIds);
     this.store.deckIds = this.store.deckIds.filter(item => item !== deckId);
-    console.log('>>>>>>>>>', deckId, this.store.deckIds);
+    this.debug && console.log('>>>>>>>>>', deckId, this.store.deckIds);
   }
 
   /**
@@ -64,7 +65,7 @@ class SourceDecksService {
    * @returns {Promise<Array>}
    */
   getSlideIds(deckId) {
-    console.log('SourceDecksService.getSlideIds()', deckId);
+    this.debug && console.log('SourceDecksService.getSlideIds()', deckId);
     return this.getDeck(deckId).then(deck => deck.slides.map(slide => slide.objectId));
   }
 
@@ -94,13 +95,13 @@ class SourceDecksService {
             }
           })
             .then(response => {
-              // console.log('SourceDeckService.getThumbnail() response', response);
+              // this.debug && console.log('SourceDeckService.getThumbnail() response', response);
               return JSON.parse(response.body);
             }, rej => {
               throw new Error(rej);
             })
             .then(data => {
-              // console.log('SourceDeckService.getThumbnail() body ', data);
+              // this.debug && console.log('SourceDeckService.getThumbnail() body ', data);
               // replace terminal =s[\d+$] with required width
               const rgxp = new RegExp(`=s${data.width}$`);
               const url = data.contentUrl.replace(rgxp, `=s${width}`);
