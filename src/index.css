@@ -4,3 +4,11 @@ body {
   padding-top: 63px;
   font-family: sans-serif;
 }
+
+.justified {
+  text-align: justify;
+}
+
+.nobreak {
+  white-space: nowrap;
+}
