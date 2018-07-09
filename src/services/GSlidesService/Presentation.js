@@ -1,3 +1,5 @@
+import * as xobject from "../../utils/xobject/xobject";
+
 /**
  * A class representing Google Slides Presentation.
  * To have only core parts (i.e. masters, notes master, layout, and atomic properties):
@@ -15,6 +17,7 @@ export default class Presentation {
   }
 
   get presentation() { return this.p; }
+  get presentationClone() { return this._clone(this.p); }
   set presentation(presentation) { this.p = presentation; }
   set presentationClone(presentation) { this.p = this._clone(presentation); }
 
@@ -59,9 +62,9 @@ export default class Presentation {
   }
 
   get notesMaster() { return this.p.notesMaster; }
-  get notesMasterClone() { return Object.assign({}, this.p.notesMaster); }
+  get notesMasterClone() { return this._clone(this.p.notesMaster); }
   set notesMaster(notesMaster) { this.p.notesMaster = notesMaster; }
-  set notesMasterClone(notesMaster) { this.p.notesMaster = Object.assign({}, notesMaster); }
+  set notesMasterClone(notesMaster) { this.p.notesMaster = this._clone(notesMaster); }
 
   get layouts() { return this.p.layouts; }
   get layoutsClone() { return this._clone(this.p.layouts); }
@@ -116,12 +119,29 @@ export default class Presentation {
   }
 
   /**
-   * Get all objectIds
-   * @param {Boolean} shallow - when shallow then [ ...objectIds],
-   *  otherwise nesting structure is preserved and properties names for objectIds are preserved
+   * Delete property at the end of path
+   * @param path
+   * @param {Object} from
+   */
+  removeProperty(path, from = this.p) {
+    path = path.split('.');
+    if (path.length === 1) {
+      // console.log('Deleting ', from[path[0]]);
+      delete from[path[0]];
+    } else {
+      const currentProperty = path.shift();
+      // console.log('Going deeper ', path, from[currentProperty]);
+      this.removeProperty(path.join('.'), from[currentProperty]);
+    }
+  }
+
+  /**
+   * Get all objectIds nesting structure is preserved and properties names for objectIds are preserved
    * @returns {Object}
    */
-  getObjectIds(shallow = false) {}
+  getObjectIdsStructure() {
+    return xobject.oFilterProps(this.p, ['objectId']);
+  }
 
   /**
    * Get all references
@@ -136,7 +156,6 @@ export default class Presentation {
    * @param {string} prefix
    */
   changeObjectIds(prefix = '_') {
-
   }
 
   /**
@@ -149,14 +168,13 @@ export default class Presentation {
   }
 
   _clone(subject) {
-    return Array.isArray(subject)
-      ? subject.slice(0)
-      : Object.assign({}, subject);
+    return JSON.parse(JSON.stringify(subject));
   }
 
   _normalizeIdx(pages, idx) {
-    while (idx < 0) { idx = m.length + idx; }
-    if (idx > m.length) { idx = m.length - 1; }
+    while (idx < 0) { idx = pages.length + idx; }
+    if (idx > pages.length) { idx = pages.length - 1; }
+    return idx;
   }
 
 }
