@@ -62,13 +62,20 @@ export default class SaveMergedDeck extends Component {
     return (
       <Modal.Body>
         <h4>Hi there!</h4>
-        <p>
+        <p className="justified">
           This is still an alpha version of the app. Please, check the <b>Important note</b> on the main page for details.
           Please, come back after July 15, 2018 to check beta version.
         </p>
+        <p className="justified"><b>NB!</b> All imported decks will inherit masters, notes master, layouts, page size, and locale from the first deck.
+          Therefore the look of decks
+          may vary from the original. At the moment of this app development Google Slides API (v.1) didn't offer
+          methods to import additional masters, notes master, and layouts. Should the above information be out of date,
+          please, submit a <a href="https://goo.gl/forms/G4zwJklIrxOP60ys1" target="_blank" title="Submit a bug report or suggestion" rel="noopener noreferrer">
+            <span className="nobreak"><Glyphicon glyph="flash" />suggestion or bug report</span></a>.
+        </p>
         {this.state.fileName
-          ? <p>Output will be created as <u><b>{this.state.fileName}</b></u> under <a href={`https://drive.google.com/drive/u/0/folders/${this.state.folderId}`} target="_blank" rel="noopener noreferrer">
-            {this.state.folderName}</a> folder.
+          ? <p className="justified">Output will be created as <span className="nobreak"><b><code>{this.state.fileName}</code></b></span> under <a href={`https://drive.google.com/drive/u/0/folders/${this.state.folderId}`} target="_blank" rel="noopener noreferrer">
+            <span className="nobreak"><code>{this.state.folderName}</code></span></a> folder.
           </p>
           : <ProgressBar striped bsStyle="info" now={100} active />
         }
@@ -99,17 +106,22 @@ export default class SaveMergedDeck extends Component {
 
   handleSave() {
     this.debug && console.log('SaveMergedDeck.handleSave()');
-    GSlidesService.createDeck({
-      fileName: this.state.fileName,
-      parentFolderId: this.state.folderId,
-    }).then(file => {
-      this.debug && console.log('SaveMergedDeck.handleSave() file', file);
-      return GSlidesService.mergeDecks(file.id, SourceDecksService.getDeckIds());
-    }).then(result => {
-      this.debug && console.log('SaveMergedDeck.handleSave() merger result', result);
-    }).catch(err => {
-      // ERRORS
-    });
+    const deckIds = SourceDecksService.getDeckIds();
+    if (deckIds.length) {
+      GSlidesService.copyDeck({
+        fromDeckId: deckIds.shift(),
+        fileName: this.state.fileName,
+        parentFolderId: this.state.folderId,
+      }).then(file => {
+        this.debug && console.log('SaveMergedDeck.handleSave() file', file);
+        // merge the remainings decks
+        return deckIds.length ? GSlidesService.mergeDecks(file.id, deckIds) : 'Single source deck processed';
+      }).then(result => {
+        this.debug && console.log('SaveMergedDeck.handleSave() merger result', result);
+      }).catch(err => {
+        // ERRORS
+      });
+    }
   }
 
   getCurrentDT() {
