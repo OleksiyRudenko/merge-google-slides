@@ -6,13 +6,17 @@
  */
 export default class Presentation {
   p;
-  constructor(presentation) {
-    this.presentation = presentation;
+  constructor(presentation, clone = false) {
+    if (clone) {
+      this.presentationClone = presentation;
+    } else {
+      this.presentation = presentation;
+    }
   }
 
   get presentation() { return this.p; }
-  set presentationClone(presentation) { return this.p = this._clone(presentation); }
-  set presentation(presentation) { return this.presentationClone = presentation; }
+  set presentation(presentation) { this.p = presentation; }
+  set presentationClone(presentation) { this.p = this._clone(presentation); }
 
   get title() { return this.p.title; }
   set title(title) { this.p.title = title; }
