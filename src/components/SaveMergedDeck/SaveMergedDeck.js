@@ -99,14 +99,11 @@ export default class SaveMergedDeck extends Component {
 
   handleSave() {
     this.debug && console.log('SaveMergedDeck.handleSave()');
-    GSlidesService.createDeck({
+    GSlidesService.createDeckFromDecks({
       fileName: this.state.fileName,
       parentFolderId: this.state.folderId,
-    }).then(file => {
-      this.debug && console.log('SaveMergedDeck.handleSave() file', file);
-      return GSlidesService.mergeDecks(file.id, SourceDecksService.getDeckIds());
-    }).then(result => {
-      this.debug && console.log('SaveMergedDeck.handleSave() merger result', result);
+    }, SourceDecksService.getDeckIds()).then(file => {
+      this.debug && console.log('SaveMergedDeck.handleSave() resulting file', file);
     }).catch(err => {
       // ERRORS
     });

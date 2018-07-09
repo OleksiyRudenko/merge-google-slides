@@ -1,3 +1,5 @@
+import Presentation from './Presentation';
+
 class GSlidesService {
   sds;
 
@@ -64,6 +66,42 @@ class GSlidesService {
   /**
    * Creates new deck with a single default slide
    * @param {Object<{fileName, ParentFolderId}>} params
+   * @param {Array<string>} deckIds
+   * @returns {Promise<{fileId:id, kind, mimeType, name}>}
+   */
+  createDeckFromDecks(params = {
+    fileName: undefined,
+    parentFolderId: undefined,
+  }, deckIds) {
+    this.debug && console.log("GSlidesService.createDeckFromDecks()", params, deckIds);
+    if (!deckIds.length) {
+      return Promise.reject('No decks to merge supplied');
+    }
+    return Promise.all(deckIds.map(deckId => this.loadDeck(deckId))).then(decks => {
+      return decks.map(deck => new Presentation(deck, false));
+    }).then(presentations => {
+      this.debug && console.log("GSlidesService.createDeckFromDecks() Presentations", presentations);
+
+      // per each presentation uniqualize objectIds and update reference
+      const p = presentations[0];
+      this.debug && console.log("GSlidesService.createDeckFromDecks() presentation objectIds", p.getObjectIdsStructure());
+
+
+      // merge entities into new Presentation with
+      // Branch strategy here!
+      // 1) -title, -revisionId, -presentationId, (pageSize, locale, notesMaster) from deck[0]
+      // 2) -title, -revisionId, -presentationId, (pageSize, locale, notesMaster, masters, layouts) from deck[0]
+
+
+      // create Presentation
+
+      return Promise.resolve({message: 'STUB'});
+    });
+  }
+
+  /**
+   * Creates new deck with a single default slide
+   * @param {Object<{fileName, ParentFolderId}>} params
    * @returns {Promise<{fileId:id, kind, mimeType, name}>}
    */
   createDeck(params = {
@@ -107,58 +145,6 @@ class GSlidesService {
         this.debug && console.log("GSlidesService.loadDeck() result", response.result);
         return response.result;
       });
-
-  }
-
-  mergeDecks(targetId, sourceIds = []) {
-    const gapi = window.gapi.client;
-    this.debug && console.log("GSlidesService.mergeDecks()", targetId, sourceIds);
-
-    return this.loadDeck(targetId).then(targetDeck => {
-      return Promise.all(sourceIds.map(id => this.loadDeck(id))).then(results=> {
-        return {
-          targetDeck,
-          sourceDecks: results,
-        };
-      });
-    })
-      .then(decks => {
-        let requests = [];
-        // fill requests per each decks.sourceDecks
-        decks.sourceDecks.forEach((deck, idx) => {
-          requests = [...requests, ...this.createBatchUpdateRequestsFromSlides(deck, idx)];
-        });
-
-        return gapi.slides.presentations.batchUpdate({
-          "presentationId": decks.targetDeck.presentationId,
-          "resource": {
-            "requests": requests,
-            "writeControl": {
-              "requiredRevisionId": decks.targetDeck.revisionId,
-            }
-          }
-        });
-      })
-      .then(response => {
-        this.debug && console.log("GSlidesService.mergeDecks()", response.result);
-        return response.result;
-      })
-      .catch(rejection => {
-        console.log("GSlidesService.mergeDecks()", rejection);
-        throw new Error(rejection);
-      });
-  }
-
-  /**
-   * Creates requests from a deck to use with gapi.slides.presentations.batchUpdate
-   * @param {Object} deck representation
-   * @param {Number} idx used to build unique ids
-   * @returns {Array}
-   */
-  createBatchUpdateRequestsFromSlides(deck, idx) {
-    const idPrefix = 'mgs' + idx;
-    let pageElementsCount = 0;
-
 
   }
 
