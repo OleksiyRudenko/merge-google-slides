@@ -9,6 +9,7 @@ import SourceDeck from "../SourceDeck";
 export default class SourceDecks extends Component {
   constructor(props) {
     super(props);
+    this.debug = true;
     this.state = {
       decks: this.props.sourceList,
     };
@@ -25,6 +26,7 @@ export default class SourceDecks extends Component {
    * Renders component view
    */
   render() {
+    this.debug && console.log('SourceDecks.render()', this.props, this.state);
     return (
       <Panel className="fillingPanel">
         <Panel.Heading>
@@ -101,7 +103,7 @@ export default class SourceDecks extends Component {
    * @param {string} deckId
    */
   onMoveLeft(currentOrderPosition, deckId) {
-    console.log('SourceDecks.onMoveLeft()', currentOrderPosition, deckId);
+    this.debug && console.log('SourceDecks.onMoveLeft()', currentOrderPosition, deckId);
     this.props.moveDeckHandler(currentOrderPosition, -1);
   }
 
@@ -111,7 +113,7 @@ export default class SourceDecks extends Component {
    * @param {string} deckId
    */
   onMoveRight(currentOrderPosition, deckId) {
-    console.log('SourceDecks.onMoveRight()', currentOrderPosition, deckId);
+    this.debug && console.log('SourceDecks.onMoveRight()', currentOrderPosition, deckId);
     this.props.moveDeckHandler(currentOrderPosition, 1);
   }
 
@@ -119,7 +121,7 @@ export default class SourceDecks extends Component {
    * Add a deck to the list
    */
   addDeck() {
-    console.log('SourceDeck.addDeck()');
+    this.debug && console.log('SourceDecks.addDeck()');
     this.props.addDeckHandler();
   }
 
@@ -127,7 +129,7 @@ export default class SourceDecks extends Component {
    * Delete a deck
    */
   deleteDeck(deckId) {
-    console.log('SourceDeck.deleteDeck()');
+    this.debug && console.log('SourceDecks.deleteDeck()');
     this.props.deleteDeckHandler(deckId);
   }
 }
