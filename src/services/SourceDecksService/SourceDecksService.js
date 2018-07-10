@@ -84,7 +84,7 @@ class SourceDecksService {
         .then(deck => {
           const slide = deck.slides.find(slide => slide.objectId === slideId);
           if (!slide) {
-            throw new Error(`Slide ${deckId}#${slideId} not found`);
+            throw new Error(`Slide ${deckId}.${slideId} not found`);
           }
           return KoalaJs.request({
             agent: window.gapi.client.slides.presentations.pages.getThumbnail,
@@ -94,20 +94,22 @@ class SourceDecksService {
               "thumbnailProperties.thumbnailSize": "LARGE"
             }
           })
-            .then(response => {
-              // this.debug && console.log('SourceDeckService.getThumbnail() response', response);
-              return JSON.parse(response.body);
-            }, rej => {
-              throw new Error(rej);
-            })
-            .then(data => {
-              // this.debug && console.log('SourceDeckService.getThumbnail() body ', data);
-              // replace terminal =s[\d+$] with required width
-              const rgxp = new RegExp(`=s${data.width}$`);
-              const url = data.contentUrl.replace(rgxp, `=s${width}`);
-              this.store.slideThumbnailUrls[deckId][slideId] = url;
-              return url;
-            });
+        })
+        .then(response => {
+            // this.debug && console.log('SourceDeckService.getThumbnail() response', response);
+            return JSON.parse(response.body);
+        })
+        .then(data => {
+          // this.debug && console.log('SourceDeckService.getThumbnail() body ', data);
+          // replace terminal =s[\d+$] with required width
+          const rgxp = new RegExp(`=s${data.width}$`);
+          const url = data.contentUrl.replace(rgxp, `=s${width}`);
+          this.store.slideThumbnailUrls[deckId][slideId] = url;
+          return url;
+        })
+        .catch(rej => {
+          console.error(rej);
+          throw new Error(rej);
         });
   }
 
