@@ -11,6 +11,7 @@ import ScrollingText from "../ScrollingText/ScrollingText";
 export default class SourceDeck extends Component {
   constructor(props) {
     super(props);
+    this.debug = true;
     this.state = {
       deckId: this.props.deckId,
       deckTitle: null,
@@ -27,19 +28,19 @@ export default class SourceDeck extends Component {
   componentDidMount() {
     SourceDecksService.getDeck(this.props.deckId)
       .then(deck => {
-        // console.log('SourceDeck.componentDidMount() getDeck.then()', deck);
+        this.debug && console.log('SourceDeck.cDM() getDeck.then()', deck);
         this.setState({
           deckTitle: deck.title,
         });
         SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
-          // console.log('SourceDeck.componentDidMount() .getSlideIds.then()', slideIds);
+          this.debug && console.log('SourceDeck.cDM() .getSlideIds.then()', slideIds);
           this.setState({
             slides: slideIds,
           });
         });
       })
       .catch(rejection => {
-        console.error('SourceDeck.componentDidMount() error ', rejection);
+        console.error('SourceDeck.cDM() error ', rejection);
       });
   }
 
@@ -52,19 +53,19 @@ export default class SourceDeck extends Component {
       });
       SourceDecksService.getDeck(this.props.deckId)
         .then(deck => {
-          // console.log('SourceDeck.componentDidMount() getDeck.then()', deck);
+          this.debug && console.log('SourceDeck.cDU() getDeck.then()', deck);
           this.setState({
             deckTitle: deck.title,
           });
           SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
-            // console.log('SourceDeck.componentDidMount() .getSlideIds.then()', slideIds);
+            this.debug && console.log('SourceDeck.cDU() .getSlideIds.then()', slideIds);
             this.setState({
               slides: slideIds,
             });
           });
         })
         .catch(rejection => {
-          console.error('SourceDeck.componentDidMount() error ', rejection);
+          console.error('SourceDeck.cDU() error ', rejection);
         });
     }
   }
