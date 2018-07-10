@@ -92,7 +92,7 @@ export default class GoogleDriveInstallation extends Component {
             <h3>How to use?</h3>
             <div className={styles.carouselContainer}>{this.renderCarousel(images)}</div>
             <div>
-              <Button target="_blank" href="https://oleksiyrudenko.github.io/merge-google-slides/?state=%7B%22exportIds%22:%5B%221sLBRTLD5fTsRIi5rr-ndVD554G9odLdbHdFDfWY8Y10%22,%221L2NSaN4dPK0u8iuiqDtt5RaWHEeRZvY0Eybc_TPhXTw%22,%221ri6oKxQFjElzFhMPE_NeiQZh7xYY6lOA02Azc_ZJroQ%22%5D,%22action%22:%22open%22,%22userId%22:%22109188810585487526474%22%7D">Try it with demo Slides (read-only mode)</Button>
+              <Button target="_blank" href="https://oleksiyrudenko.github.io/merge-google-slides/?state=%7b%22exportIds%22%3a%5b%221sLBRTLD5fTsRIi5rr-ndVD554G9odLdbHdFDfWY8Y10%22%2c%221L2NSaN4dPK0u8iuiqDtt5RaWHEeRZvY0Eybc_TPhXTw%22%2c%221ri6oKxQFjElzFhMPE_NeiQZh7xYY6lOA02Azc_ZJroQ%22%5d%2c%22action%22%3a%22open%22%7d">Try it with demo Slides (read-only mode)</Button>
             </div>
           </div>
         </div>
