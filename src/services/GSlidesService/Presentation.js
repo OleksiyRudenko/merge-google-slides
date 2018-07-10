@@ -123,7 +123,7 @@ export default class Presentation {
    * @param path
    * @param {Object} from
    */
-  removeProperty(path, from = this.p) {
+  deleteProperty(path, from = this.p) {
     path = path.split('.');
     if (path.length === 1) {
       // console.log('Deleting ', from[path[0]]);
@@ -131,7 +131,7 @@ export default class Presentation {
     } else {
       const currentProperty = path.shift();
       // console.log('Going deeper ', path, from[currentProperty]);
-      this.removeProperty(path.join('.'), from[currentProperty]);
+      this.deleteProperty(path.join('.'), from[currentProperty]);
     }
   }
 
