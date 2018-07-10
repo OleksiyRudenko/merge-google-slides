@@ -7,7 +7,7 @@ import {bindHandlers} from "../../utils/bind";
 export default class Slide extends Component {
   constructor(props) {
     super(props);
-    this.debug = false;
+    this.debug = true;
     this.state = {
       deckId: this.props.deckId,
       slideId: this.props.slideId,
