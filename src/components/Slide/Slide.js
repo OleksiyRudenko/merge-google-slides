@@ -11,13 +11,14 @@ export default class Slide extends Component {
     this.state = {
       deckId: this.props.deckId,
       slideId: this.props.slideId,
-      slideThumbnailUrl: null,
+      slideThumbnailUrl: undefined,
       isError: false,
-      slideLabel: '',
-      slideTitle: '',
+      errorMessage: undefined,
     };
-    bindHandlers(this, 'loadThumbnail', '_makeSlideName');
+    bindHandlers(this, 'loadThumbnail');
   }
+
+  get fullSlideId() { return this.props.deckId + '.' + this.props.slideId; }
 
   /**
    * Update state on first mount
@@ -32,26 +33,13 @@ export default class Slide extends Component {
    */
   componentDidUpdate() {
     this.debug && console.log('Slide.cDU()');
-    if (this.props.slideId === null) {
+    if (this.props.slideId === undefined || this.props.deckId !== this.state.deckId || this.props.slideId !== this.state.slideId) {
       this.setState({
         deckId: this.props.deckId,
         slideId: this.props.slideId,
-        slideThumbnailUrl: null,
+        slideThumbnailUrl: undefined,
         isError: false,
-        slideLabel: 'loading thumbnail...',
-        slideTitle: 'Loading ' + this._makeSlideName(this.props.deckId, this.props.slideId),
       }, this.loadThumbnail());
-    } else {
-      if (this.props.deckId !== this.state.deckId || this.props.slideId !== this.state.slideId) {
-        this.setState({
-          deckId: this.props.deckId,
-          slideId: this.props.slideId,
-          slideThumbnailUrl: null,
-          isError: false,
-          slideLabel: 'loading thumbnail...',
-          slideTitle: 'Loading ' + this._makeSlideName(this.props.deckId, this.props.slideId),
-        }, this.loadThumbnail());
-      }
     }
   }
 
@@ -65,13 +53,13 @@ export default class Slide extends Component {
         {this.state.slideThumbnailUrl
           ? <img className={styles.slideThumbnail}
                  src={this.state.slideThumbnailUrl}
-                 alt={this.state.deckId + '#' + this.state.slideId}
-                 title={this.state.deckId + '#' + this.state.slideId}
+                 alt={this.fullSlideId}
+                 title={this.fullSlideId}
           />
           : <ProgressBar striped
                          bsStyle={this.state.isError ? "danger" : "info"}
-                         title={this.state.slideTitle}
-                         label={this.state.slideLabel}
+                         label={this.state.isError ? this.state.errorMessage.short : 'Loading...'}
+                         title={this.state.isError ? this.state.errorMessage.full : 'Loading ' + this.fullSlideId}
                          now={100} active />
         }
       </div>
@@ -83,32 +71,24 @@ export default class Slide extends Component {
    */
   loadThumbnail() {
     this.debug && console.log('Slide.loadThumbnail()', this.props);
+    if (!this.props.deckId || !this.props.slideId) {
+      return;
+    }
     SourceDecksService.getThumbnail(this.props.deckId, this.props.slideId)
       .then(imageUrl => this.setState({
         slideThumbnailUrl: imageUrl,
         isError: false,
-        slideLabel: '',
-        slideTitle: this._makeSlideName(this.props.deckId, this.props.slideId),
       }))
       .catch(rejection => {
-        this.setState({
-          slideThumbnailUrl: null,
-          isError: true,
-          slideLabel: 'Error. Hover for details',
-          slideTitle: 'Please, refresh source decks. Couldn\'t load ' + this._makeSlideName(this.props.deckId, this.props.slideId),
-        });
         console.error('Slide.loadThumbnail() catch', rejection);
+        this.setState({
+          slideThumbnailUrl: undefined,
+          isError: true,
+          errorMessage: {
+            short: 'Error. Hover for details',
+            full: 'Please, refresh source decks. Couldn\'t load ' + this.fullSlideId,
+          },
+        });
       });
-  }
-
-  /**
-   * Construct slide name
-   * @param {string} deckId
-   * @param {string} slideId
-   * @returns {string}
-   * @private
-   */
-  _makeSlideName(deckId, slideId) {
-    return deckId + '#' + slideId;
   }
 }

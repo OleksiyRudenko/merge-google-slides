@@ -74,7 +74,7 @@ export default class SourceDeck extends Component {
    * Renders component view
    */
   render() {
-    // console.log('SourceDeck.render()', this.state);
+    this.debug && console.log('SourceDeck.render()', this.state);
     return (
       <Panel className="minimalisticPanel">
         <Panel.Heading>
