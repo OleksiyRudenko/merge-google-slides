@@ -53,7 +53,7 @@ export default class Slide extends Component {
         {this.state.slideThumbnailUrl
           ? <img className={styles.slideThumbnail}
                  src={this.state.slideThumbnailUrl}
-                 alt={this.fullSlideId}
+                 alt='slide thumbnail'
                  title={this.fullSlideId}
           />
           : <ProgressBar striped

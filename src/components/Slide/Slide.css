@@ -4,12 +4,26 @@
 }
 
 :local(.slideThumbnail) {
+    position: relative;
     width: 200px;
     height: auto;
     border: 3px solid #ccc;
     border-radius: 2px;
     margin: 0.3rem 0 0 0;
     padding: 0;
+}
+:local(.slideThumbnail):after {
+    color: #c9302c;
+    content: 'Refresh source decks';
+    padding: 3px 1rem;
+    display: block;
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    height: 26px;
+    width: 200px;
+    background-color: #e4b9b9;
+    /* background-image: */
 }
 /*
 :local(.slideThumbnail:hover) {
