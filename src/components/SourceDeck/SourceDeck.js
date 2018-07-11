@@ -26,6 +26,7 @@ export default class SourceDeck extends Component {
   }
 
   componentDidMount() {
+    this.debug && console.log('SourceDeck.cDM()', this.props);
     SourceDecksService.getDeck(this.props.deckId)
       .then(deck => {
         this.debug && console.log('SourceDeck.cDM() getDeck.then()', deck);
@@ -45,6 +46,7 @@ export default class SourceDeck extends Component {
   }
 
   componentDidUpdate() {
+    this.debug && console.log('SourceDeck.cDU()', this.props);
     if (this.props.deckId !== this.state.deckId) {
       this.setState({
         deckId: this.props.deckId,
