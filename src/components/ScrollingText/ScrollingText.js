@@ -5,14 +5,14 @@ import styles from "./ScrollingText.css";
 export default class ScrollingText extends Component {
   constructor(props) {
     super(props);
+    this.debug = true;
     this.state = {
-      textData: this.props.textData,
       isScrolling: true,
     };
   }
 
   componentDidUpdate(prevProps, prevState) {
-    // console.log('ScrollingText.cDU() props,state,prevProps,prevState', this.props, this.state, prevProps, prevState);
+    this.debug && console.log('ScrollingText.cDU() props,state,prevProps,prevState', this.props, this.state, prevProps, prevState);
     if (this.props.textData) {
       // remove scrolling class if <p> width is lesser than <div> width
       setTimeout(() => {
@@ -26,7 +26,7 @@ export default class ScrollingText extends Component {
               isScrolling: false,
             });
           }
-          // console.log('ScrollingText.cDU()', this.props.textData, stcw, sttw);
+          this.debug && console.log('ScrollingText.cDU()', this.props.textData, stcw, sttw);
         } else {
           console.error('ScrollingText.cDU() -- targeted elements do not exist anymore!', stc, stt);
         }
@@ -38,7 +38,7 @@ export default class ScrollingText extends Component {
    * Renders component view
    */
   render() {
-    // console.log('ScrollingText.render()', this.state, this.props);
+    this.debug && console.log('ScrollingText.render()', this.state, this.props);
     return (
       <div id={'stc' + this.props.idBase} className={styles.scrollingTextContainer}>
         {this.props.textData
