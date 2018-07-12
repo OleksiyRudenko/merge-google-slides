@@ -2,11 +2,28 @@ import {decks} from "./fixtures.js";
 import KoalaJs from "../../utils/koala-js-promisified";
 
 class SourceDecksService {
+  _asyncRequestTokensCount = 0;
+  static _AsyncRequestMode = {
+    DISCARD_THIS_IF_ANY_PENDING: 'DISCARD_THIS_IF_ANY_PENDING',
+    DISCARD_PREV: 'DISCARD_PREV',
+    SERVE_FIRST_RESOLVED: 'SERVE_FIRST_RESOLVED',
+  };
+  _registeredAsyncRequests = {
+    /*
+    tokenId: { requestCount: 0, aliveRequestIds: {} },
+     */
+  };
+
   constructor() {
     this.debug = false;
     this.decks = decks;
     this.clearCache(false);
   }
+
+  get AsyncRequestMode() { return SourceDecksService._AsyncRequestMode; }
+  get DISCARD_THIS_IF_ANY_PENDING() { return SourceDecksService._AsyncRequestMode.DISCARD_THIS_IF_ANY_PENDING; }
+  get DISCARD_PREV() { return SourceDecksService._AsyncRequestMode.DISCARD_PREV; }
+  get SERVE_FIRST_RESOLVED() { return SourceDecksService._AsyncRequestMode.SERVE_FIRST_RESOLVED; }
 
   /**
    * Sets ordered list of deck ids
@@ -37,18 +54,58 @@ class SourceDecksService {
   /**
    * Load a presentation
    * @param {string} deckId
+   * @param {Object} asyncRequestToken
    * @returns {Promise}
    */
-  getDeck(deckId) {
+  getDeck(deckId, asyncRequestToken = null) {
+    const requestId = this._getNextAsyncRequestId(asyncRequestToken);
+    if (asyncRequestToken) {
+      this._registerAsyncRequestToken(asyncRequestToken);
+      if (asyncRequestToken.mode === this.DISCARD_THIS_IF_ANY_PENDING && this._getPendingAsyncRequestsCount(asyncRequestToken)) {
+        return this._swallow(`getDeck(${deckId}`, asyncRequestToken);
+      }
+      if (asyncRequestToken.mode === this.DISCARD_PREV) {
+        this.discardPendingAsyncRequests(asyncRequestToken);
+      }
+      this._addAsyncRequest(asyncRequestToken, requestId);
+    }
+
     if (!this.store.deckIds.includes(deckId)) {
       this.store.deckIds.push(deckId);
     }
-    return (!!this.store.decks[deckId])
-      ? Promise.resolve(this.store.decks[deckId])
-      : KoalaJs.request({ agent: window.gapi.client.slides.presentations.get, query: {
-        "presentationId": deckId,
-        "fields": "title,slides.objectId",
-      }}).then(res => this.store.decks[deckId] = JSON.parse(res.body), rej => { throw new Error({error:rej}); });
+    if (!!this.store.decks[deckId]) {
+      if (asyncRequestToken) {
+        if (!this._isAsyncRequestAlive(asyncRequestToken, requestId)) {
+          return this._swallow(`getDeck(${deckId}) as request's been discarded`, asyncRequestToken);
+        }
+        if (asyncRequestToken.mode === this.SERVE_FIRST_RESOLVED) {
+          this.discardPendingAsyncRequests(asyncRequestToken);
+        } else {
+          this._deleteAsyncRequest(asyncRequestToken, requestId); // unregister the request as it will be successfully resolved
+        }
+      }
+
+      return Promise.resolve(this.store.decks[deckId]);
+    } else {
+      return KoalaJs.request({ agent: window.gapi.client.slides.presentations.get, query: {
+          "presentationId": deckId,
+          "fields": "title,slides.objectId",
+        }})
+        .then(res => {
+            if (asyncRequestToken) {
+              if (!this._isAsyncRequestAlive(asyncRequestToken, requestId)) {
+                return this._swallow(`getDeck(${deckId}) as request's been discarded`, asyncRequestToken);
+              }
+              if (asyncRequestToken.mode === this.SERVE_FIRST_RESOLVED) {
+                this.discardPendingAsyncRequests(asyncRequestToken);
+              } else {
+                this._deleteAsyncRequest(asyncRequestToken, requestId); // unregister the request as it will be successfully resolved
+              }
+            }
+            return this.store.decks[deckId] = JSON.parse(res.body)
+          },
+          rej => { throw new Error({error:rej}); });
+    }
   }
 
   /**
@@ -62,11 +119,36 @@ class SourceDecksService {
   /**
    * Get list of slideIds
    * @param {string} deckId
+   * @param {Object} asyncRequestToken
    * @returns {Promise<Array>}
    */
-  getSlideIds(deckId) {
+  getSlideIds(deckId, asyncRequestToken = null) {
     this.debug && console.log('SourceDecksService.getSlideIds()', deckId);
-    return this.getDeck(deckId).then(deck => deck.slides.map(slide => slide.objectId));
+    const requestId = this._getNextAsyncRequestId(asyncRequestToken);
+    if (asyncRequestToken) {
+      this._registerAsyncRequestToken(asyncRequestToken);
+      if (asyncRequestToken.mode === this.DISCARD_THIS_IF_ANY_PENDING && this._getPendingAsyncRequestsCount(asyncRequestToken)) {
+        return this._swallow(`getSlideIds(${deckId})`, asyncRequestToken);
+      }
+      if (asyncRequestToken.mode === this.DISCARD_PREV) {
+        this.discardPendingAsyncRequests(asyncRequestToken);
+      }
+      this._addAsyncRequest(asyncRequestToken, requestId);
+    }
+
+    return this.getDeck(deckId).then(deck => {
+      if (asyncRequestToken) {
+        if (!this._isAsyncRequestAlive(asyncRequestToken, requestId)) {
+          return this._swallow(`getSlideIds(${deckId}) as request's been discarded`, asyncRequestToken);
+        }
+        if (asyncRequestToken.mode === this.SERVE_FIRST_RESOLVED) {
+          this.discardPendingAsyncRequests(asyncRequestToken);
+        } else {
+          this._deleteAsyncRequest(asyncRequestToken, requestId); // unregister the request as it will be successfully resolved
+        }
+      }
+      return deck.slides.map(slide => slide.objectId);
+    });
   }
 
   /**
@@ -74,14 +156,50 @@ class SourceDecksService {
    * @param {string} deckId
    * @param {string} slideId
    * @param {number} width
+   * @param {Object} asyncRequestToken
    * @returns {Promise}
    */
-  getThumbnail(deckId, slideId, width = 400) {
+  getThumbnail(deckId, slideId, width = 400, asyncRequestToken) {
     if (!this.store.slideThumbnailUrls[deckId]) this.store.slideThumbnailUrls[deckId] = {};
-    return (!!this.store.slideThumbnailUrls[deckId][slideId])
-      ? Promise.resolve(this.store.slideThumbnailUrls[deckId][slideId])
-      : this.getDeck(deckId)
+
+    const requestId = this._getNextAsyncRequestId(asyncRequestToken);
+    if (asyncRequestToken) {
+      this._registerAsyncRequestToken(asyncRequestToken);
+      if (asyncRequestToken.mode === this.DISCARD_THIS_IF_ANY_PENDING && this._getPendingAsyncRequestsCount(asyncRequestToken)) {
+        return this._swallow(`getThumbnail(${deckId}, ${slideId})`, asyncRequestToken);
+      }
+      if (asyncRequestToken.mode === this.DISCARD_PREV) {
+        this.discardPendingAsyncRequests(asyncRequestToken);
+      }
+      this._addAsyncRequest(asyncRequestToken, requestId);
+    }
+
+    if (!!this.store.slideThumbnailUrls[deckId][slideId]) {
+      if (asyncRequestToken) {
+        if (!this._isAsyncRequestAlive(asyncRequestToken, requestId)) {
+          return this._swallow(`getThumbnail(${deckId}, ${slideId}) as request's been discarded`, asyncRequestToken);
+        }
+        if (asyncRequestToken.mode === this.SERVE_FIRST_RESOLVED) {
+          this.discardPendingAsyncRequests(asyncRequestToken);
+        } else {
+          this._deleteAsyncRequest(asyncRequestToken, requestId); // unregister the request as it will be successfully resolved
+        }
+      }
+      return Promise.resolve(this.store.slideThumbnailUrls[deckId][slideId]);
+    } else {
+      return this.getDeck(deckId)
         .then(deck => {
+          if (asyncRequestToken) {
+            if (!this._isAsyncRequestAlive(asyncRequestToken, requestId)) {
+              return this._swallow(`getThumbnail(${deckId}, ${slideId}) as request's been discarded`, asyncRequestToken);
+            }
+            if (asyncRequestToken.mode === this.SERVE_FIRST_RESOLVED) {
+              this.discardPendingAsyncRequests(asyncRequestToken);
+            } else {
+              this._deleteAsyncRequest(asyncRequestToken, requestId); // unregister the request as it will be successfully resolved
+            }
+          }
+
           const slide = deck.slides.find(slide => slide.objectId === slideId);
           if (!slide) {
             throw new Error(`Slide ${deckId}.${slideId} not found`);
@@ -96,8 +214,8 @@ class SourceDecksService {
           })
         })
         .then(response => {
-            // this.debug && console.log('SourceDeckService.getThumbnail() response', response);
-            return JSON.parse(response.body);
+          // this.debug && console.log('SourceDeckService.getThumbnail() response', response);
+          return JSON.parse(response.body);
         })
         .then(data => {
           // this.debug && console.log('SourceDeckService.getThumbnail() body ', data);
@@ -111,6 +229,7 @@ class SourceDecksService {
           console.error(rej);
           throw new Error(rej);
         });
+    }
   }
 
   /**
@@ -150,9 +269,9 @@ class SourceDecksService {
    * Gets a list of decks, each {key:, value:}
    * @returns {Promise}
    */
-  getDecksList() {
+  /* getDecksList() {
     return Promise.resolve(this.store.deckIds.map(key => ({ key: key, value: this.store.decks[key].title })));
-  }
+  } */
 
   /**
    * Clears caches
@@ -165,6 +284,107 @@ class SourceDecksService {
       slideThumbnailUrls: {},
     };
     clearDeeper && KoalaJs.clearCache();
+  }
+
+  /**
+   * Creates request token for async requests.
+   * Requests for the token presented will be served in the given mode
+   * @param {string} mode one of 'DISCARD_PREV'|'SERVE_FIRST_RESOLVED'|'DISCARD_THIS_IF_ANY_PENDING'
+   * See README.md for details
+   */
+  createAsyncRequestToken(mode = this.DISCARD_PREV) {
+    return {
+      tokenId: 'art' + ++this._asyncRequestTokensCount,
+      mode,
+    };
+  }
+
+  /**
+   * All requests per token will be discarded
+   * @param {Object<{token,mode}>|string} asyncRequestToken if ==='all' then all pending requests for all token are reset
+   */
+  discardPendingAsyncRequests(asyncRequestToken = 'all') {
+    if (asyncRequestToken === 'all') {
+      Object.keys(this._registeredAsyncRequests).forEach(tokenId => {
+        this._registeredAsyncRequests[tokenId].aliveRequestIds = {};
+      });
+    } else {
+      this._registeredAsyncRequests[asyncRequestToken.tokenId].aliveRequestIds = {};
+    }
+  }
+
+  /**
+   * Registers asyncRequestToken if not yet
+   * @param {Object} asyncRequestToken
+   * @private
+   */
+  _registerAsyncRequestToken(asyncRequestToken) {
+    if (!this._registeredAsyncRequests[asyncRequestToken.tokenId]) {
+      this._registeredAsyncRequests[asyncRequestToken.tokenId] = {
+        requestCount: 0,
+        aliveRequestIds: {},
+      }
+    }
+  }
+
+  /**
+   * Checks if any pending requests are associated with given token
+   * @param {Object} asyncRequestToken
+   * @private
+   */
+  _getPendingAsyncRequestsCount(asyncRequestToken) {
+    return Object.keys(this._registeredAsyncRequests[asyncRequestToken.tokenId].aliveRequestIds).length;
+  }
+
+  /**
+   * Creates new request id for a token
+   * @param {Object} asyncRequestToken
+   * @returns {number}
+   * @private
+   */
+  _getNextAsyncRequestId(asyncRequestToken = null) {
+    return asyncRequestToken ? ++this._registeredAsyncRequests[asyncRequestToken.tokenId].requestCount : 0;
+  }
+
+  /**
+   * Checks if the request not discarded
+   * @param {Object} asyncRequestToken
+   * @param {string} requestId
+   * @returns {Boolean}
+   * @private
+   */
+  _isAsyncRequestAlive(asyncRequestToken, requestId) {
+    return !!this._registeredAsyncRequests[asyncRequestToken.tokenId].aliveRequestIds[requestId];
+  }
+
+  /**
+   * Register request among alive
+   * @param {Object} asyncRequestToken
+   * @param {string} requestId
+   * @private
+   */
+  _addAsyncRequest(asyncRequestToken, requestId) {
+    this._registeredAsyncRequests[asyncRequestToken.tokenId].aliveRequestIds[requestId] = requestId;
+  }
+
+  /**
+   * Deletes request from alive
+   * @param {Object} asyncRequestToken
+   * @param {string} requestId
+   * @private
+   */
+  _deleteAsyncRequest(asyncRequestToken, requestId) {
+    delete this._registeredAsyncRequests[asyncRequestToken.tokenId].aliveRequestIds[requestId];
+  }
+
+  /**
+   * Rejects (swallows) request
+   * @param {string} message
+   * @param {Object} asyncRequestToken
+   * @private
+   */
+  _swallow(message, asyncRequestToken) {
+    return Promise.reject(`SourceDecksService swallows ${message} in mode ${asyncRequestToken.mode} for tokenId ${asyncRequestToken.tokenId}`);
   }
 }
 
