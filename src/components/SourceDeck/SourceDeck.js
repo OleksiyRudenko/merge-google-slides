@@ -9,66 +9,43 @@ import Slide from "../Slide";
 import ScrollingText from "../ScrollingText/ScrollingText";
 
 export default class SourceDeck extends Component {
+  static defaultProps = {
+    deckId: null,
+    order: null,
+    moveLeft: null,
+    moveRight: null,
+    deleteDeck: null,
+  };
+
   constructor(props) {
     super(props);
     this.debug = true;
     this.state = {
       deckId: this.props.deckId,
       deckTitle: null,
-      slides: null,
+      slideIds: null,
     };
     bindHandlers(this,
-      'renderPanelBody',
       'onMoveLeft',
       'onMoveRight',
       'onDeleteDeck',
+      '_loadSlideIds',
     );
   }
 
   componentDidMount() {
     this.debug && console.log('SourceDeck.cDM()', this.props);
-    SourceDecksService.getDeck(this.props.deckId)
-      .then(deck => {
-        this.debug && console.log('SourceDeck.cDM() getDeck.then()', deck);
-        this.setState({
-          deckTitle: deck.title,
-        });
-        SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
-          this.debug && console.log('SourceDeck.cDM() .getSlideIds.then()', slideIds);
-          this.setState({
-            slides: slideIds,
-          });
-        });
-      })
-      .catch(rejection => {
-        console.error('SourceDeck.cDM() error ', rejection);
-      });
+    this._loadDeckTitleAndSlideIds();
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps, prevState) {
     this.debug && console.log('SourceDeck.cDU()', this.props);
     if (this.props.deckId !== this.state.deckId) {
       this.setState({
         deckId: this.props.deckId,
         deckTitle: null,
-        slides: null,
-      });
-      SourceDecksService.getDeck(this.props.deckId)
-        .then(deck => {
-          this.debug && console.log('SourceDeck.cDU() getDeck.then()', deck);
-          this.setState({
-            deckTitle: deck.title,
-          });
-          SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
-            this.debug && console.log('SourceDeck.cDU() .getSlideIds.then()', slideIds);
-            this.setState({
-              slides: slideIds,
-            });
-          });
-        })
-        .catch(rejection => {
-          console.error('SourceDeck.cDU() error ', rejection);
-        });
+        slideIds: null,
+      }, this._loadDeckTitleAndSlideIds);
     }
   }
 
@@ -112,8 +89,8 @@ export default class SourceDeck extends Component {
   renderPanelBody() {
     return (
       <Panel.Body>
-        {this.state.slides
-          ? this.state.slides.map((slideId, idx) => <Slide key={idx} deckId={this.props.deckId} slideId={slideId} />)
+        {this.state.slideIds
+          ? this.state.slideIds.map((slideId, idx) => <Slide key={idx} deckId={this.props.deckId} slideId={slideId} />)
           : <ProgressBar striped bsStyle="info" now={100} active />
         }
       </Panel.Body>
@@ -145,5 +122,42 @@ export default class SourceDeck extends Component {
     if (this.props.deleteDeck) {
       this.props.deleteDeck(this.props.deckId);
     }
+  }
+
+  /**
+   * Load deck title and slide ids based on .this.props.deckId
+   * @private
+   */
+  _loadDeckTitleAndSlideIds() {
+    if (!this.props.deckId) {
+      return;
+    }
+    SourceDecksService.getDeck(this.props.deckId)
+      .then(deck => {
+        this.debug && console.log('SourceDeck._loadDeckTitleAndSlideIds() getDeck.then() with', deck);
+        this.setState({
+          deckTitle: deck.title,
+          slideIds: null,
+        }, this._loadSlideIds);
+      })
+      .catch(rejection => {
+        console.error('SourceDeck._loadDeckTitleAndSlideIds() ERROR:', rejection);
+      });
+  }
+
+  /**
+   * Load deck slide ids
+   * @private
+   */
+  _loadSlideIds() {
+    SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
+      this.debug && console.log('SourceDeck._loadSlideIds() .getSlideIds.then() with', slideIds);
+      this.setState({
+        slideIds: slideIds,
+      });
+    })
+      .catch(rejection => {
+        console.error('SourceDeck._loadSlideIds() ERROR:', rejection);
+      });
   }
 }
