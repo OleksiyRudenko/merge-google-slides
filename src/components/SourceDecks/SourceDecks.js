@@ -7,6 +7,14 @@ import SourceDeck from "../SourceDeck";
 // import "./SourceDecks.css";
 
 export default class SourceDecks extends Component {
+  static defaultProps = {
+    sourceList: null,
+    refreshHandler: null,
+    moveDeckHandler: null,
+    deleteDeckHandler: null,
+    addDeckHandler: null,
+  };
+
   constructor(props) {
     super(props);
     this.debug = true;
