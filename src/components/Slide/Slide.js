@@ -20,7 +20,7 @@ export default class Slide extends RichComponent {
       isError: false,
       errorMessage: null,
     };
-    this.renderCount = 2;
+    this.renderCount = 5;
   }
 
   get fullSlideId() { return this.props.deckId + '.' + this.props.slideId; }
@@ -58,6 +58,9 @@ export default class Slide extends RichComponent {
     if (this.renderCount-- && this.state.slideThumbnailUrl === null && this.state.deckId && this.state.slideId) {
       // we're in commit phase, safe to load new data provided conditions are met
       this._loadThumbnail();
+    }
+    if (!this.renderCount) {
+      console.error('Slide.cDU() RENDER COUNT THRESHOLD fired (renderCount => 0)');
     }
   }
 

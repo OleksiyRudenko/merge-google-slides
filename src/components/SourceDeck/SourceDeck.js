@@ -26,7 +26,7 @@ export default class SourceDeck extends RichComponent {
       deckTitle: null,
       slideIds: null,
     };
-    this.renderCount = 2;
+    this.renderCount = 5;
     bindHandlers(this,
       'onMoveLeft',
       'onMoveRight',
@@ -62,6 +62,9 @@ export default class SourceDeck extends RichComponent {
     this._debug('.cDU()', 'prevProps, prevState', prevProps, prevState);
     if (this.renderCount-- && !this.state.slideIds && this.state.deckId && prevProps.deckId !== this.state.deckId) {
       this._loadDeckTitleAndSlideIds();
+    }
+    if (!this.renderCount) {
+      console.error('SourceDeck.cDU() RENDER COUNT THRESHOLD fired (renderCount => 0)');
     }
   }
 
