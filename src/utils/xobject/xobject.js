@@ -163,6 +163,8 @@ export const arrayToObjectKeys = (arr, filterAlphaNumerics = true) => {
   return resultingObject;
 };
 
+export const deepClone = subject => JSON.parse(JSON.stringify(subject));
+
 function isObject(obj) {
   return obj != null && typeof obj === 'object' && Array.isArray(obj) === false;
 }
