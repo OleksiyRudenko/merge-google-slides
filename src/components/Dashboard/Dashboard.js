@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import RichComponent from "../RichComponent/RichComponent";
 import queryString from 'qs';
 import "./Dashboard.css";
 // import SettingsFile from '../SettingsFile';
@@ -10,10 +11,10 @@ import Guide from '../Guide';
 import {bindHandlers} from "../../utils/bind";
 import SourceDecksService from "../../services/SourceDecksService";
 
-export default class Dashboard extends Component {
+export default class Dashboard extends RichComponent {
   constructor(props) {
     super(props);
-    this.debug = false;
+    this.debug = true;
     const urlParams = this.props.location.search ? queryString.parse(this.props.location.search.slice(1)) : {state: null};
     this.state = {
       urlParams: urlParams,
@@ -31,19 +32,19 @@ export default class Dashboard extends Component {
   }
 
   componentDidMount() {
-    this.debug && console.log('Dashboard.cDM() call .loadSlides()');
+    this._debug('.cDM() call .loadSlides() with');
     this.loadSlides();
   }
 
   componentDidUpdate() {
-    this.debug && console.log('Dashboard.cDU()');
+    this._debug('.cDU()');
   }
 
   /**
    * Renders component view
    */
   render() {
-    this.debug && console.log('Dashboard.render()', this.state);
+    this._debug('.render()');
     return (
       <React.Fragment>
         {/*<Grid>
@@ -99,7 +100,7 @@ export default class Dashboard extends Component {
    * Clear caches for decks|deck and/or slides thumbnails
    */
   refreshAll() {
-    this.debug && console.log('Dashboard.refreshAll()');
+    this._debug('.refreshAll()');
     SourceDecksService.clearCache();
     this.setState({
       renderingKey: Math.random(),
@@ -119,7 +120,7 @@ export default class Dashboard extends Component {
    * Set Welcome component hidden
    */
   handleGuideClose() {
-    this.debug && console.log('Dashboard.handleGuideClose()');
+    this._debug('.handleGuideClose()');
     this.setState({
       showGuide: false,
     });
@@ -131,10 +132,10 @@ export default class Dashboard extends Component {
    * @param {Number} targetOffset (<0 to the left, >0 to the right)
    */
   moveDeck(currentOrderPosition, targetOffset) {
-    this.debug && console.log('Dashboard.moveDeck()', currentOrderPosition, targetOffset);
-    this.debug && console.log('Dashboard.moveDeck() old list', SourceDecksService.getDeckIds());
+    this._debug('.moveDeck()', 'currentOrderPosition, targetOffset', currentOrderPosition, targetOffset);
+    this._debug('.moveDeck() old list', 'SourceDecksService.getDeckIds()', SourceDecksService.getDeckIds());
     if (SourceDecksService.moveDeckId(currentOrderPosition, targetOffset)) {
-      this.debug && console.log('Dashboard.moveDeck() new list', SourceDecksService.getDeckIds());
+      this._debug('.moveDeck() new list', 'SourceDecksService.getDeckIds', SourceDecksService.getDeckIds());
       this.setState({
         sourceDecksList: SourceDecksService.getDeckIds().slice(),
       }, this.loadSlides);
@@ -156,10 +157,10 @@ export default class Dashboard extends Component {
    * Updates source slides list
    */
   loadSlides() {
-    this.debug && console.log('Dashboard.loadSlides()');
+    this._debug('.loadSlides()');
     const sourceSlidesList = [];
     const deckIds = SourceDecksService.getDeckIds(); // this.state.sourceDecksList;
-    this.debug && console.log('Dashboard.loadSlides() deckIds', deckIds);
+    this._debug('.loadSlides()', 'deckIds==', deckIds);
     const self = this;
     Promise.all(deckIds.map(deckId => SourceDecksService.getSlideIds(deckId)))
       .then(slideIdsList => {
@@ -168,11 +169,11 @@ export default class Dashboard extends Component {
             sourceSlidesList.push({deckId: deckIds[idx], slideId});
           });
         });
-        this.debug && console.log('Dashboard.loadSlides() sourceSlidesList', sourceSlidesList);
+        this._debug('.loadSlides()','sourceSlidesList', sourceSlidesList);
         self.setState({
           sourceSlidesList: sourceSlidesList.slice(),
         }, () => {
-          this.debug && console.log('Dashboard.loadSlides() state updated', this.state);
+          this._debug('.loadSlides()','state updated', this.state);
         });
       });
   }
@@ -181,7 +182,7 @@ export default class Dashboard extends Component {
    * Add a Slides deck
    */
   addDeck() {
-    this.debug && console.log('Dashboard.addDeck()');
+    this._debug('.addDeck()');
     this.props.gapi.createPickerPresentations(this.onFilesPicked);
   }
 
@@ -190,19 +191,19 @@ export default class Dashboard extends Component {
    * @param data
    */
   onFilesPicked(data) {
-    this.debug && console.log('Dashboard.onFilesPicked()', data);
+    this._debug('.onFilesPicked()', '(data)', data);
     if (data[window.google.picker.Response.ACTION] === window.google.picker.Action.PICKED) {
       // https://developers.google.com/picker/docs/
       const docList = data[window.google.picker.Response.DOCUMENTS];
       const docIds = docList
         .filter(doc => doc[window.google.picker.Document.MIME_TYPE] === "application/vnd.google-apps.presentation")
         .map(doc => doc[window.google.picker.Document.ID]);
-      // this.debug && console.log('Dashboard.onFilesPicked()', data, docIds, window.google.picker.Document);
+      // this._debug('.onFilesPicked()', 'data, docIds, window.google.picker.Document', data, docIds, window.google.picker.Document);
 
       // remove duplicates
       const deckIds = SourceDecksService.getDeckIds();
       const uniqueDocIds = docIds.filter(el => !deckIds.includes(el));
-      this.debug && console.log('Dashboard.onFilesPicked()', uniqueDocIds);
+      this._debug('.onFilesPicked()', 'uniqueDocIds', uniqueDocIds);
       if (uniqueDocIds.length) {
         SourceDecksService.appendDeckIds(uniqueDocIds);
         this.setState({
