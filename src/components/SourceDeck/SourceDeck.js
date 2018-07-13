@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import RichComponent from "../RichComponent/RichComponent";
 import {
   Button, Glyphicon, Panel, ProgressBar
 } from 'react-bootstrap';
@@ -8,7 +9,7 @@ import SourceDecksService from "../../services/SourceDecksService";
 import Slide from "../Slide";
 import ScrollingText from "../ScrollingText/ScrollingText";
 
-export default class SourceDeck extends Component {
+export default class SourceDeck extends RichComponent {
   static defaultProps = {
     deckId: null,
     order: null,
@@ -25,41 +26,60 @@ export default class SourceDeck extends Component {
       deckTitle: null,
       slideIds: null,
     };
+    this.renderCount = 2;
     bindHandlers(this,
       'onMoveLeft',
       'onMoveRight',
       'onDeleteDeck',
+      '_loadDeckTitleAndSlideIds',
       '_loadSlideIds',
     );
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    // Store changing props data in state to compare when props change
+    // Clear out any previously-loaded user data not to render stale stuff.
+    if (nextProps.deckId !== prevState.deckId) {
+      console.log('STATIC SourceDeck.getDerivedStateFromProps() .deckId has changed: nextProps, prevState', nextProps, prevState);
+      return {
+        deckId: nextProps.deckId,     // this is also a flag for whether to load any data
+        deckTitle: null,
+        slideIds: null, // this is a flag to load data
+      };
+    }
+    // otherwise state update on external update signal not necessary
+    return null;
+  }
+
   componentDidMount() {
-    this.debug && console.log('SourceDeck.cDM()', this.props);
-    this._loadDeckTitleAndSlideIds();
+    this._debug('.cDM()');
+    if (!this.state.slideIds && this.state.deckId) {
+      this._loadDeckTitleAndSlideIds();
+    }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    this.debug && console.log('SourceDeck.cDU()', this.props);
-    if (this.props.deckId !== this.state.deckId) {
-      this.setState({
-        deckId: this.props.deckId,
-        deckTitle: null,
-        slideIds: null,
-      }, this._loadDeckTitleAndSlideIds);
+    this._debug('.cDU()', 'prevProps, prevState', prevProps, prevState);
+    if (this.renderCount-- && !this.state.slideIds && this.state.deckId && prevProps.deckId !== this.state.deckId) {
+      this._loadDeckTitleAndSlideIds();
     }
+  }
+
+  componentWillUnmount() {
+    this.debug && console.error('SourceDeck.cWU() CANCEL PENDING REQUEST!', this.props, this.state);
   }
 
   /**
    * Renders component view
    */
   render() {
-    this.debug && console.log('SourceDeck.render()', this.state);
+    this._debug('.render()');
     return (
       <Panel className="minimalisticPanel">
         <Panel.Heading>
           <div className={styles.flexRow}>
             <Glyphicon glyph="film" className={styles.panelIcon} />
-            <ScrollingText textData={this.state.deckTitle} idBase={this.props.deckId} />
+            <ScrollingText textData={this.state.deckTitle} idBase={this.state.deckId} />
             <Button bsStyle="link" bsSize="small" title="Move left" className={styles.btnSmall}
                     disabled={!this.props.moveLeft}
                     onClick={this.onMoveLeft}>
@@ -90,7 +110,7 @@ export default class SourceDeck extends Component {
     return (
       <Panel.Body>
         {this.state.slideIds
-          ? this.state.slideIds.map((slideId, idx) => <Slide key={idx} deckId={this.props.deckId} slideId={slideId} />)
+          ? this.state.slideIds.map((slideId, idx) => <Slide key={idx} deckId={this.state.deckId} slideId={slideId} />)
           : <ProgressBar striped bsStyle="info" now={100} active />
         }
       </Panel.Body>
@@ -129,12 +149,13 @@ export default class SourceDeck extends Component {
    * @private
    */
   _loadDeckTitleAndSlideIds() {
+    this._debug('_loadDeckTitleAndSlideIds()');
     if (!this.props.deckId) {
       return;
     }
     SourceDecksService.getDeck(this.props.deckId)
       .then(deck => {
-        this.debug && console.log('SourceDeck._loadDeckTitleAndSlideIds() getDeck.then() with', deck);
+        this._debug('._loadDeckTitleAndSlideIds()', 'getDeck.then() with', deck);
         this.setState({
           deckTitle: deck.title,
           slideIds: null,
@@ -151,7 +172,7 @@ export default class SourceDeck extends Component {
    */
   _loadSlideIds() {
     SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
-      this.debug && console.log('SourceDeck._loadSlideIds() .getSlideIds.then() with', slideIds);
+      this._debug('._loadSlideIds()', '.getSlideIds.then() with', slideIds);
       this.setState({
         slideIds: slideIds,
       });
