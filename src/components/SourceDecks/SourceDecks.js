@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import RichComponent from "../RichComponent/RichComponent";
 import {
   Button, Glyphicon, Panel,
 } from 'react-bootstrap';
@@ -6,7 +7,7 @@ import {bindHandlers} from "../../utils/bind";
 import SourceDeck from "../SourceDeck";
 // import "./SourceDecks.css";
 
-export default class SourceDecks extends Component {
+export default class SourceDecks extends RichComponent {
   static defaultProps = {
     sourceList: null,
     refreshHandler: null,
@@ -22,7 +23,6 @@ export default class SourceDecks extends Component {
       decks: this.props.sourceList,
     };
     bindHandlers(this,
-      'renderPanelBody',
       'onMoveLeft',
       'onMoveRight',
       'addDeck',
@@ -34,7 +34,7 @@ export default class SourceDecks extends Component {
    * Renders component view
    */
   render() {
-    this.debug && console.log('SourceDecks.render()', this.props, this.state);
+    this._debug('.render()');
     return (
       <Panel className="fillingPanel">
         <Panel.Heading>
@@ -111,7 +111,7 @@ export default class SourceDecks extends Component {
    * @param {string} deckId
    */
   onMoveLeft(currentOrderPosition, deckId) {
-    this.debug && console.log('SourceDecks.onMoveLeft()', currentOrderPosition, deckId);
+    this._debug('.onMoveLeft()', 'currentOrderPosition, deckId', currentOrderPosition, deckId);
     this.props.moveDeckHandler(currentOrderPosition, -1);
   }
 
@@ -121,7 +121,7 @@ export default class SourceDecks extends Component {
    * @param {string} deckId
    */
   onMoveRight(currentOrderPosition, deckId) {
-    this.debug && console.log('SourceDecks.onMoveRight()', currentOrderPosition, deckId);
+    this._debug('.onMoveRight()', 'currentOrderPosition, deckId', currentOrderPosition, deckId);
     this.props.moveDeckHandler(currentOrderPosition, 1);
   }
 
@@ -129,7 +129,7 @@ export default class SourceDecks extends Component {
    * Add a deck to the list
    */
   addDeck() {
-    this.debug && console.log('SourceDecks.addDeck()');
+    this._debug('.addDeck()');
     this.props.addDeckHandler();
   }
 
@@ -137,7 +137,7 @@ export default class SourceDecks extends Component {
    * Delete a deck
    */
   deleteDeck(deckId) {
-    this.debug && console.log('SourceDecks.deleteDeck()');
+    this._debug('.deleteDeck()');
     this.props.deleteDeckHandler(deckId);
   }
 }
