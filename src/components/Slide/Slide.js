@@ -1,9 +1,10 @@
-import React, { Component } from 'react';
+import React from 'react';
+import RichComponent from "../RichComponent/RichComponent";
 import { ProgressBar } from 'react-bootstrap';
 import styles from "./Slide.css";
 import SourceDecksService from "../../services/SourceDecksService";
 
-export default class Slide extends Component {
+export default class Slide extends RichComponent {
   static defaultProps = {
     deckId: null,
     slideId: null,
@@ -19,6 +20,7 @@ export default class Slide extends Component {
       isError: false,
       errorMessage: null,
     };
+    this.renderCount = 2;
   }
 
   get fullSlideId() { return this.props.deckId + '.' + this.props.slideId; }
@@ -43,7 +45,7 @@ export default class Slide extends Component {
    * Update state on first mount
    */
   componentDidMount() {
-    this.debug && console.log('Slide.cDM()');
+    this._debug('.cDM()');
     // load external data first time upon mounting
     this._loadThumbnail();
   }
@@ -52,8 +54,8 @@ export default class Slide extends Component {
    * Update state snapshot and derived state properties based on props changed
    */
   componentDidUpdate(prevProps, prevState) {
-    this.debug && console.log('Slide.cDU(), prevProps, props, prevState, state', prevProps, this.props, prevState, this.state);
-    if (this.state.slideThumbnailUrl === null && this.state.deckId && this.state.slideId) {
+    this._debug('.cDU()', 'prevProps, prevState', prevProps, prevState);
+    if (this.renderCount-- && this.state.slideThumbnailUrl === null && this.state.deckId && this.state.slideId) {
       // we're in commit phase, safe to load new data provided conditions are met
       this._loadThumbnail();
     }
@@ -67,7 +69,7 @@ export default class Slide extends Component {
    * Renders component view
    */
   render() {
-    this.debug && console.log('Slide.render()', this.props, this.state);
+    this._debug('.render()');
     return (
       <div className={styles.slidesContainer}>
         {this.state.slideThumbnailUrl
@@ -90,7 +92,7 @@ export default class Slide extends Component {
    * Load/update thumbnail
    */
   _loadThumbnail() {
-    this.debug && console.log('Slide._loadThumbnail()', this.props);
+    this._debug('._loadThumbnail()');
     if (!this.props.deckId || !this.props.slideId) {
       return;
     }
