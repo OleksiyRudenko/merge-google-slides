@@ -15,7 +15,7 @@ export default class RichComponent extends Component {
           ? xobject.deepClone(item)
           : item;
       });
-      console.log(this.constructor.name + ' ' + message + ' this.props, this.state:', Object.assign({}, this.props), Object.assign({}, this.state), ...args );
+      console.log(this.constructor.name + ' ' + message + ' this.props, this.state:', xobject.deepClone(this.props), xobject.deepClone(this.state), ...args );
     }
   }
 }
