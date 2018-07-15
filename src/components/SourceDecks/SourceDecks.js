@@ -30,6 +30,15 @@ export default class SourceDecks extends RichComponent {
     );
   }
 
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.sourceList !== prevState.decks) {
+      return {
+        decks: nextProps.sourceList,
+      };
+    }
+    return null;
+  }
+
   /**
    * Renders component view
    */
