@@ -64,7 +64,7 @@ export default class ScrollingText extends Component {
   render() {
     this.debug && console.log('ScrollingText.render()', this.state, this.props);
     return (
-      <div id={'stc' + this.props.idBase} className={styles.scrollingTextContainer}>
+      <div id={'stc' + this.props.idBase} className={styles.scrollingTextContainer} title={this.props.textData}>
         {this.props.textData
           ? <p id={'stt' + this.props.idBase} className={this.state.isScrolling ? styles.scrollingText : styles.steadyText}>
               {this.props.textData}
