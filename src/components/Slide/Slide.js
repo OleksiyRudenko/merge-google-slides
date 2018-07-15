@@ -1,5 +1,5 @@
 import React from 'react';
-import RichComponent from "../RichComponent/RichComponent";
+import RichComponent from "../RichComponent";
 import { ProgressBar } from 'react-bootstrap';
 import styles from "./Slide.css";
 import SourceDecksService from "../../services/SourceDecksService";
@@ -12,7 +12,7 @@ export default class Slide extends RichComponent {
 
   constructor(props) {
     super(props);
-    this.debug = true;
+    this.debug = false;
     this.state = {
       deckId: this.props.deckId,
       slideId: this.props.slideId,
@@ -20,15 +20,16 @@ export default class Slide extends RichComponent {
       isError: false,
       errorMessage: null,
     };
-    this.renderCount = 5;
+    this.renderCount = 12;
   }
 
-  get fullSlideId() { return this.props.deckId + '.' + this.props.slideId; }
+  get fullSlideId() { return this.state.deckId + '.' + this.state.slideId; }
 
   static getDerivedStateFromProps(nextProps, prevState) {
     // Store changing props data in state to compare when props change
     // Clear out any previously-loaded user data not to render stale stuff.
-    if (nextProps.deckId !== prevState.deckId) {
+    if (nextProps.deckId !== prevState.deckId || nextProps.slideId !== prevState.slideId) {
+      // console.log('STATIC Slide.gDSFP() .deckId or .slideId has changed: nextProps, prevState', nextProps, prevState);
       return {
         deckId: nextProps.deckId,     // this is also a flag for whether to load any data
         slideId: nextProps.slideId,
@@ -55,7 +56,8 @@ export default class Slide extends RichComponent {
    */
   componentDidUpdate(prevProps, prevState) {
     this._debug('.cDU()', 'prevProps, prevState', prevProps, prevState);
-    if (this.renderCount-- && this.state.slideThumbnailUrl === null && this.state.deckId && this.state.slideId) {
+    if ( //this.renderCount-- &&
+      this.state.slideThumbnailUrl === null && this.state.deckId && this.state.slideId && !this.state.isError) {
       // we're in commit phase, safe to load new data provided conditions are met
       this._loadThumbnail();
     }
@@ -65,7 +67,7 @@ export default class Slide extends RichComponent {
   }
 
   componentWillUnmount() {
-    this.debug && console.error('Slide.cWU() CANCEL PENDING REQUEST!', this.props, this.state);
+    this.debug && console.error('Slide.cWU() CANCEL PENDING REQUESTS IF ANY!', this.props, this.state);
   }
 
   /**
@@ -96,13 +98,13 @@ export default class Slide extends RichComponent {
    */
   _loadThumbnail() {
     this._debug('._loadThumbnail()');
-    if (!this.props.deckId || !this.props.slideId) {
+    if (!this.state.deckId || !this.state.slideId || this.state.isError || this.state.slideThumbnailUrl) {
       return;
     }
     // cancel any pending requests for the same resource from the same unique source!
     // const requestId = componentInstance + deckId + slideId
 
-    SourceDecksService.getThumbnail(this.props.deckId, this.props.slideId)
+    SourceDecksService.getThumbnail(this.state.deckId, this.state.slideId)
       .then(imageUrl => this.setState({
         slideThumbnailUrl: imageUrl,
         isError: false,

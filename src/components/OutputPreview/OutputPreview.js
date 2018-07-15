@@ -1,4 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
+import RichComponent from "../RichComponent/RichComponent";
 import {
   Button, Glyphicon, Panel, ProgressBar,
 } from 'react-bootstrap';
@@ -7,7 +8,7 @@ import Slide from "../Slide";
 // import styles from './OutputPreview.css';
 import SaveMergedDeck from "../SaveMergedDeck";
 
-export default class OutputPreview extends Component {
+export default class OutputPreview extends RichComponent {
   constructor(props) {
     super(props);
     this.debug = false;
@@ -16,16 +17,16 @@ export default class OutputPreview extends Component {
       showSaveDialog: false,
     };
     bindHandlers(this, 'handleSaveDialogClose', 'handleSaveDialogOpen');
-    this.debug && console.log('OutputPreview.constructor', this.state);
+    this._debug('.constructor');
   }
 
   componentDidMount() {
-    this.debug && console.log('OutputPreview.cDM()', this.props, this.state);
+    this._debug('.cDM()');
     // this.loadSlides();
   }
 
   componentDidUpdate() {
-    this.debug && console.log('OutputPreview.cDU()', this.props, this.state);
+    this._debug('.cDU()');
     /* this.setState({
       slideList: this.props.sourceList,
     }); */
@@ -50,7 +51,7 @@ export default class OutputPreview extends Component {
    * Renders component view
    */
   render() {
-    this.debug && console.log('OutputPreview.render()', this.props, this.state);
+    this._debug('.render()', this.props, this.state);
     return (
       <Panel className="minimalisticPanel">
         <Panel.Heading>
@@ -65,8 +66,8 @@ export default class OutputPreview extends Component {
           <div  className="minimalisticPanelBody">
           {this.props.sourceList
             ? this.props.sourceList.map((slide, idx) => {
-              this.debug && console.log(slide);
-              return <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} />;
+              this._debug('SLIDE', slide);
+              return <Slide key={idx} deckId={slide.deckId} slideId={slide.slideId} caller="OUTPUTpreview" />;
             })
             : <ProgressBar striped bsStyle="info" now={100} active /> }
           </div>

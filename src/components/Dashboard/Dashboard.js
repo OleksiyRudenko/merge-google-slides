@@ -1,5 +1,5 @@
 import React from 'react';
-import RichComponent from "../RichComponent/RichComponent";
+import RichComponent from "../RichComponent";
 import queryString from 'qs';
 import "./Dashboard.css";
 // import SettingsFile from '../SettingsFile';
@@ -14,7 +14,7 @@ import SourceDecksService from "../../services/SourceDecksService";
 export default class Dashboard extends RichComponent {
   constructor(props) {
     super(props);
-    this.debug = true;
+    this.debug = false;
     const urlParams = this.props.location.search ? queryString.parse(this.props.location.search.slice(1)) : {state: null};
     this.state = {
       urlParams: urlParams,
@@ -28,11 +28,11 @@ export default class Dashboard extends RichComponent {
     SourceDecksService.setDeckIds(this.state.sourceDecksList);
     bindHandlers(this, 'refreshAll', 'showGuide', 'handleGuideClose',
       'moveDeck', 'deleteDeck', 'loadSlides', 'addDeck', 'onFilesPicked');
-    this.debug && console.log('Dashboard::state', this.state);
+    this._debug('.constructor', this.state);
   }
 
   componentDidMount() {
-    this._debug('.cDM() call .loadSlides() with');
+    this._debug('.cDM() call .loadSlides() having');
     this.loadSlides();
   }
 
@@ -133,9 +133,9 @@ export default class Dashboard extends RichComponent {
    */
   moveDeck(currentOrderPosition, targetOffset) {
     this._debug('.moveDeck()', 'currentOrderPosition, targetOffset', currentOrderPosition, targetOffset);
-    this._debug('.moveDeck() old list', 'SourceDecksService.getDeckIds()', SourceDecksService.getDeckIds());
+    this._debug('.moveDeck()', 'old list SourceDecksService.getDeckIds()', SourceDecksService.getDeckIds());
     if (SourceDecksService.moveDeckId(currentOrderPosition, targetOffset)) {
-      this._debug('.moveDeck() new list', 'SourceDecksService.getDeckIds', SourceDecksService.getDeckIds());
+      this._debug('.moveDeck()', 'new list SourceDecksService.getDeckIds', SourceDecksService.getDeckIds());
       this.setState({
         sourceDecksList: SourceDecksService.getDeckIds().slice(),
       }, this.loadSlides);

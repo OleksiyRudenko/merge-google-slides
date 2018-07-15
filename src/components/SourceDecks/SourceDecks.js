@@ -1,5 +1,5 @@
 import React from 'react';
-import RichComponent from "../RichComponent/RichComponent";
+import RichComponent from "../RichComponent";
 import {
   Button, Glyphicon, Panel,
 } from 'react-bootstrap';
@@ -18,7 +18,7 @@ export default class SourceDecks extends RichComponent {
 
   constructor(props) {
     super(props);
-    this.debug = true;
+    this.debug = false;
     this.state = {
       decks: this.props.sourceList,
     };

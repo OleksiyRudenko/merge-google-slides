@@ -1,5 +1,5 @@
 import React from 'react';
-import RichComponent from "../RichComponent/RichComponent";
+import RichComponent from "../RichComponent";
 import {
   Button, Glyphicon, Panel, ProgressBar
 } from 'react-bootstrap';
@@ -20,13 +20,13 @@ export default class SourceDeck extends RichComponent {
 
   constructor(props) {
     super(props);
-    this.debug = true;
+    this.debug = false;
     this.state = {
       deckId: this.props.deckId,
       deckTitle: null,
       slideIds: null,
     };
-    this.renderCount = 5;
+    this.renderCount = 12;
     bindHandlers(this,
       'onMoveLeft',
       'onMoveRight',
@@ -40,7 +40,7 @@ export default class SourceDeck extends RichComponent {
     // Store changing props data in state to compare when props change
     // Clear out any previously-loaded user data not to render stale stuff.
     if (nextProps.deckId !== prevState.deckId) {
-      console.log('STATIC SourceDeck.getDerivedStateFromProps() .deckId has changed: nextProps, prevState', nextProps, prevState);
+      // console.log('STATIC SourceDeck.getDerivedStateFromProps() .deckId has changed: nextProps, prevState', nextProps, prevState);
       return {
         deckId: nextProps.deckId,     // this is also a flag for whether to load any data
         deckTitle: null,
@@ -60,7 +60,8 @@ export default class SourceDeck extends RichComponent {
 
   componentDidUpdate(prevProps, prevState) {
     this._debug('.cDU()', 'prevProps, prevState', prevProps, prevState);
-    if (this.renderCount-- && !this.state.slideIds && this.state.deckId && prevProps.deckId !== this.state.deckId) {
+    if (//this.renderCount-- &&
+      !this.state.slideIds && this.state.deckId && prevProps.deckId !== this.state.deckId) {
       this._loadDeckTitleAndSlideIds();
     }
     if (!this.renderCount) {
@@ -153,15 +154,14 @@ export default class SourceDeck extends RichComponent {
    */
   _loadDeckTitleAndSlideIds() {
     this._debug('_loadDeckTitleAndSlideIds()');
-    if (!this.props.deckId) {
+    if (!this.state.deckId) {
       return;
     }
-    SourceDecksService.getDeck(this.props.deckId)
+    SourceDecksService.getDeck(this.state.deckId)
       .then(deck => {
         this._debug('._loadDeckTitleAndSlideIds()', 'getDeck.then() with', deck);
         this.setState({
           deckTitle: deck.title,
-          slideIds: null,
         }, this._loadSlideIds);
       })
       .catch(rejection => {
@@ -174,7 +174,7 @@ export default class SourceDeck extends RichComponent {
    * @private
    */
   _loadSlideIds() {
-    SourceDecksService.getSlideIds(this.props.deckId).then(slideIds => {
+    SourceDecksService.getSlideIds(this.state.deckId).then(slideIds => {
       this._debug('._loadSlideIds()', '.getSlideIds.then() with', slideIds);
       this.setState({
         slideIds: slideIds,
