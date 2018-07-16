@@ -38,7 +38,7 @@ export default class GoogleDriveInstallation extends Component {
     this.debug && console.log('GoogleDriveInstallation.render()', this.state);
     return (
       <div className={styles.page}>
-        <h2><Image src="./ico/android-icon-48x48.png" /> Merge Google Slides at a breeze!</h2>
+        <h2><Image src="./ico/android-icon-48x48.png" /> Merge Slides in a breeze!</h2>
         <div>
           <ButtonWorksWithGoogleDrive href="https://chrome.google.com/webstore/detail/merge-google-slides/apjijeojdpjochnfenmmkegnifcgfaam" />
         </div>

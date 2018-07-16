@@ -1,8 +1,8 @@
 {
-  "name": "Merge Google Slides",
-  "short_name": "Merge Google Slides",
-  "description": "Merge Google Slides decks into a single deck",
-  "version": "0.0.0.1",
+  "name": "Merge Slides",
+  "short_name": "Merge Slides",
+  "description": "Merge multiple Slides decks into a single deck",
+  "version": "0.0.0.2",
   "manifest_version": 2,
   "icons": {
     "128": "ico-mgs-128x128.png",

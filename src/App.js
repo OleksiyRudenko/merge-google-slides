@@ -83,7 +83,7 @@ class App extends Component {
           <Navbar.Header>
             <Navbar.Brand>
               <Image src="./ico/android-icon-48x48.png" alt="Merge Google Slides logo" />
-              Merge Google Slides
+              Merge Slides
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
