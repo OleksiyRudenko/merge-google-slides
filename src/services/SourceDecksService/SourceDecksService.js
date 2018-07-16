@@ -206,7 +206,7 @@ class SourceDecksService {
 
           const slide = deck.slides.find(slide => slide.objectId === slideId);
           if (!slide) {
-            console.error('SourceDecksService.getThumbnail() Slide ${deckId}.${slideId} not found');
+            console.error(`SourceDecksService.getThumbnail() Slide ${deckId}.${slideId} not found`);
             throw new Error(`Slide ${deckId}.${slideId} not found`);
           }
           return KoalaJs.request({
