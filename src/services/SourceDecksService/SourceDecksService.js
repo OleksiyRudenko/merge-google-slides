@@ -104,7 +104,11 @@ class SourceDecksService {
             }
             return this.store.decks[deckId] = JSON.parse(res.body)
           },
-          rej => { throw new Error({error:rej}); });
+          rej => { throw new Error(JSON.stringify(rej)); })
+        .catch(rej => {
+          console.error('SourceDecksService.getDeck()', rej);
+          throw new Error(rej);
+        });
     }
   }
 
@@ -202,6 +206,7 @@ class SourceDecksService {
 
           const slide = deck.slides.find(slide => slide.objectId === slideId);
           if (!slide) {
+            console.error('SourceDecksService.getThumbnail() Slide ${deckId}.${slideId} not found');
             throw new Error(`Slide ${deckId}.${slideId} not found`);
           }
           return KoalaJs.request({
@@ -226,7 +231,7 @@ class SourceDecksService {
           return url;
         })
         .catch(rej => {
-          console.error(rej);
+          console.error('SourceDecksService.getThumbnail()', rej);
           throw new Error(rej);
         });
     }
