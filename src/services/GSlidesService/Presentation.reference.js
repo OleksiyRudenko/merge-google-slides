@@ -101,9 +101,9 @@ const regularPageElement = {
   objectId: "unique",
   size: {},
   transform: {},
-  ELEMENT_TYPE: { // shape, line, image, table, video, sheetsChart
-    TYPE: '',
-    TYPE_Properties: {},
+  "<type>": { // shape, line, image, table, video, sheetsChart, elementGroup -- see below
+    "<type>Type": '',
+    "<type>Properties": {},
     text: {},
     placeholder: {
       type: "{ENUM}", // CENTERED_TITLE
