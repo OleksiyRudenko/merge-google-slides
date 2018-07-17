@@ -153,7 +153,8 @@ export default class Presentation {
    * @returns {Object}
    */
   getObjectIdsStructure() {
-    return xobject.oFilterProps(this.p, ['objectId']);
+    return xobject.oFilterProps(this.p,
+      ['objectId', 'parentObjectId', 'speakerNotesObjectId', 'layoutObjectId', 'masterObjectId', ]); // 'elementGroup'
   }
 
   /**
