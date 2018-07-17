@@ -163,7 +163,7 @@ export default class SaveMergedDeck extends RichComponent {
     GSlidesService.getSuggestedDestination().then(destination => {
       this._debug('.updateDestination()', 'destination', destination);
       this.state.show && this.setState({
-        fileName: destination.filename + ' (' + this.getCurrentDT() + ')',
+        fileName: destination.filename + ' (' + this._getCurrentDT() + ')',
         folderName: destination.parentFolder.name,
         folderId: destination.parentFolder.id,
         saveStatus: 'ready',
@@ -261,20 +261,33 @@ export default class SaveMergedDeck extends RichComponent {
     }
   }
 
-  getCurrentDT() {
+  _getCurrentDT() {
     const d = new Date();
-    return [ d.getFullYear(), this.pad(d.getMonth() + 1), this.pad(d.getDate()) ].join('-') +
-      ' ' + [this.pad(d.getHours()), this.pad(d.getMinutes()), this.pad(d.getSeconds()) ].join('-');
+    return [ d.getFullYear(), this._padWithZeroes(d.getMonth() + 1), this._padWithZeroes(d.getDate()) ].join('-') +
+      ' ' + [this._padWithZeroes(d.getHours()), this._padWithZeroes(d.getMinutes()), this._padWithZeroes(d.getSeconds()) ].join('-');
   }
 
-  pad(str) {
-    return str.toString().padStart(2, '0');
+  /**
+   * Pads value on the left with zeroes to fit width
+   * @param {number|string} value to pad
+   * @param {number} width - min width of the result
+   * @returns {string}
+   */
+  _padWithZeroes(value, width = 2) {
+    return value.toString().padStart(width, '0');
   }
 
 
+  /**
+   * When string is longer than given len it is then ellipsified
+   * @param {string} str
+   * @param {number} len
+   * @returns {string}
+   * @private
+   */
   _ellipsify(str, len = 24) {
     return str.length > len
-      ? str.substr(0, len - 3) + '…'
+      ? str.substr(0, len - 2) + '…'
       : str;
   }
 }
