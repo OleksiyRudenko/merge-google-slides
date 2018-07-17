@@ -7,9 +7,9 @@ import * as xobject from "../../utils/xobject/xobject";
  * new Presentation(partial)
  */
 export default class Presentation {
-  p;
-  constructor(presentation, clone = false) {
-    if (clone) {
+  p = null;
+  constructor(presentation = null, clone = false) {
+    if (clone && typeof presentation !== 'string') {
       this.presentationClone = presentation;
     } else {
       this.presentation = presentation;
@@ -18,7 +18,20 @@ export default class Presentation {
 
   get presentation() { return this.p; }
   get presentationClone() { return xobject.deepClone(this.p); }
-  set presentation(presentation) { this.p = presentation; }
+  set presentation(presentation) {
+    if (typeof presentation === 'string') {
+      this.load(presentation)
+        .then(result => {
+          console.log(`Presentation set presentation(${presentation})`, result);
+          this.p = result;
+        })
+        .catch(err => {
+          console.error(`Presentation set presentation(${presentation})`, err);
+        });
+    } else {
+      this.p = presentation;
+    }
+  }
   set presentationClone(presentation) { this.p = xobject.deepClone(presentation); }
 
   get title() { return this.p.title; }
@@ -165,6 +178,18 @@ export default class Presentation {
    */
   getMaps(entities = ['notesMaster', 'masters', 'layouts']) {
 
+  }
+
+  /**
+   * Loads presentation using google api
+   * @param {string} fileId
+   * @returns {Promise}
+   * @private
+   */
+  load(fileId) {
+    return window.gapi.client.slides.presentations.get({
+      "presentationId": fileId,
+    }).then(res => res.result, rej => Promise.reject(rej));
   }
 
   /**
