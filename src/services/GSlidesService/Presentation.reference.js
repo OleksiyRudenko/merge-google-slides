@@ -101,7 +101,7 @@ const regularPageElement = {
   objectId: "unique",
   size: {},
   transform: {},
-  ELEMENT_TYPE: {
+  ELEMENT_TYPE: { // shape, line, image, table, video, sheetsChart
     TYPE: '',
     TYPE_Properties: {},
     text: {},
