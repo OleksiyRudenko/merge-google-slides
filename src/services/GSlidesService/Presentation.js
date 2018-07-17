@@ -17,9 +17,9 @@ export default class Presentation {
   }
 
   get presentation() { return this.p; }
-  get presentationClone() { return this._clone(this.p); }
+  get presentationClone() { return xobject.deepClone(this.p); }
   set presentation(presentation) { this.p = presentation; }
-  set presentationClone(presentation) { this.p = this._clone(presentation); }
+  set presentationClone(presentation) { this.p = xobject.deepClone(presentation); }
 
   get title() { return this.p.title; }
   set title(title) { this.p.title = title; }
@@ -31,29 +31,29 @@ export default class Presentation {
   set revisionId(revisionId) { this.p.revisionId = revisionId; }
 
   get pageSize() { return this.p.pageSize; }
-  get pageSizeClone() { return this._clone(this.p.pageSize); }
+  get pageSizeClone() { return xobject.deepClone(this.p.pageSize); }
   set pageSize(pageSize) { this.p.revisionId = pageSize; }
-  set pageSizeClone(pageSize) { this.p.revisionId = this._clone(pageSize); }
+  set pageSizeClone(pageSize) { this.p.revisionId = xobject.deepClone(pageSize); }
 
   get masters() { return this.p.masters; }
-  get mastersClone() { return this._clone(this.p.masters); }
+  get mastersClone() { return xobject.deepClone(this.p.masters); }
   getMaster(idx = 0) {
     const m = this.p.masters;
     if (!m.length) { return {}; }
     return m[this._normalizeIdx(m, idx)];
   }
-  getMasterClone(idx = 0) { return this._clone(this.getMaster(idx)); }
+  getMasterClone(idx = 0) { return xobject.deepClone(this.getMaster(idx)); }
   addMaster(master) { this.p.masters.push(master); }
-  addMasterClone(master) { this.p.masters.push(this._clone(master)); }
+  addMasterClone(master) { this.p.masters.push(xobject.deepClone(master)); }
   addMasters(masters) { this.p.masters.concat(masters); }
-  addMastersClone(masters) { this.p.masters.concat(this._clone(masters)); }
+  addMastersClone(masters) { this.p.masters.concat(xobject.deepClone(masters)); }
   setMaster(master, idx = 0) {
     const m = this.p.masters;
     if (m.length && idx >= 0 && idx < m.length) {
       m[idx] = master;
     }
   }
-  setMasterClone(master, idx = 0) { this.setMaster(this._clone(master), idx); }
+  setMasterClone(master, idx = 0) { this.setMaster(xobject.deepClone(master), idx); }
   deleteMaster(idx = 0) {
     const m = this.p.masters;
     if (m.length && idx >= 0 && idx < m.length) {
@@ -62,29 +62,29 @@ export default class Presentation {
   }
 
   get notesMaster() { return this.p.notesMaster; }
-  get notesMasterClone() { return this._clone(this.p.notesMaster); }
+  get notesMasterClone() { return xobject.deepClone(this.p.notesMaster); }
   set notesMaster(notesMaster) { this.p.notesMaster = notesMaster; }
-  set notesMasterClone(notesMaster) { this.p.notesMaster = this._clone(notesMaster); }
+  set notesMasterClone(notesMaster) { this.p.notesMaster = xobject.deepClone(notesMaster); }
 
   get layouts() { return this.p.layouts; }
-  get layoutsClone() { return this._clone(this.p.layouts); }
+  get layoutsClone() { return xobject.deepClone(this.p.layouts); }
   getLayout(idx = 0) {
     const l = this.p.layouts;
     if (!l.length) { return {}; }
     return l[this._normalizeIdx(l, idx)];
   }
-  getLayoutClone(idx = 0) { return this._clone(this.getLayout(idx)); }
+  getLayoutClone(idx = 0) { return xobject.deepClone(this.getLayout(idx)); }
   addLayout(layout) { this.p.layouts.push(layout); }
-  addLayoutClone(layout) { this.p.layouts.push(this._clone(layout)); }
+  addLayoutClone(layout) { this.p.layouts.push(xobject.deepClone(layout)); }
   addLayouts(layouts) { this.p.layouts.concat(layouts); }
-  addLayoutsClone(layouts) { this.p.layouts.concat(this._clone(layouts)); }
+  addLayoutsClone(layouts) { this.p.layouts.concat(xobject.deepClone(layouts)); }
   setLayout(layout, idx = 0) {
     const l = this.p.layouts;
     if (l.length && idx >= 0 && idx < l.length) {
       l[idx] = layout;
     }
   }
-  setLayoutClone(layout, idx = 0) { this.setLayout(this._clone(layout), idx); }
+  setLayoutClone(layout, idx = 0) { this.setLayout(xobject.deepClone(layout), idx); }
   deleteLayout(idx = 0) {
     const l = this.p.layouts;
     if (l.length && idx >= 0 && idx < l.length) {
@@ -93,24 +93,24 @@ export default class Presentation {
   }
 
   get slides() { return this.p.slides; }
-  get slidesClone() { return this._clone(this.p.slides); }
+  get slidesClone() { return xobject.deepClone(this.p.slides); }
   getSlide(idx = 0) {
     const s = this.p.slides;
     if (!s.length) { return {}; }
     return s[this._normalizeIdx(s, idx)];
   }
-  getSlideClone(idx = 0) { return this._clone(this.getSlide(idx)); }
+  getSlideClone(idx = 0) { return xobject.deepClone(this.getSlide(idx)); }
   addSlide(slide) { this.p.slides.push(slide); }
-  addSlideClone(slide) { this.p.slides.push(this._clone(slide)); }
+  addSlideClone(slide) { this.p.slides.push(xobject.deepClone(slide)); }
   addSlides(slides) { this.p.slides.concat(slides); }
-  addSlidesClone(slides) { this.p.slides.concat(this._clone(slides)); }
+  addSlidesClone(slides) { this.p.slides.concat(xobject.deepClone(slides)); }
   setSlide(slide, idx = 0) {
     const s = this.p.slides;
     if (s.length && idx >= 0 && idx < s.length) {
       s[idx] = slide;
     }
   }
-  setSlideClone(slide, idx = 0) { this.setSlide(this._clone(slide), idx); }
+  setSlideClone(slide, idx = 0) { this.setSlide(xobject.deepClone(slide), idx); }
   deleteSlide(idx = 0) {
     const s = this.p.slides;
     if (s.length && idx >= 0 && idx < s.length) {
@@ -165,10 +165,6 @@ export default class Presentation {
    */
   getMaps(entities = ['notesMaster', 'masters', 'layouts']) {
 
-  }
-
-  _clone(subject) {
-    return JSON.parse(JSON.stringify(subject));
   }
 
   _normalizeIdx(pages, idx) {
