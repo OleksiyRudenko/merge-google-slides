@@ -7,6 +7,7 @@ import {bindHandlers} from "../../utils/bind";
 import GSlidesService from "../../services/GSlidesService";
 import SourceDecksService from "../../services/SourceDecksService";
 import styles from './SaveMergedDeck.css';
+import Presentation from "../../services/GSlidesService/Presentation";
 
 export default class SaveMergedDeck extends RichComponent {
   constructor(props) {
@@ -33,6 +34,7 @@ export default class SaveMergedDeck extends RichComponent {
   componentDidMount() {
     this._debug('.cDM()');
     if (this.state.show && !this.state.fileName) {
+      this._tmpPresentations();
       this.updateDestination();
     }
   }
@@ -40,6 +42,7 @@ export default class SaveMergedDeck extends RichComponent {
   componentDidUpdate() {
     this._debug('.cDU()');
     if (this.state.show && !this.state.fileName) {
+      this._tmpPresentations();
       this.updateDestination();
     }
     // (this.state.show && this.state.fileName) || this.updateDestination();
@@ -169,6 +172,20 @@ export default class SaveMergedDeck extends RichComponent {
         saveStatus: 'ready',
       });
     });
+  }
+
+  _tmpPresentations() {
+    const deckIds = SourceDecksService.getDeckIds();
+    Promise.all(deckIds.map(deckId => window.gapi.client.slides.presentations.get({
+      "presentationId": deckId,
+    })))
+      .then(decks => {
+        const presentations = decks.map(deck => new Presentation(deck.result));
+        presentations.forEach(deck => {
+          console.log('$$$$ ' + deck.presentationId,
+            'objectIds <structured>', deck.getObjectIdsStructure());
+        });
+      });
   }
 
   handleSave() {
