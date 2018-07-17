@@ -167,9 +167,19 @@ export default class Presentation {
 
   }
 
-  _normalizeIdx(pages, idx) {
-    while (idx < 0) { idx = pages.length + idx; }
-    if (idx > pages.length) { idx = pages.length - 1; }
+  /**
+   * Normalizes idx to fall into real range within the given list. Negative idx is also OK
+   * @param {Array} list of elements to normalize idx against
+   * @param {number} idx negatives are treated as "from the end of list backwards"
+   * @returns {number|Boolean} normalized idx, fitting real range or false for empty list
+   * @private
+   */
+  _normalizeIdx(list, idx) {
+    if (!list || !list.length) {
+      return false;
+    }
+    while (idx < 0) { idx = list.length + idx; }
+    if (idx > list.length) { idx = list.length - 1; }
     return idx;
   }
 
