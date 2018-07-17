@@ -72,9 +72,8 @@ export default class OutputPreview extends RichComponent {
             : <ProgressBar striped bsStyle="info" now={100} active /> }
           </div>
         </Panel.Body>
-        {this.state.showSaveDialog
-          ? <SaveMergedDeck show={this.state.showSaveDialog} handleClose={this.handleSaveDialogClose} />
-          : ''}
+        {this.state.showSaveDialog &&
+         <SaveMergedDeck show={this.state.showSaveDialog} handleClose={this.handleSaveDialogClose} />}
       </Panel>
     );
   }

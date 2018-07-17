@@ -109,10 +109,7 @@ export default class SaveMergedDeck extends RichComponent {
           </p>
           : <ProgressBar striped bsStyle="info" now={100} active />
         }
-        {this.state.tasks
-          ? Object.keys(this.state.tasks).map((deckId, idx) => this.renderTaskStatus(deckId, idx))
-          : ''
-        }
+        {!!this.state.tasks && Object.keys(this.state.tasks).map((deckId, idx) => this.renderTaskStatus(deckId, idx))}
       </Modal.Body>
     );
   }

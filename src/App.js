@@ -102,10 +102,10 @@ class App extends Component {
                 GitHub
               </NavItem>*/}
             </Nav>
-            { this.props.gapi.state.isSignedIn ? <Nav pullRight><NavItem>{this.renderGoogleSignOut()}</NavItem></Nav> : '' }
+            {this.props.gapi.state.isSignedIn && <Nav pullRight><NavItem>{this.renderGoogleSignOut()}</NavItem></Nav>}
           </Navbar.Collapse>
         </Navbar>
-        { this.state.showAnnouncement ?
+        { this.state.showAnnouncement &&
           <Announcement
             announcementStyle="warning"
             title="Important note!"
@@ -116,9 +116,9 @@ class App extends Component {
             callToAction="Learn more"
             action={this.showWelcome}
             handleClose={this.handleAnnouncementClose}
-          /> : '' }
-        { this.state.showWelcome ? <Welcome show={this.state.showWelcome} handleClose={this.handleWelcomeClose} /> : '' }
-        { this.state.showUserProfile ?
+          />}
+        {this.state.showWelcome && <Welcome show={this.state.showWelcome} handleClose={this.handleWelcomeClose} />}
+        {this.state.showUserProfile &&
           <UserProfile
             show={this.state.showUserProfile}
             userImage={this.state.userImage}
@@ -126,7 +126,7 @@ class App extends Component {
             userEmail={this.state.userEmail}
             handleClose={this.handleUserProfileClose}
             handleLogout={this.props.gapi.handleSignoutClick}
-          /> : '' }
+          />}
       </Fragment>
     );
   }

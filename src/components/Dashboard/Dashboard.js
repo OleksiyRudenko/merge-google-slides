@@ -91,7 +91,7 @@ export default class Dashboard extends RichComponent {
                        addDeckHandler={this.addDeck}
           />
         </div>
-        {this.showGuide ? <Guide show={this.state.showGuide} handleClose={this.handleGuideClose} /> : ''}
+        {this.showGuide && <Guide show={this.state.showGuide} handleClose={this.handleGuideClose} />}
       </React.Fragment>
     );
   }

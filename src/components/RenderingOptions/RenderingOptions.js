@@ -69,7 +69,7 @@ export default class RenderingOptions extends Component {
     return (
       <Panel.Body>
         {this.renderMainControls()}
-        {this.state.uiShowComponentStateControls ? this.renderComponentStateControls() : ''}
+        {this.state.uiShowComponentStateControls && this.renderComponentStateControls()}
       </Panel.Body>
     );
   }
@@ -119,12 +119,12 @@ export default class RenderingOptions extends Component {
               <ToggleButton value={3}>Radio 3</ToggleButton>
             </ToggleButtonGroup>
 
-            {this.state.originalFileName ?
+            {!!this.state.originalFileName &&
               <Button title="Restore original filename" disabled={this.state.fileName === this.state.originalFileName} onClick={this.restoreOriginalFilename}>
                 <Glyphicon glyph="refresh" />
-              </Button> : ''}{' '}
+              </Button>}{' '}
 
-            {this.state.decksList ?
+            {!!this.state.decksList &&
               <FormControl
                 componentClass="select"
                 title="Take name from a deck"
@@ -132,8 +132,7 @@ export default class RenderingOptions extends Component {
                 value={selected}>
                 <option key="0" value="0">Take name from a deck...</option>
                 {this.state.decksList.map(el => <option key={el.key} value={el.key}>{el.value}</option>)}
-              </FormControl>
-              : ''}
+              </FormControl>}
           </ButtonToolbar>
         </Form>
       </form>

@@ -110,15 +110,15 @@ export default class SettingsFile extends Component {
         </FormGroup>
 
         <Form componentClass="fieldset" inline>
-          {this.state.originalFileName ?
+          {!!this.state.originalFileName &&
             <Button title="Restore original filename"
                     disabled={this.state.fileName === this.state.originalFileName}
                     bsStyle={this.state.fileName === this.state.originalFileName ? 'primary' : 'default' }
                     onClick={this.restoreOriginalFilename}>
               <Glyphicon glyph="refresh" />
-            </Button> : ''}{' '}
+            </Button>}{' '}
 
-          {this.state.decksList ?
+          {!!this.state.decksList &&
             <FormControl
               componentClass="select"
               title="Take name from a deck"
@@ -126,8 +126,7 @@ export default class SettingsFile extends Component {
               value={selected}>
               <option key="0" value="0">Take name from a deck...</option>
               {this.state.decksList.map(el => <option key={el.key} value={el.key}>{el.value}</option>)}
-            </FormControl>
-            : ''}
+            </FormControl>}
         </Form>
       </form>
     );
