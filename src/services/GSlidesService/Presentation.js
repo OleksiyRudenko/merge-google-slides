@@ -204,7 +204,10 @@ export default class Presentation {
    * @private
    */
   _testObjectIdBeholder(path, propertyName, propertyValue) {
-    return this.objectIdBeholders.includes(propertyName);
+    return this.objectIdBeholders.includes(propertyName) &&
+      // skip notesMaster items
+      propertyValue !== 'n:slide' &&
+      propertyValue !== 'n:text';
   }
 
   /**
