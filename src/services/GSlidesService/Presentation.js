@@ -1,4 +1,5 @@
 import * as xobject from "../../utils/xobject/xobject";
+import {bindHandlers} from "../../utils/bind";
 
 /**
  * A class representing Google Slides Presentation.
@@ -14,6 +15,7 @@ export default class Presentation {
     } else {
       this.presentation = presentation;
     }
+    bindHandlers(this, '_createObjectIdMap', '_testObjectIdBeholder', '_updateObjectIdFromMap');
   }
 
   get presentation() { return this.p; }
@@ -170,6 +172,50 @@ export default class Presentation {
    * @param {string} prefix
    */
   changeObjectIds(prefix = '_') {
+    this.objectCounter = 0;
+    this.objectIdMap = {};
+    this.objectIdPrefix = prefix;
+    this.objectIdBeholders = ['objectId', 'parentObjectId', 'speakerNotesObjectId', 'layoutObjectId', 'masterObjectId'];
+    // collect
+    xobject.oTraverse(this.p, '', this._createObjectIdMap);
+    // change
+    xobject.oTraverse(this.p, '', this._testObjectIdBeholder, this._updateObjectIdFromMap);
+  }
+
+  /**
+   * Called from .changeObjectIds to update this.objectIdMap
+   * @param {string} path
+   * @param {string} propertyName
+   * @param {*} propertyValue
+   * @private
+   */
+  _createObjectIdMap(path, propertyName, propertyValue) {
+    if (propertyName === 'objectId') {
+      this.objectIdMap[propertyValue] = this.objectIdPrefix + this.objectIdCounter++;
+    }
+    return false; // we do not do any mutations
+  }
+
+  /**
+   * Called from .changeObjectIds to test if a property value should be mutated
+   * @param {string} path
+   * @param {string} propertyName
+   * @param {*} propertyValue
+   * @private
+   */
+  _testObjectIdBeholder(path, propertyName, propertyValue) {
+    return this.objectIdBeholders.includes(propertyName);
+  }
+
+  /**
+   * Called from .changeObjectIds to update property value from the map
+   * @param {string} path
+   * @param {string} propertyName
+   * @param {string} propertyValue
+   * @private
+   */
+  _updateObjectIdFromMap(path, propertyName, propertyValue) {
+    return this.objectIdMap[propertyValue];
   }
 
   /**
