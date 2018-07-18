@@ -1,4 +1,48 @@
 /**
+ * This callback is used by oTraverse to test the node against arbitrary conditions.
+ * Can also be used to collect data.
+ * @callback testCallback
+ * @param {string} path
+ * @param {string} propertyName
+ * @param {*} propertyValue
+ * @returns {Boolean} whether to apply mutationCallback
+ */
+
+/**
+ * This callback is used by oTraverse to mutate the node value.
+ * @callback mutationCallback
+ * @param {string} path
+ * @param {string} propertyName
+ * @param {*} propertyValue
+ * @returns {*} a value to replace original property value
+ */
+
+/**
+ * Traverses object.
+ * @param {Object} obj
+ * @param {string} path
+ * @param {testCallback} testCallback
+ * @param mutationCallback
+ * @returns {*}
+ */
+export const oTraverse = (obj, path, testCallback, mutationCallback) => {
+  if (Array.isArray(obj)) {
+    obj.forEach((element, idx) => {
+      oTraverse(element, `${path}[${idx}]`, testCallback, mutationCallback);
+    });
+  } else if (isObject(obj)) {
+    Object.keys(obj).forEach(propertyName => {
+      const deeperPath = path + (path.length ? '.' : '') + propertyName;
+      if (testCallback(deeperPath, propertyName, obj[propertyName]) && mutationCallback) {
+        obj[propertyName] = mutationCallback(deeperPath, propertyName, obj[propertyName]);
+      }
+      oTraverse(obj[propertyName], deeperPath, testCallback, mutationCallback);
+    });
+  }
+  return obj;
+};
+
+/**
  * Creates a copy of obj where each path ends in either of props.
  * oFilterProps({
  *   objectId: {any:any},
@@ -166,5 +210,5 @@ export const arrayToObjectKeys = (arr, filterAlphaNumerics = true) => {
 export const deepClone = subject => JSON.parse(JSON.stringify(subject));
 
 function isObject(obj) {
-  return obj != null && typeof obj === 'object' && Array.isArray(obj) === false;
+  return obj !== null && typeof obj === 'object' && Array.isArray(obj) === false;
 }
