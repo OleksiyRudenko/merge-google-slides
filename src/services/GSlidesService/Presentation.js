@@ -52,6 +52,7 @@ export default class Presentation {
 
   get masters() { return this.p.masters; }
   get mastersClone() { return xobject.deepClone(this.p.masters); }
+  get mastersFirstId() { return this.p.masters[0].objectId; }
   getMaster(idx = 0) {
     const m = this.p.masters;
     if (!m.length) { return {}; }
@@ -83,6 +84,38 @@ export default class Presentation {
 
   get layouts() { return this.p.layouts; }
   get layoutsClone() { return xobject.deepClone(this.p.layouts); }
+  get layoutsMapNameId() {
+    let result = {};
+    this.p.layouts.forEach(layout => {
+      result[layout.layoutProperties.name] = layout.objectId;
+    });
+    return result;
+  }
+  get layoutsMapIdName() {
+    let result = {};
+    this.p.layouts.forEach(layout => {
+      result[layout.objectId] = layout.layoutProperties.name;
+    });
+    return result;
+  }
+
+  /**
+   * Gets layouts placeholders map
+   * @returns {Array} {<layoutObjectId>:{<placeholderType>: <layoutPageElement.objectId>, ...}}
+   */
+  get layoutsPlaceholdersMap() {
+    let layoutsPlaceholdersMap = {};
+    this.p.layouts.forEach(layout => {
+      let layoutPlaceholdersMap = {};
+      xobject.oTraverse(layout.pageElements, '', (path, propertyName, propertyValue) => {
+        if (propertyName === 'placeholder') {
+          layoutPlaceholdersMap[propertyValue.type] = propertyValue.parentObjectId;
+        }
+      });
+      layoutsPlaceholdersMap[layout.objectId] = layoutPlaceholdersMap;
+    });
+    return layoutsPlaceholdersMap;
+  }
   getLayout(idx = 0) {
     const l = this.p.layouts;
     if (!l.length) { return {}; }
@@ -178,6 +211,45 @@ export default class Presentation {
    * @returns {Object}
    */
   getReferences(shallow = false) {}
+
+  /**
+   * Within slides updates objectIds using prefix and preset maps
+   * @param {string} prefix (at least 2 characters long)
+   * @param {Object<{masterId,layoutsMapNameId,layoutsPlaceholdersMap}>} presets
+   */
+  updateSlidesIdsAndRefsUsingMaps(prefix, presets = null) {
+    // generate unique Object ids within slides
+    let idsMap = {};
+    prefix += 'id';
+    let idCounter = 0;
+    xobject.oTraverse(this.p.slides, '', (path, propertyName, propertyValue) => {
+      if (propertyName === 'objectId') {
+        idsMap[propertyValue] = prefix + idCounter++;
+      }
+    });
+    // refactor objectIds and speakerNotesObjectId using the map
+    xobject.oTraverse(this.p.slides, '',
+      (path, propertyName, propertyValue) => ['objectId', 'speakerNotesObjectId'].includes(propertyName),
+      (path, propertyName, propertyValue) => idsMap[propertyValue]
+      );
+
+    // overwrite refs to masterId, layouts, and layouts page elements using presets
+    if (presets.masterId) {
+      this.p.slides.forEach(slide => {
+        slide.slidePorperty.masterObjectId = presets.masterId;
+      });
+    }
+    if (presets.layoutsMapNameId) {
+      this.p.slides.forEach(slide => {
+        const layoutName = this.p.layouts.find(layout => layout.objectId === slide.layoutObjectId).layoutProperties.name;
+        // TODO: use layoutsPlaceholdersMap
+        slide.slidePorperty.layoutObjectId = layoutsMapNameId[layoutName];
+      });
+    }
+
+
+
+  }
 
   /**
    * Changes all objectIds and references to those using prefix
