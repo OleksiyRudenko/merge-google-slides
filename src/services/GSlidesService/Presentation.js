@@ -209,7 +209,8 @@ export default class Presentation {
   }
 
   /**
-   * Called from .changeObjectIds to test if a property value should be mutated
+   * Called from .changeObjectIds to test if a property value should be mutated.
+   * Will not mutate objectId=="n:slide"|"n:text"
    * @param {string} path
    * @param {string} propertyName
    * @param {*} propertyValue
