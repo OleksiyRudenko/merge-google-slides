@@ -151,6 +151,18 @@ export default class Presentation {
   }
 
   /**
+   * Counts pages in presentation. By default notesMaster is not counted
+   * @param {Array<string>} entities
+   * @returns {number}
+   */
+  getPageCount(entities = ['masters', 'layouts', 'slides']) {
+    if (typeof entities === 'string') {
+      entities = [entities];
+    }
+    return entities.reduce((acc, entity) => acc + (Array.isArray(this.p[entity]) ? this.p[entity].length : 1), 0);
+  }
+
+  /**
    * Get all objectIds nesting structure is preserved and properties names for objectIds are preserved
    * @returns {Object}
    */
