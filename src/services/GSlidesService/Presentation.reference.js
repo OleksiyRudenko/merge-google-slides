@@ -46,7 +46,13 @@ const presentationReferences = {
         displayName: "{ENUM defaults}", // Title slide, Section header,...
       },
       pageProperties: {},
-      pageElements: [{},],
+      pageElements: [{
+        // ...
+        placeholder: {
+          type: "{ENUM}", // CENTERED_TITLE...
+          parentObjectId: "REF# masters[].pageElements[].objectId", // no way to map across presentations
+        },
+      },],
     },
     {},
   ],
@@ -91,7 +97,12 @@ const presentationReferences = {
       },
       pageProperties: {},
       pageElements: [
-        {},
+        {
+          // ...
+          placeholder: {
+
+          }
+        },
       ],
     },
   ],
@@ -106,8 +117,8 @@ const regularPageElement = {
     "<type>Properties": {},
     text: {},
     placeholder: {
-      type: "{ENUM}", // CENTERED_TITLE
-      parentObjectId: "REF# layouts[..slide.layoutObjectId].objectId ?",
+      type: "{ENUM}", // CENTERED_TITLE -- matches type in a layout(?)
+      parentObjectId: "REF# layouts[..slide.layoutObjectId].pageElements[].objectId ?",
     },
   },
   elementGroup: { children: []},
