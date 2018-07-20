@@ -103,7 +103,7 @@ export default class Presentation {
    * Gets layouts placeholders map
    * @returns {Array} {<layoutObjectId>:{<placeholderType>: <layoutPageElement.objectId>, ...}}
    */
-  get layoutsPlaceholdersMapLoIdPhTypePhId() {
+  /* get layoutsPlaceholdersMapLoIdPhTypePhId() {
     let layoutsPlaceholdersMap = {};
     this.p.layouts.forEach(layout => {
       let placeholdersMap = {};
@@ -115,7 +115,7 @@ export default class Presentation {
       layoutsPlaceholdersMap[layout.objectId] = placeholdersMap;
     });
     return layoutsPlaceholdersMap;
-  }
+  } */
   /**
    * Gets layouts placeholders map
    * @returns {Array} {<layoutName>:{<placeholderType>: <layoutPageElement.objectId>, ...}}
@@ -277,7 +277,7 @@ export default class Presentation {
    * Changes all objectIds and references to those using prefix
    * @param {string} prefix
    */
-  changeObjectIds(prefix = '_') {
+  /* changeObjectIds(prefix = '_') {
     this.objectCounter = 0;
     this.objectIdMap = {};
     this.objectIdPrefix = prefix;
@@ -286,7 +286,7 @@ export default class Presentation {
     xobject.oTraverse(this.p, '', this._createObjectIdMap);
     // change
     xobject.oTraverse(this.p, '', this._testObjectIdBeholder, this._updateObjectIdFromMap);
-  }
+  } */
 
   /**
    * Called from .changeObjectIds to update this.objectIdMap
@@ -295,12 +295,12 @@ export default class Presentation {
    * @param {*} propertyValue
    * @private
    */
-  _createObjectIdMap(path, propertyName, propertyValue) {
+  /* _createObjectIdMap(path, propertyName, propertyValue) {
     if (propertyName === 'objectId') {
       this.objectIdMap[propertyValue] = this.objectIdPrefix + this.objectIdCounter++;
     }
     return false; // we do not do any mutations
-  }
+  } */
 
   /**
    * Called from .changeObjectIds to test if a property value should be mutated.
@@ -310,12 +310,12 @@ export default class Presentation {
    * @param {*} propertyValue
    * @private
    */
-  _testObjectIdBeholder(path, propertyName, propertyValue) {
+  /* _testObjectIdBeholder(path, propertyName, propertyValue) {
     return this.objectIdBeholders.includes(propertyName) &&
       // skip notesMaster items
       propertyValue !== 'n:slide' &&
       propertyValue !== 'n:text';
-  }
+  } */
 
   /**
    * Called from .changeObjectIds to update property value from the map
@@ -324,18 +324,18 @@ export default class Presentation {
    * @param {string} propertyValue
    * @private
    */
-  _updateObjectIdFromMap(path, propertyName, propertyValue) {
+  /* _updateObjectIdFromMap(path, propertyName, propertyValue) {
     return this.objectIdMap[propertyValue];
-  }
+  } */
 
   /**
    * Creates a map for named entities allowing to backreference those through unique standard names (like 'TITLE').
    * Useful when some presentation slides need to be rebound to target presentation masters, layout, notes master
    * @param {Array} entities
    */
-  getMaps(entities = ['notesMaster', 'masters', 'layouts']) {
+  /* getMaps(entities = ['notesMaster', 'masters', 'layouts']) {
 
-  }
+  } */
 
   /**
    * Loads presentation using google api
