@@ -265,10 +265,10 @@ export default class Presentation {
         }, (path, propertyName, propertyValue) => {
           return Object.assign(propertyValue, {
             // foreignLayouts[layoutName][placeholder.type] == foreignPlaceholderId
-            parentObjectId: layoutsPlaceholdersMapLoNamePhTypePhId[layoutName][propertyValue.type],
+            parentObjectId: presets.layoutsPlaceholdersMapLoNamePhTypePhId[layoutName][propertyValue.type],
           });
         });
-        slide.slideProperty.layoutObjectId = layoutsMapNameId[layoutName];
+        slide.slideProperty.layoutObjectId = presets.layoutsMapNameId[layoutName];
       });
     }
   }
