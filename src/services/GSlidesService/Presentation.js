@@ -103,16 +103,33 @@ export default class Presentation {
    * Gets layouts placeholders map
    * @returns {Array} {<layoutObjectId>:{<placeholderType>: <layoutPageElement.objectId>, ...}}
    */
-  get layoutsPlaceholdersMap() {
+  get layoutsPlaceholdersMapLoIdPhTypePhId() {
     let layoutsPlaceholdersMap = {};
     this.p.layouts.forEach(layout => {
-      let layoutPlaceholdersMap = {};
+      let placeholdersMap = {};
       xobject.oTraverse(layout.pageElements, '', (path, propertyName, propertyValue) => {
         if (propertyName === 'placeholder') {
-          layoutPlaceholdersMap[propertyValue.type] = propertyValue.parentObjectId;
+          placeholdersMap[propertyValue.type] = propertyValue.parentObjectId;
         }
       });
-      layoutsPlaceholdersMap[layout.objectId] = layoutPlaceholdersMap;
+      layoutsPlaceholdersMap[layout.objectId] = placeholdersMap;
+    });
+    return layoutsPlaceholdersMap;
+  }
+  /**
+   * Gets layouts placeholders map
+   * @returns {Array} {<layoutName>:{<placeholderType>: <layoutPageElement.objectId>, ...}}
+   */
+  get layoutsPlaceholdersMapLoNamePhTypePhId() {
+    let layoutsPlaceholdersMap = {};
+    this.p.layouts.forEach(layout => {
+      let placeholdersMap = {};
+      xobject.oTraverse(layout.pageElements, '', (path, propertyName, propertyValue) => {
+        if (propertyName === 'placeholder') {
+          placeholdersMap[propertyValue.type] = propertyValue.parentObjectId;
+        }
+      });
+      layoutsPlaceholdersMap[layout.layoutProperties.name] = placeholdersMap;
     });
     return layoutsPlaceholdersMap;
   }
@@ -215,7 +232,7 @@ export default class Presentation {
   /**
    * Within slides updates objectIds using prefix and preset maps
    * @param {string} prefix (at least 2 characters long)
-   * @param {Object<{masterId,layoutsMapNameId,layoutsPlaceholdersMap}>} presets
+   * @param {Object<{masterId,layoutsMapNameId,layoutsPlaceholdersMapLoNamePhTypePhId}>} presets
    */
   updateSlidesIdsAndRefsUsingMaps(prefix, presets = null) {
     // generate unique Object ids within slides
@@ -232,7 +249,6 @@ export default class Presentation {
       (path, propertyName, propertyValue) => ['objectId', 'speakerNotesObjectId'].includes(propertyName),
       (path, propertyName, propertyValue) => idsMap[propertyValue]
       );
-
     // overwrite refs to masterId, layouts, and layouts page elements using presets
     if (presets.masterId) {
       this.p.slides.forEach(slide => {
@@ -242,13 +258,19 @@ export default class Presentation {
     if (presets.layoutsMapNameId) {
       this.p.slides.forEach(slide => {
         const layoutName = this.p.layouts.find(layout => layout.objectId === slide.layoutObjectId).layoutProperties.name;
-        // TODO: use layoutsPlaceholdersMap
-        slide.slidePorperty.layoutObjectId = layoutsMapNameId[layoutName];
+        xobject.oTraverse(slide, '', (path, propertyName, propertyValue) => {
+          return propertyName === 'placeholder' &&
+            propertyValue.parentObjectId !== 'n:slide' &&
+            propertyValue.parentObjectId !== 'n:text';
+        }, (path, propertyName, propertyValue) => {
+          return Object.assign(propertyValue, {
+            // foreignLayouts[layoutName][placeholder.type] == foreignPlaceholderId
+            parentObjectId: layoutsPlaceholdersMapLoNamePhTypePhId[layoutName][propertyValue.type],
+          });
+        });
+        slide.slideProperty.layoutObjectId = layoutsMapNameId[layoutName];
       });
     }
-
-
-
   }
 
   /**
