@@ -7,21 +7,28 @@ import App from './App';
 import GapiService from './services/GapiService';
 import SourceDecksService from './services/SourceDecksService';
 import { gapiParams } from "./config/gapi";
+import { gapiDevParams } from "./config/gapi.dev.js";
 import GSlidesService from "./services/GSlidesService";
 // import './utils/koala-js-promisified/koala-js.testcases';
 // import registerServiceWorker from './registerServiceWorker'; // -- enable client-side caching
 import { unregister } from './registerServiceWorker'; // -- disable client-side caching
 unregister(); // -- disable client-side caching
 
+let gapiAuthParams = gapiParams;
+
+if (process.env.NODE_ENV === 'development') {
+  gapiAuthParams = Object.assign(gapiParams, gapiDevParams);
+}
+
 GSlidesService.init(SourceDecksService);
 
 const gDriveState = getGDriveState();
 if (gDriveState && gDriveState.userId) {
-  gapiParams.login_hint = gDriveState.userId;
+  gapiAuthParams.login_hint = gDriveState.userId;
 }
 
 // initialize services
-GapiService.init(gapiParams);
+GapiService.init(gapiAuthParams);
 
 ReactDOM.render(<App
     gapi={GapiService}
