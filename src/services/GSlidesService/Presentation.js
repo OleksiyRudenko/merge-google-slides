@@ -163,7 +163,7 @@ export default class Presentation {
   get presetsForUpdate() {
     return {
       masterId: this.mastersFirstId,
-      layoutsMapNameId: this.layoutsMapIdName,
+      layoutsMapNameId: this.layoutsMapNameId,
       layoutsPlaceholdersMapLoNamePhTypePhId: this.layoutsPlaceholdersMapLoNamePhTypePhId,
     };
   }
