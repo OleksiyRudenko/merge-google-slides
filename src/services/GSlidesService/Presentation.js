@@ -157,6 +157,17 @@ export default class Presentation {
     }
   }
 
+  /**
+   * Prepares presets for ChildDeck.updateSlidesIdsAndRefsUsingMaps()
+   */
+  get presetsForUpdate() {
+    return {
+      masterId: this.mastersFirstId,
+      layoutsMapNameId: this.layoutsMapIdName,
+      layoutsPlaceholdersMapLoNamePhTypePhId: this.layoutsPlaceholdersMapLoNamePhTypePhId,
+    };
+  }
+
   get slides() { return this.p.slides; }
   get slidesClone() { return xobject.deepClone(this.p.slides); }
   getSlide(idx = 0) {
@@ -230,7 +241,7 @@ export default class Presentation {
   getReferences(shallow = false) {}
 
   /**
-   * Within slides updates objectIds using prefix and preset maps
+   * Within slides updates objectIds using prefix and preset maps (use MasterDeck.presetsForUpdate)
    * @param {string} prefix (at least 2 characters long)
    * @param {Object<{masterId,layoutsMapNameId,layoutsPlaceholdersMapLoNamePhTypePhId}>} presets
    */
