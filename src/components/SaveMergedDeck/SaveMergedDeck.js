@@ -181,9 +181,18 @@ export default class SaveMergedDeck extends RichComponent {
     })))
       .then(decks => {
         const presentations = decks.map(deck => new Presentation(deck.result));
-        presentations.forEach(deck => {
-          console.log('$$$$ ' + deck.presentationId,
+        let mappingPresets = presentations[0].presetsForUpdate;
+        presentations.forEach((deck, idx) => {
+          console.log('$$$$-Initial ' + deck.presentationId,
             'objectIds <structured>', deck.getObjectIdsStructure());
+          if (idx) {
+            deck.updateSlidesIdsAndRefsUsingMaps('mgs' + idx, mappingPresets);
+            console.log('$$$$-Updated ' + deck.presentationId,
+              'objectIds <structured>', deck.getObjectIdsStructure());
+          } else {
+            console.log('$$$$-FirstSlides presets ' + deck.presentationId,
+              mappingPresets);
+          }
         });
       });
   }
