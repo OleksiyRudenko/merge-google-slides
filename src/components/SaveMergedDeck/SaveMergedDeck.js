@@ -180,13 +180,15 @@ export default class SaveMergedDeck extends RichComponent {
       "presentationId": deckId,
     })))
       .then(decks => {
+        const d = new Date();
+        const prefix = 'mgs' + d.toISOString().split('T')[0];
         const presentations = decks.map(deck => new Presentation(deck.result));
         let mappingPresets = presentations[0].presetsForUpdate;
         presentations.forEach((deck, idx) => {
           console.log('$$$$-Initial ' + deck.presentationId,
             'objectIds <structured>', deck.getObjectIdsStructure());
           if (idx) {
-            deck.updateSlidesIdsAndRefsUsingMaps('mgs' + idx, mappingPresets);
+            deck.updateSlidesIdsAndRefsUsingMaps(prefix + idx, mappingPresets);
             console.log('$$$$-Updated ' + deck.presentationId,
               'objectIds <structured>', deck.getObjectIdsStructure());
             const batchUpdateRequest = deck.createBatchUpdateRequest();
