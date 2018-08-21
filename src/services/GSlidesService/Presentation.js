@@ -1,5 +1,5 @@
 import * as xobject from "../../utils/xobject/xobject";
-import {bindHandlers} from "../../utils/bind";
+// import {bindHandlers} from "../../utils/bind";
 
 /**
  * A class representing Google Slides Presentation.
@@ -15,7 +15,7 @@ export default class Presentation {
     } else {
       this.presentation = presentation;
     }
-    bindHandlers(this, '_createObjectIdMap', '_testObjectIdBeholder', '_updateObjectIdFromMap');
+    // bindHandlers(this, '_createObjectIdMap', '_testObjectIdBeholder', '_updateObjectIdFromMap');
   }
 
   get presentation() { return this.p; }
@@ -252,12 +252,12 @@ export default class Presentation {
     // overwrite refs to masterId, layouts, and layouts page elements using presets
     if (presets.masterId) {
       this.p.slides.forEach(slide => {
-        slide.slidePorperty.masterObjectId = presets.masterId;
+        slide.slideProperties.masterObjectId = presets.masterId;
       });
     }
     if (presets.layoutsMapNameId) {
       this.p.slides.forEach(slide => {
-        const layoutName = this.p.layouts.find(layout => layout.objectId === slide.layoutObjectId).layoutProperties.name;
+        const layoutName = this.p.layouts.find(layout => layout.objectId === slide.slideProperties.layoutObjectId).layoutProperties.name;
         xobject.oTraverse(slide, '', (path, propertyName, propertyValue) => {
           return propertyName === 'placeholder' &&
             propertyValue.parentObjectId !== 'n:slide' &&
@@ -268,7 +268,7 @@ export default class Presentation {
             parentObjectId: presets.layoutsPlaceholdersMapLoNamePhTypePhId[layoutName][propertyValue.type],
           });
         });
-        slide.slideProperty.layoutObjectId = presets.layoutsMapNameId[layoutName];
+        slide.slideProperties.layoutObjectId = presets.layoutsMapNameId[layoutName];
       });
     }
   }
