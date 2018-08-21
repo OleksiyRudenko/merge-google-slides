@@ -189,6 +189,9 @@ export default class SaveMergedDeck extends RichComponent {
             deck.updateSlidesIdsAndRefsUsingMaps('mgs' + idx, mappingPresets);
             console.log('$$$$-Updated ' + deck.presentationId,
               'objectIds <structured>', deck.getObjectIdsStructure());
+            const batchUpdateRequest = deck.createBatchUpdateRequest();
+            console.log('$$$$-BatchUpdateRequest ' + deck.presentationId,
+              batchUpdateRequest);
           } else {
             console.log('$$$$-FirstSlides presets ' + deck.presentationId,
               mappingPresets);
