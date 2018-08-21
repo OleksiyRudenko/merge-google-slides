@@ -1,4 +1,5 @@
 import * as xobject from "../../utils/xobject/xobject";
+import PresentationPage from "./PresentationPage.js";
 // import {bindHandlers} from "../../utils/bind";
 
 /**
@@ -9,6 +10,7 @@ import * as xobject from "../../utils/xobject/xobject";
  */
 export default class Presentation {
   p = null;
+  _slidePages = null;
   constructor(presentation = null, clone = false) {
     if (clone && typeof presentation !== 'string') {
       this.presentationClone = presentation;
@@ -194,6 +196,13 @@ export default class Presentation {
     }
   }
 
+  get slidePages() {
+    if (!this._slidePages) {
+      this._slidePages = this.p.slides.map(slide => new PresentationPage(slide));
+    }
+    return this._slidePages;
+  }
+
   /**
    * Delete property at the end of path
    * @param path
@@ -376,4 +385,12 @@ export default class Presentation {
     return idx;
   }
 
+
+  /**
+   * Creates requests from slides to use with gapi.slides.presentations.batchUpdate
+   * @returns {Array} requests for window.gapi.client.slides.presentations.batchUpdate
+   */
+  createBatchUpdateRequest() {
+    return [].concat(...this.slidePages.map(page => page.createBatchUpdateRequest()));
+  }
 }

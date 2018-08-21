@@ -30,22 +30,23 @@ export default class PresentationPage {
    * @returns {Array} requests for window.gapi.client.slides.presentations.batchUpdate
    */
   createBatchUpdateRequest() {
+    console.log('$$$$>$ Slide', this.p);
     // initialize with create slide request;
     let requests = [
       {
         createSlide: { // https://developers.google.com/slides/reference/rest/v1/presentations/request#CreateSlideRequest
-          objectId: slideId,
+          objectId: this.p.objectId,
           slideLayoutReference: {
-            predefinedLayout: predefinedLayoutName,
+            // predefinedLayout: predefinedLayoutName,
           },
           // placeholderIdMappings: [], // https://developers.google.com/slides/reference/rest/v1/presentations/request#LayoutPlaceholderIdMapping
         }
       },
       {
         updatePageProperties: { // https://developers.google.com/slides/reference/rest/v1/presentations/request#UpdatePagePropertiesRequest
-          objectId: slideId,
-          pageProperties: slide.pageProperties,
-          fields: Object.keys(slide.pageProperties).join(','),
+          objectId: this.p.objectId,
+          pageProperties: this.p.pageProperties,
+          fields: Object.keys(this.p.pageProperties).join(','),
         }
       }
     ];
