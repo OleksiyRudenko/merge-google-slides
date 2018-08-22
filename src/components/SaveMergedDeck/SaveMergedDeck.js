@@ -180,8 +180,8 @@ export default class SaveMergedDeck extends RichComponent {
       "presentationId": deckId,
     })))
       .then(decks => {
-        const d = new Date();
-        const prefix = 'mgs' + d.toISOString().split('T')[0];
+        const d = new Date().toISOString().split('T')[0].split('-').join('');
+        const prefix = 'mgs' + d;
         const presentations = decks.map(deck => new Presentation(deck.result));
         let mappingPresets = presentations[0].presetsForUpdate;
         presentations.forEach((deck, idx) => {
