@@ -257,7 +257,7 @@ export default class Presentation {
   updateSlidesIdsAndRefsUsingMaps(prefix, presets = null) {
     // generate unique Object ids within slides
     let idsMap = {};
-    prefix += 'id';
+    prefix += '-';
     let idCounter = 0;
     xobject.oTraverse(this.p.slides, '', (path, propertyName, propertyValue) => {
       if (propertyName === 'objectId') {
