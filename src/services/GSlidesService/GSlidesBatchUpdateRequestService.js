@@ -194,7 +194,7 @@ class GSlidesBatchUpdateRequestService {
         updatePageElementAltText: {
           objectId: pageElement.objectId,
           title: pageElement.title,
-          description: pageElement.description,
+          description: pageElement.description || '',
         }});
     }
 
